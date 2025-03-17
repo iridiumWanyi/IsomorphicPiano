@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isomorphic PianoSimulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="controls">
+        <h1>Isomorphic Piano Simulator</h1>
+        <div class="control-row">
+            <button id="single" class="active">
+                <span class="icon">♪</span>
+                <span class="text">Single Sound</span>
+                <div style="color: #666; font-size: 0.8em;">keyboard (`) </div>
+            </button>
+            <button id="octave">
+                <span class="icon">♪♪</span>
+                <span class="text">octave</span>
+                <div style="color: #666; font-size: 0.8em;">keyboard (1) </div>
+            </button>
+            <button id="major">
+                <span class="icon" style="font-size: 0.8em;">△</span>
+                <span class="text">Major</span>
+                <div style="color: #666; font-size: 0.8em;">keyboard (2) </div>
+            </button>
+            <button id="minor">
+                <span class="icon">−</span>
+                <span class="text">Minor</span>
+                <div style="color: #666; font-size: 0.8em;">keyboard (3) </div>
+            </button>
+            <button id="diminished">
+                <span class="icon">○</span>
+                <span class="text">Diminished</span>
+                <div style="color: #666; font-size: 0.8em;">keyboard (4) </div>
+            </button>
+            <button id="augmented">
+                <span class="icon">+</span>
+                <span class="text">Augmented</span>
+                <div style="color: #666; font-size: 0.8em;">keyboard (5) </div>
+            </button>
+        </div>
+        <div class="control-row">
+        </div>
+        <div class="control-row">
+            <button id="domSeven"><span class="text">Dominant 7th</span></button>
+            <button id="majSeven"><span class="text">Major 7th</span></button>
+            <button id="minSeven"><span class="text">minormaj 7th</span></button>
+            <button id="susSeven"><span class="text">Suspended 7th</span></button>
+        </div>
+        
+    </div>
+    <div class="keyboard" id="keyboard"></div>
+    <div class="music-buttons">
+        <button id="playMusic">MusicSample: BWV846</button>
+        <button id="playMusic2">MusicSample: Fight of the BumbleBee</button>
+    </div>
+    <script src="chords.js"></script>
+    <script src="music.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
