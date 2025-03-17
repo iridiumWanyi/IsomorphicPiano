@@ -183,5 +183,6 @@ function getChordKeys(rootKey, currentMode, jankoLayout, keyElements) {
     return chordKeys;
 }
 
+// some testing workß
 // Expose the function globally
 window.getChordKeys = getChordKeys;
