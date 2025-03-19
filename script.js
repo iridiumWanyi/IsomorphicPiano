@@ -1,4 +1,4 @@
-// Mode colors
+// Mode colors with lightened Morandi colors for 7th and 9th chords
 const modeColors = {
     "single": "#e3e1de",
     "octave": "#ebe3cd",
@@ -6,14 +6,14 @@ const modeColors = {
     "minor": "#dce5d2",
     "diminished": "#cedfdf",
     "augmented": "#ebd3d3",
-    "domSeven": "#c9d5d3", 
-    "majSeven": "#e4d7d2", 
-    "minSeven": "#c0ccd5",
-    "susSeven": "#d6d1cb", 
-    "domNine": "#c6ccba", 
-    "majNine": "#ded2d8", 
-    "minNine": "#c0ccc9", 
-    "susNine": "#d4c9ba", 
+    "domSeven": "#c9d5d3", // Lightened Morandi: muted teal
+    "majSeven": "#e4d7d2", // Lightened Morandi: soft peach
+    "minSeven": "#c0ccd5", // Lightened Morandi: pale blue-gray
+    "susSeven": "#d6d1cb", // Lightened Morandi: light taupe
+    "domNine": "#c6ccba", // Lightened Morandi: muted sage
+    "majNine": "#ded2d8", // Lightened Morandi: dusty rose
+    "minNine": "#c0ccc9", // Lightened Morandi: soft slate
+    "susNine": "#d4c9ba", // Lightened Morandi: warm beige
     "arpeggiatorToggle": "#e3e1de"
 };
 
@@ -105,9 +105,16 @@ function findClosestKey(note, referenceRow, referenceCol) {
 let arpeggiatorOn = false;
 let arpeggiatorTimeoutId = null;
 let currentArpeggioNotes = [];
-let arpeggiatorSpeed = 300; // Default speed in ms
+let arpeggiatorSpeed = 120; // Default speed in BPM (maps to 500ms delay)
 let arpeggiatorPattern = "12345345"; // Default pattern
 let lastClickedPosition = { row: 0, col: 0 }; // Store the position of the last clicked key
+
+// Function to convert BPM to delay (in milliseconds)
+function bpmToDelay(bpm) {
+    // Formula: delay (ms) = (60 / BPM) * 1000
+    const delay = (60 / bpm) * 1000;
+    return Math.max(50, Math.min(1500, delay)); // Clamp between 50ms and 1500ms
+}
 
 // Arpeggiator toggle
 const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
@@ -127,6 +134,16 @@ const arpeggiatorSpeedValue = document.getElementById("arpeggiatorSpeedValue");
 arpeggiatorSpeedInput.addEventListener("input", () => {
     arpeggiatorSpeed = parseInt(arpeggiatorSpeedInput.value);
     arpeggiatorSpeedValue.textContent = arpeggiatorSpeed;
+    // If arpeggiator is running, restart it with the new speed
+    if (arpeggiatorOn && currentArpeggioNotes.length > 0) {
+        clearTimeout(arpeggiatorTimeoutId);
+        arpeggiatorTimeoutId = null;
+        playArpeggio(
+            currentArpeggioNotes.map(note => keyElements.find(k => k.dataset.note === note)),
+            lastClickedPosition.row,
+            lastClickedPosition.col
+        );
+    }
 });
 
 // Arpeggiator pattern control
@@ -231,7 +248,7 @@ function playArpeggio(chordKeys, referenceRow, referenceCol) {
         const note = currentArpeggioNotes[index];
         playNote(note, referenceRow, referenceCol); // Highlight the closest key
         index = (index + 1) % currentArpeggioNotes.length;
-        arpeggiatorTimeoutId = setTimeout(playNextArpeggioNote, arpeggiatorSpeed);
+        arpeggiatorTimeoutId = setTimeout(playNextArpeggioNote, bpmToDelay(arpeggiatorSpeed));
     }
 
     playNextArpeggioNote();
@@ -266,7 +283,6 @@ keyElements.forEach(key => {
         const referenceCol = parseInt(key.dataset.col);
         // Store the last clicked position
         lastClickedPosition = { row: referenceRow, col: referenceCol };
-        const activeColor = modeColors[currentMode];
         if (currentMode === "single") {
             // Stop arpeggiator if it was running
             if (arpeggiatorOn && arpeggiatorTimeoutId) {
