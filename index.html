@@ -42,22 +42,28 @@
             </button>
         </div>
         <div class="control-row">
+            <button id="domSeven"><span class="text">Dom7</span></button>
+            <button id="majSeven"><span class="text">Maj7</span></button>
+            <button id="minSeven"><span class="text">MinMaj7</span></button>
+            <button id="susSeven"><span class="text">Sus7</span></button>
+            <button id="domNine"><span class="text">Dom9</span></button>
+            <button id="majNine"><span class="text">Maj9</span></button>
+            <button id="minNine"><span class="text">MinMaj9</span></button>
+            <button id="susNine"><span class="text">Sus9</span></button>
         </div>
         <div class="control-row">
-            <button id="domSeven"><span class="text">Dominant 7th</span></button>
-            <button id="majSeven"><span class="text">Major 7th</span></button>
-            <button id="minSeven"><span class="text">minormaj 7th</span></button>
-            <button id="susSeven"><span class="text">Suspended 7th</span></button>
+            <button id="arpeggiatorToggle">Toggle Arpeggiator (Off)</button>
+            <label>Arpeggiator Speed (ms): </label>
+            <input type="range" id="arpeggiatorSpeed" min="50" max="1000" value="200">
+            <span id="arpeggiatorSpeedValue">200</span>
         </div>
-        
+        <div class="control-row">
+            <label>Arpeggiator Pattern (e.g., 12345345): </label>
+            <input type="text" id="arpeggiatorPattern" value="12345345" style="width: 100px;">
+        </div>
     </div>
     <div class="keyboard" id="keyboard"></div>
-    <div class="music-buttons">
-        <button id="playMusic">MusicSample: BWV846</button>
-        <button id="playMusic2">MusicSample: Fight of the BumbleBee</button>
-    </div>
     <script src="chords.js"></script>
-    <script src="music.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

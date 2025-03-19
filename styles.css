@@ -20,6 +20,7 @@ body {
 .control-row {
     display: flex;
     gap: 15px;
+    align-items: center;
 }
 
 .controls h1 {
@@ -28,7 +29,7 @@ body {
     color: #535050;
 }
 
-.controls button, .music-buttons button {
+.controls button {
     padding: 10px 15px;
     cursor: pointer;
     border: none;
@@ -85,10 +86,31 @@ body {
     background-color: #888;
 }
 
-.music-buttons {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
+/* Style for the arpeggiator speed slider */
+input[type="range"] {
+    width: 150px;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background: #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #535050;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #535050;
+    border-radius: 50%;
+    cursor: pointer;
 }

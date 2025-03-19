@@ -6,14 +6,15 @@ const modeColors = {
     "minor": "#dce5d2",
     "diminished": "#cedfdf",
     "augmented": "#ebd3d3",
-
-    "domSeven": "#cfd4e2",
-    "majSeven": "#dcd1e2",
-    "minSeven": "#cfd4e2",
-    "susSeven": "#dcd1e2",
-    
-    "playMusic": "#e3e1de",
-    "playMusic2": "#e3e1de"
+    "domSeven": "#c9d5d3", 
+    "majSeven": "#e4d7d2", 
+    "minSeven": "#c0ccd5",
+    "susSeven": "#d6d1cb", 
+    "domNine": "#c6ccba", 
+    "majNine": "#ded2d8", 
+    "minNine": "#c0ccc9", 
+    "susNine": "#d4c9ba", 
+    "arpeggiatorToggle": "#e3e1de"
 };
 
 // Apply colors to buttons
@@ -78,24 +79,107 @@ jankoLayout.forEach((row, rowIndex) => {
     keyboard.appendChild(rowDiv);
 });
 
+// Function to find the closest key element to a given position
+function findClosestKey(note, referenceRow, referenceCol) {
+    const matchingKeys = keyElements.filter(k => k.dataset.note === note);
+    if (matchingKeys.length === 0) return null;
+
+    let closestKey = matchingKeys[0];
+    let minDistance = Infinity;
+
+    matchingKeys.forEach(key => {
+        const row = parseInt(key.dataset.row);
+        const col = parseInt(key.dataset.col);
+        // Use Manhattan distance: |row1 - row2| + |col1 - col2|
+        const distance = Math.abs(row - referenceRow) + Math.abs(col - referenceCol);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestKey = key;
+        }
+    });
+
+    return closestKey;
+}
+
+// Arpeggiator state
+let arpeggiatorOn = false;
+let arpeggiatorTimeoutId = null;
+let currentArpeggioNotes = [];
+let arpeggiatorSpeed = 300; // Default speed in ms
+let arpeggiatorPattern = "12345345"; // Default pattern
+let lastClickedPosition = { row: 0, col: 0 }; // Store the position of the last clicked key
+
+// Arpeggiator toggle
+const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
+arpeggiatorToggleBtn.addEventListener("click", () => {
+    arpeggiatorOn = !arpeggiatorOn;
+    arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (${arpeggiatorOn ? "On" : "Off"})`;
+    if (!arpeggiatorOn && arpeggiatorTimeoutId) {
+        clearTimeout(arpeggiatorTimeoutId);
+        arpeggiatorTimeoutId = null;
+        currentArpeggioNotes = [];
+    }
+});
+
+// Arpeggiator speed control (slider)
+const arpeggiatorSpeedInput = document.getElementById("arpeggiatorSpeed");
+const arpeggiatorSpeedValue = document.getElementById("arpeggiatorSpeedValue");
+arpeggiatorSpeedInput.addEventListener("input", () => {
+    arpeggiatorSpeed = parseInt(arpeggiatorSpeedInput.value);
+    arpeggiatorSpeedValue.textContent = arpeggiatorSpeed;
+});
+
+// Arpeggiator pattern control
+const arpeggiatorPatternInput = document.getElementById("arpeggiatorPattern");
+arpeggiatorPatternInput.addEventListener("input", () => {
+    arpeggiatorPattern = arpeggiatorPatternInput.value.trim();
+    // Stop the current arpeggio if the pattern changes
+    if (arpeggiatorTimeoutId) {
+        clearTimeout(arpeggiatorTimeoutId);
+        arpeggiatorTimeoutId = null;
+        currentArpeggioNotes = [];
+    }
+});
+
 // Mode button listeners
 const modes = ["single", "octave", "major", "minor", "diminished", 
-    "augmented", "domSeven", "majSeven", "minSeven", "susSeven"];
+    "augmented", "domSeven", "majSeven", "minSeven", "susSeven",
+    "domNine", "majNine", "minNine", "susNine"];
 modes.forEach(mode => {
     const btn = document.getElementById(mode);
     btn.addEventListener("click", () => {
         currentMode = mode;
         setActiveButton(btn);
         clearHoverHighlights();
+        // Stop arpeggiator if switching to single mode
+        if (currentMode === "single" && arpeggiatorOn) {
+            arpeggiatorOn = false;
+            arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (Off)`;
+            if (arpeggiatorTimeoutId) {
+                clearTimeout(arpeggiatorTimeoutId);
+                arpeggiatorTimeoutId = null;
+                currentArpeggioNotes = [];
+            }
+        }
     });
 });
 
 // Audio playback
-function playNote(note) {
+function playNote(note, referenceRow, referenceCol) {
     const sound = noteSounds[note];
     if (sound) {
         sound.currentTime = 0;
-        sound.play();
+        sound.play().catch(error => console.error(`Audio play failed for ${note}:`, error));
+        // Highlight the closest key to the reference position
+        const keyElement = findClosestKey(note, referenceRow, referenceCol);
+        if (keyElement) {
+            keyElement.classList.add("active");
+            keyElement.style.backgroundColor = modeColors[currentMode];
+            setTimeout(() => {
+                keyElement.classList.remove("active");
+                keyElement.style.backgroundColor = "";
+            }, 200);
+        }
     } else {
         console.error(`No sound file loaded for ${note}`);
     }
@@ -107,13 +191,66 @@ function clearHoverHighlights() {
     });
 }
 
+// Arpeggiator function with custom pattern
+function playArpeggio(chordKeys, referenceRow, referenceCol) {
+    if (!arpeggiatorOn || chordKeys.length === 0) return;
+
+    // Get the original notes
+    const originalNotes = chordKeys.map(key => key.dataset.note);
+    
+    // Calculate the higher octave notes
+    const higherOctaveNotes = originalNotes.map(note => {
+        const originalIndex = noteToChromaticIndex[note];
+        const higherIndex = originalIndex + 12; // Shift up one octave (12 semitones)
+        // Check if the higher index is within the chromatic scale range
+        if (higherIndex < chromaticScale.length) {
+            return chromaticScale[higherIndex];
+        }
+        return null; // Skip if the note is out of range
+    }).filter(note => note !== null); // Remove any null entries
+
+    // Combine original and higher octave notes
+    const allNotes = [...originalNotes, ...higherOctaveNotes];
+    if (allNotes.length === 0) return; // No valid notes to play
+
+    // Parse the arpeggiator pattern (e.g., "12345345")
+    const pattern = arpeggiatorPattern.split("").map(num => parseInt(num) - 1).filter(num => !isNaN(num) && num >= 0 && num < allNotes.length);
+    if (pattern.length === 0) return; // Invalid pattern
+
+    // Map the pattern indices to notes
+    currentArpeggioNotes = pattern.map(index => allNotes[index]);
+    if (currentArpeggioNotes.length === 0) return; // No valid notes to play
+
+    let index = 0;
+
+    function playNextArpeggioNote() {
+        if (!arpeggiatorOn || currentArpeggioNotes.length === 0) {
+            arpeggiatorTimeoutId = null;
+            return;
+        }
+        const note = currentArpeggioNotes[index];
+        playNote(note, referenceRow, referenceCol); // Highlight the closest key
+        index = (index + 1) % currentArpeggioNotes.length;
+        arpeggiatorTimeoutId = setTimeout(playNextArpeggioNote, arpeggiatorSpeed);
+    }
+
+    playNextArpeggioNote();
+}
+
 // Key interactions
 keyElements.forEach(key => {
     key.addEventListener("mouseover", () => {
         if (currentMode !== "single") {
             clearHoverHighlights();
+            const referenceRow = parseInt(key.dataset.row);
+            const referenceCol = parseInt(key.dataset.col);
             const chordKeys = getChordKeys(key, currentMode, jankoLayout, keyElements);
-            chordKeys.forEach(k => k.classList.add("hover-highlight"));
+            // Highlight the closest instance of each note
+            const uniqueNotes = [...new Set(chordKeys.map(k => k.dataset.note))];
+            uniqueNotes.forEach(note => {
+                const closestKey = findClosestKey(note, referenceRow, referenceCol);
+                if (closestKey) closestKey.classList.add("hover-highlight");
+            });
         }
     });
 
@@ -125,96 +262,42 @@ keyElements.forEach(key => {
 
     key.addEventListener("click", () => {
         const note = key.dataset.note;
+        const referenceRow = parseInt(key.dataset.row);
+        const referenceCol = parseInt(key.dataset.col);
+        // Store the last clicked position
+        lastClickedPosition = { row: referenceRow, col: referenceCol };
         const activeColor = modeColors[currentMode];
         if (currentMode === "single") {
-            playNote(note);
-            key.classList.add("active");
-            key.style.backgroundColor = activeColor;
-            setTimeout(() => {
-                key.classList.remove("active");
-                key.style.backgroundColor = "";
-            }, 200);
+            // Stop arpeggiator if it was running
+            if (arpeggiatorOn && arpeggiatorTimeoutId) {
+                clearTimeout(arpeggiatorTimeoutId);
+                arpeggiatorTimeoutId = null;
+                currentArpeggioNotes = [];
+            }
+            playNote(note, referenceRow, referenceCol);
         } else {
             const chordKeys = getChordKeys(key, currentMode, jankoLayout, keyElements);
-            chordKeys.forEach(k => {
-                playNote(k.dataset.note);
-                k.classList.add("active");
-                k.style.backgroundColor = activeColor;
-                setTimeout(() => {
-                    k.classList.remove("active");
-                    k.style.backgroundColor = "";
-                }, 200);
-            });
+            if (arpeggiatorOn) {
+                // Stop any existing arpeggio
+                if (arpeggiatorTimeoutId) {
+                    clearTimeout(arpeggiatorTimeoutId);
+                    arpeggiatorTimeoutId = null;
+                }
+                playArpeggio(chordKeys, referenceRow, referenceCol);
+            } else {
+                // Stop arpeggiator if it was running
+                if (arpeggiatorTimeoutId) {
+                    clearTimeout(arpeggiatorTimeoutId);
+                    arpeggiatorTimeoutId = null;
+                    currentArpeggioNotes = [];
+                }
+                chordKeys.forEach(k => {
+                    playNote(k.dataset.note, referenceRow, referenceCol);
+                });
+            }
         }
     });
 });
-
-// Music playback
-let isPlaying1 = false, timeoutId1 = null;
-let isPlaying2 = false, timeoutId2 = null;
-
-function playMusic1() {
-    if (isPlaying1) {
-        isPlaying1 = false;
-        if (timeoutId1) clearTimeout(timeoutId1);
-        return;
-    }
-    isPlaying1 = true;
-    let index = 0;
-    function playNextNote() {
-        if (!isPlaying1 || index >= preludeNotes.length) {
-            isPlaying1 = false;
-            return;
-        }
-        const note = preludeNotes[index];
-        const keyElement = keyElements.find(k => k.dataset.note === note);
-        if (keyElement) {
-            playNote(note);
-            keyElement.classList.add("active");
-            keyElement.style.backgroundColor = modeColors["playMusic"];
-            setTimeout(() => {
-                keyElement.classList.remove("active");
-                keyElement.style.backgroundColor = "";
-            }, 500);
-        }
-        index++;
-        timeoutId1 = setTimeout(playNextNote, 300);
-    }
-    playNextNote();
-}
-
-function playMusic2() {
-    if (isPlaying2) {
-        isPlaying2 = false;
-        if (timeoutId2) clearTimeout(timeoutId2);
-        return;
-    }
-    isPlaying2 = true;
-    let index = 0;
-    function playNextNote() {
-        if (!isPlaying2 || index >= bee.length) {
-            isPlaying2 = false;
-            return;
-        }
-        const note = bee[index];
-        const keyElement = keyElements.find(k => k.dataset.note === note);
-        if (keyElement) {
-            playNote(note);
-            keyElement.classList.add("active");
-            keyElement.style.backgroundColor = modeColors["playMusic2"];
-            setTimeout(() => {
-                keyElement.classList.remove("active");
-                keyElement.style.backgroundColor = "";
-            }, 200);
-        }
-        index++;
-        timeoutId2 = setTimeout(playNextNote, 100);
-    }
-    playNextNote();
-}
-
-document.getElementById("playMusic").addEventListener("click", playMusic1);
-document.getElementById("playMusic2").addEventListener("click", playMusic2);
 
 // Keyboard shortcuts
 document.addEventListener("keydown", (event) => {
@@ -233,6 +316,16 @@ document.addEventListener("keydown", (event) => {
         if (btn) {
             setActiveButton(btn);
             clearHoverHighlights();
+            // Stop arpeggiator if switching to single mode
+            if (currentMode === "single" && arpeggiatorOn) {
+                arpeggiatorOn = false;
+                arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (Off)`;
+                if (arpeggiatorTimeoutId) {
+                    clearTimeout(arpeggiatorTimeoutId);
+                    arpeggiatorTimeoutId = null;
+                    currentArpeggioNotes = [];
+                }
+            }
         }
     }
 });

@@ -8,7 +8,7 @@
 ## Usage
  **Launch**: Open `index.html` via your local server.
 
-## Customization --
+## Customization
 - **Add Chords**: Edit `chords.js`’s `getChordKeys` function to define new chord patterns.
 - **New Music**: Add arrays to `music.js` and update `script.js` with corresponding playback functions.
 - **Styling**: Modify `styles.css` for colors, key sizes, or layout tweaks.
