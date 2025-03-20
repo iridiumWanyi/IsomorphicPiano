@@ -128,6 +128,23 @@ input[type="range"]::-moz-range-thumb {
     cursor: pointer;
 }
 
+/* Style for the BPM display */
+#bpmDisplay {
+    margin-left: 10px;
+    color: #535050;
+    font-size: 14px;
+}
+
+/* Style for the arpeggiator pattern input */
+input[type="text"]#arpeggiatorPattern {
+    width: 100px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #535050;
+}
+
 /* Style for the keyboard toggle button */
 #keyboardToggle {
     width: 200px; /* Fixed width to make it more square */

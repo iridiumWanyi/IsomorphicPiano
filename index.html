@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isomorphic PianoSimulator</title>
+    <title>Isomorphic Piano Simulator</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,62 +12,80 @@
         <div class="control-row">
             <button id="single" class="active">
                 <span class="icon">♪</span>
-                <span class="text">Single Sound</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (`) </div>
+                <span class="text">Single</span>
+                <div style="color: #666; font-size: 0.8em;">keyboard (`)</div>
             </button>
             <button id="octave">
                 <span class="icon">♪♪</span>
-                <span class="text">octave</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (1) </div>
+                <span class="text">Octave</span>
+                <div style="color: #666; font-size: 0.8em;">keyboard (1)</div>
             </button>
             <button id="major">
                 <span class="icon" style="font-size: 0.8em;">△</span>
                 <span class="text">Major</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (2) </div>
+                <div style="color: #666; font-size: 0.8em;">keyboard (2)</div>
             </button>
             <button id="minor">
                 <span class="icon">−</span>
                 <span class="text">Minor</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (3) </div>
+                <div style="color: #666; font-size: 0.8em;">keyboard (3)</div>
             </button>
             <button id="diminished">
                 <span class="icon">○</span>
                 <span class="text">Diminished</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (4) </div>
+                <div style="color: #666; font-size: 0.8em;">keyboard (4)</div>
             </button>
             <button id="augmented">
                 <span class="icon">+</span>
                 <span class="text">Augmented</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (5) </div>
+                <div style="color: #666; font-size: 0.8em;">keyboard (5)</div>
             </button>
         </div>
         <div class="control-row">
-            <button id="domSeven"><span class="text">Dom7</span></button>
-            <button id="majSeven"><span class="text">Maj7</span></button>
-            <button id="minSeven"><span class="text">MinMaj7</span></button>
-            <button id="susSeven"><span class="text">Sus7</span></button>
-            <button id="domNine"><span class="text">Dom9</span></button>
-            <button id="majNine"><span class="text">Maj9</span></button>
-            <button id="minNine"><span class="text">MinMaj9</span></button>
-            <button id="susNine"><span class="text">Sus9</span></button>
+            <button id="domSeven">
+                <span class="text">Dom 7</span>
+            </button>
+            <button id="majSeven">
+                <span class="text">Maj 7</span>
+            </button>
+            <button id="minSeven">
+                <span class="text">Min 7</span>
+            </button>
+            <button id="susSeven">
+                <span class="text">Sus 7</span>
+            </button>
+            <button id="domNine">
+                <span class="text">Dom 9</span>
+            </button>
+            <button id="majNine">
+                <span class="text">Maj 9</span>
+            </button>
+            <button id="minNine">
+                <span class="text">Min 9</span>
+            </button>
+            <button id="susNine">
+                <span class="text">Sus 9</span>
+            </button>
         </div>
         <div class="control-row">
             <button id="arpeggiatorToggle">Toggle Arpeggiator (Off)</button>
-            <label>Arpeggiator Speed (BPM): </label>
-            <input type="range" id="arpeggiatorSpeed" min="40" max="200" value="120">
-            <span id="arpeggiatorSpeedValue">120</span>
+            <label>Arpeggiator BPM: <input type="range" id="arpeggiatorSpeed" min="40" max="200" value="120"></label>
+            <span id="bpmDisplay">120 BPM</span>
         </div>
         <div class="control-row">
-            <label>Arpeggiator Pattern (e.g., 12345345): </label>
-            <input type="text" id="arpeggiatorPattern" value="12345345" style="width: 100px;">
+            <label>Arpeggiator Pattern: <input type="text" id="arpeggiatorPattern" value="12345345"></label>
         </div>
     </div>
-    <div class="keyboard" id="keyboard"></div>
-    <div class="control-row">
+    <div id="keyboard"></div>
+
+    <span class="text">......</span>
+
+    <div class="keyboard-toggle-container">
         <button id="keyboardToggle">Switch to Whole Keyboard</button>
     </div>
-    <script src="chords.js"></script>
+
     <script src="constants.js"></script>
+    <script src="chords.js"></script>
     <script src="keyboard.js"></script>
     <script src="arpeggiator.js"></script>
     <script src="main.js"></script>

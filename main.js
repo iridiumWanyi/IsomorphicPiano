@@ -1,7 +1,9 @@
 // Apply colors to buttons
 Object.keys(modeColors).forEach(mode => {
     const btn = document.getElementById(mode);
-    btn.style.backgroundColor = modeColors[mode];
+    if (btn) {
+        btn.style.backgroundColor = modeColors[mode];
+    }
 });
 
 // Button activation logic
@@ -18,23 +20,25 @@ const modes = ["single", "octave", "major", "minor", "diminished",
     "domNine", "majNine", "minNine", "susNine"];
 modes.forEach(mode => {
     const btn = document.getElementById(mode);
-    btn.addEventListener("click", () => {
-        appState.currentMode = mode;
-        setActiveButton(btn);
-        clearHoverHighlights();
-        if (appState.currentMode === "single" && appState.arpeggiatorOn) {
-            appState.arpeggiatorOn = false;
-            const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
-            if (arpeggiatorToggleBtn) {
-                arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (Off)`;
+    if (btn) {
+        btn.addEventListener("click", () => {
+            appState.currentMode = mode;
+            setActiveButton(btn);
+            clearHoverHighlights();
+            if (appState.currentMode === "single" && appState.arpeggiatorOn) {
+                appState.arpeggiatorOn = false;
+                const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
+                if (arpeggiatorToggleBtn) {
+                    arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (Off)`;
+                }
+                if (appState.arpeggiatorTimeoutId) {
+                    clearTimeout(appState.arpeggiatorTimeoutId);
+                    appState.arpeggiatorTimeoutId = null;
+                    appState.currentArpeggioNotes = [];
+                }
             }
-            if (appState.arpeggiatorTimeoutId) {
-                clearTimeout(appState.arpeggiatorTimeoutId);
-                appState.arpeggiatorTimeoutId = null;
-                appState.currentArpeggioNotes = [];
-            }
-        }
-    });
+        });
+    }
 });
 
 // Keyboard toggle button
@@ -64,6 +68,64 @@ if (keyboardToggleBtn) {
     });
 } else {
     console.error("Keyboard toggle button not found!");
+}
+
+// Arpeggiator toggle button
+const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
+if (arpeggiatorToggleBtn) {
+    arpeggiatorToggleBtn.addEventListener("click", () => {
+        appState.arpeggiatorOn = !appState.arpeggiatorOn;
+        arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (${appState.arpeggiatorOn ? "On" : "Off"})`;
+        if (!appState.arpeggiatorOn && appState.arpeggiatorTimeoutId) {
+            clearTimeout(appState.arpeggiatorTimeoutId);
+            appState.arpeggiatorTimeoutId = null;
+            appState.currentArpeggioNotes = [];
+        }
+        console.log("Arpeggiator toggled:", appState.arpeggiatorOn); // Debug log
+    });
+} else {
+    console.error("Arpeggiator toggle button not found!");
+}
+
+// Arpeggiator speed slider (BPM)
+const arpeggiatorSpeedSlider = document.getElementById("arpeggiatorSpeed");
+const bpmDisplay = document.getElementById("bpmDisplay");
+if (arpeggiatorSpeedSlider && bpmDisplay) {
+    function updateArpeggiatorSpeed(bpm) {
+        // Convert BPM to milliseconds per note (assuming eighth notes, 2 notes per beat)
+        const delayPerNote = 60000 / (bpm * 2); // 60,000 ms per minute / (BPM * notes per beat)
+        appState.arpeggiatorSpeed = delayPerNote;
+        bpmDisplay.textContent = `${bpm} BPM`;
+        console.log(`Arpeggiator BPM: ${bpm}, Delay per note: ${delayPerNote} ms`); // Debug log
+    }
+
+    // Initialize with default BPM
+    updateArpeggiatorSpeed(parseInt(arpeggiatorSpeedSlider.value));
+
+    arpeggiatorSpeedSlider.addEventListener("input", () => {
+        const bpm = parseInt(arpeggiatorSpeedSlider.value);
+        updateArpeggiatorSpeed(bpm);
+    });
+} else {
+    console.error("Arpeggiator speed slider or BPM display not found!");
+}
+
+// Arpeggiator pattern input
+const arpeggiatorPatternInput = document.getElementById("arpeggiatorPattern");
+if (arpeggiatorPatternInput) {
+    arpeggiatorPatternInput.addEventListener("input", () => {
+        const pattern = arpeggiatorPatternInput.value;
+        // Validate pattern: should only contain digits 1-9
+        if (/^[1-9]+$/.test(pattern)) {
+            appState.arpeggiatorPattern = pattern;
+            console.log("Arpeggiator pattern updated:", appState.arpeggiatorPattern); // Debug log
+        } else {
+            console.warn("Invalid arpeggiator pattern. Use digits 1-9 only.");
+            arpeggiatorPatternInput.value = appState.arpeggiatorPattern; // Revert to last valid pattern
+        }
+    });
+} else {
+    console.error("Arpeggiator pattern input not found!");
 }
 
 // Keyboard shortcuts

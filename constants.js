@@ -17,7 +17,7 @@ const modeColors = {
     "arpeggiatorToggle": "#e3e1de"
 };
 
-// Note-to-file mapping (MIDI notes 0 to 87, but we'll only use 21 to 84 for A0 to C6)
+// Note-to-file mapping (A0 to C8 maps to 0.mp3 to 87.mp3)
 const noteToFileNumber = {
     "A0": 0, "A#0": 1, "B0": 2,
     "C1": 3, "C#1": 4, "D1": 5, "D#1": 6, "E1": 7, "F1": 8, "F#1": 9, "G1": 10, "G#1": 11, "A1": 12, "A#1": 13, "B1": 14,
@@ -54,6 +54,6 @@ const appState = {
     arpeggiatorOn: false,
     arpeggiatorTimeoutId: null,
     currentArpeggioNotes: [],
-    arpeggiatorSpeed: 120,
+    arpeggiatorSpeed: 250, // Default to 120 BPM (60,000 / (120 * 2) = 250 ms for eighth notes)
     arpeggiatorPattern: "12345345"
 };
