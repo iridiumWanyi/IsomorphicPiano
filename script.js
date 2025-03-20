@@ -5,7 +5,7 @@ const modeColors = {
     "major": "#ecd6da",
     "minor": "#dce5d2",
     "diminished": "#cedfdf",
-    "augmented": "#ebd3d3",
+    "augmented": "#cfd4e2",
     "domSeven": "#c9d5d3", // Lightened Morandi: muted teal
     "majSeven": "#e4d7d2", // Lightened Morandi: soft peach
     "minSeven": "#c0ccd5", // Lightened Morandi: pale blue-gray
@@ -33,15 +33,15 @@ function setActiveButton(clickedButton) {
 
 // Isomorphic keyboard layout
 const jankoLayout = [
-    ["G2","A2","B2","C#3", "D#3", "F3", "G3", "A3", "B3", "C#4", "D#4", "F4", "G4", "A4", "B4", "C#5", "D#5", "F5", "G5", "A5", "B5"],
-    ["G#2","A#2","C3", "D3", "E3", "F#3", "G#3", "A#3", "C4", "D4", "E4", "F#4", "G#4", "A#4", "C5", "D5", "E5", "F#5", "G#5", "A#5","C6"],
-    ["G2","A2","B2","C#3", "D#3", "F3", "G3", "A3", "B3", "C#4", "D#4", "F4", "G4", "A4", "B4", "C#5", "D#5", "F5", "G5", "A5", "B5"],
-    ["G#2","A#2","C3", "D3", "E3", "F#3", "G#3", "A#3", "C4", "D4", "E4", "F#4", "G#4", "A#4", "C5", "D5", "E5", "F#5", "G#5", "A#5","C6"]
+    ["F2", "G2","A2","B2","C#3", "D#3", "F3", "G3", "A3", "B3", "C#4", "D#4", "F4", "G4", "A4", "B4", "C#5", "D#5", "F5", "G5", "A5", "B5"],
+    ["F#2", "G#2","A#2","C3", "D3", "E3", "F#3", "G#3", "A#3", "C4", "D4", "E4", "F#4", "G#4", "A#4", "C5", "D5", "E5", "F#5", "G#5", "A#5","C6"],
+    ["F2", "G2","A2","B2","C#3", "D#3", "F3", "G3", "A3", "B3", "C#4", "D#4", "F4", "G4", "A4", "B4", "C#5", "D#5", "F5", "G5", "A5", "B5"],
+    ["F#2", "G#2","A#2","C3", "D3", "E3", "F#3", "G#3", "A#3", "C4", "D4", "E4", "F#4", "G#4", "A#4", "C5", "D5", "E5", "F#5", "G#5", "A#5","C6"]
 ];
 
 // Note-to-file mapping
 const noteToFileNumber = {
-    "G2": 22, "G#2": 23, "A2": 24, "A#2": 25, "B2": 26,
+    "F2": 20, "F#2": 21, "G2": 22, "G#2": 23, "A2": 24, "A#2": 25, "B2": 26,
     "C3": 27, "C#3": 28, "D3": 29, "D#3": 30, "E3": 31, "F3": 32,
     "F#3": 33, "G3": 34, "G#3": 35, "A3": 36, "A#3": 37, "B3": 38,
     "C4": 39, "C#4": 40, "D4": 41, "D#4": 42, "E4": 43, "F4": 44,

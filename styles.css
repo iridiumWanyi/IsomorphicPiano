@@ -46,6 +46,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-bottom: 40px; /* Increased space between keyboard and button */
 }
 
 .row {
@@ -55,6 +56,18 @@ body {
 
 .row:nth-child(odd) {
     margin-left: -25px;
+}
+
+.row.lower-section + .row.upper-section {
+    margin-top: 20px; /* Add space between the 2nd and 3rd rows in Whole Keyboard mode */
+}
+
+.row.lower-section:nth-child(1) {
+    margin-left: 25px; /* Shift the first row to the right in Whole Keyboard mode */
+}
+
+.row.upper-section:nth-child(3) {
+    margin-left: 25px; /* Shift the third row to the right in Whole Keyboard mode */
 }
 
 .key {
@@ -113,4 +126,14 @@ input[type="range"]::-moz-range-thumb {
     background: #535050;
     border-radius: 50%;
     cursor: pointer;
+}
+
+/* Style for the keyboard toggle button */
+#keyboardToggle {
+    width: 200px; /* Fixed width to make it more square */
+    height: 40px; /* Fixed height to make it more square */
+    border-radius: 8px; /* Slightly rounded corners for a rounded square */
+    background-color: #e3e1de; /* Match the Morandi color scheme */
+    color: #535050;
+    font-size: 14px;
 }
