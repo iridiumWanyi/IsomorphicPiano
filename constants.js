@@ -55,5 +55,6 @@ const appState = {
     arpeggiatorTimeoutId: null,
     currentArpeggioNotes: [],
     arpeggiatorSpeed: 250, // Default to 120 BPM (60,000 / (120 * 2) = 250 ms for eighth notes)
-    arpeggiatorPattern: "12345345"
+    arpeggiatorPattern: "12345345",
+    audioMap: {} // Map of note to preloaded Audio objects
 };

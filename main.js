@@ -14,6 +14,20 @@ function setActiveButton(clickedButton) {
     clickedButton.classList.add('active');
 }
 
+// Preload audio files
+appState.audioMap = {};
+function preloadAudioFiles() {
+    Object.keys(noteToFileNumber).forEach(note => {
+        const fileNumber = noteToFileNumber[note];
+        const audio = new Audio(`audio/${fileNumber}.mp3`);
+        appState.audioMap[note] = audio;
+        // Preload the audio by setting the source (browser will fetch it)
+        audio.preload = "auto";
+        audio.load();
+    });
+    console.log("Audio files preloaded:", Object.keys(appState.audioMap).length);
+}
+
 // Mode button listeners
 const modes = ["single", "octave", "major", "minor", "diminished", 
     "augmented", "domSeven", "majSeven", "minSeven", "susSeven",
@@ -137,8 +151,16 @@ document.addEventListener("keydown", (event) => {
         "3": "minor",
         "4": "diminished",
         "5": "augmented",
+        "6": "domSeven",
+        "7": "majSeven",
+        "8": "minSeven",
+        "9": "susSeven",
+        "q": "domNine",
+        "w": "majNine",
+        "e": "minNine",
+        "r": "susNine"
     };
-    const mode = keyMap[event.key];
+    const mode = keyMap[event.key.toLowerCase()];
     if (mode) {
         appState.currentMode = mode;
         const btn = document.getElementById(mode);
@@ -161,8 +183,9 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-// Initialize the keyboard
+// Initialize the keyboard and preload audio
 try {
+    preloadAudioFiles(); // Preload audio files before building the keyboard
     buildKeyboard(partialKeyboardLayout);
 } catch (error) {
     console.error("Failed to initialize keyboard:", error);
