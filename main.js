@@ -44,6 +44,7 @@ modes.forEach(mode => {
                 const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
                 if (arpeggiatorToggleBtn) {
                     arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (Off)`;
+                    arpeggiatorToggleBtn.style.backgroundColor = modeColors["arpeggiatorToggle"]; // Revert to default color
                 }
                 if (appState.arpeggiatorTimeoutId) {
                     clearTimeout(appState.arpeggiatorTimeoutId);
@@ -69,6 +70,7 @@ if (keyboardToggleBtn) {
                 const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
                 if (arpeggiatorToggleBtn) {
                     arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (Off)`;
+                    arpeggiatorToggleBtn.style.backgroundColor = modeColors["arpeggiatorToggle"]; // Revert to default color
                 }
                 if (appState.arpeggiatorTimeoutId) {
                     clearTimeout(appState.arpeggiatorTimeoutId);
@@ -90,6 +92,10 @@ if (arpeggiatorToggleBtn) {
     arpeggiatorToggleBtn.addEventListener("click", () => {
         appState.arpeggiatorOn = !appState.arpeggiatorOn;
         arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (${appState.arpeggiatorOn ? "On" : "Off"})`;
+        // Change the button color based on toggle state
+        arpeggiatorToggleBtn.style.backgroundColor = appState.arpeggiatorOn 
+            ? "#ffdab9" // Light orange when on
+            : modeColors["arpeggiatorToggle"]; // Revert to default color when off
         if (!appState.arpeggiatorOn && appState.arpeggiatorTimeoutId) {
             clearTimeout(appState.arpeggiatorTimeoutId);
             appState.arpeggiatorTimeoutId = null;
@@ -97,8 +103,6 @@ if (arpeggiatorToggleBtn) {
         }
         console.log("Arpeggiator toggled:", appState.arpeggiatorOn); // Debug log
     });
-} else {
-    console.error("Arpeggiator toggle button not found!");
 }
 
 // Arpeggiator speed slider (BPM)
@@ -172,6 +176,7 @@ document.addEventListener("keydown", (event) => {
                 const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
                 if (arpeggiatorToggleBtn) {
                     arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (Off)`;
+                    arpeggiatorToggleBtn.style.backgroundColor = modeColors["arpeggiatorToggle"]; // Revert to default color
                 }
                 if (appState.arpeggiatorTimeoutId) {
                     clearTimeout(appState.arpeggiatorTimeoutId);

@@ -36,17 +36,29 @@ body {
     border-radius: 10px;
     transform: scale(1);
     transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
 }
 
 .controls button.active {
     transform: scale(1.2);
 }
 
+.controls button .icon {
+    font-size: 1.2em;
+}
+
+.controls button .text {
+    font-size: 1em;
+}
+
 .keyboard {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin-bottom: 40px; /* Increased space between keyboard and button */
+    margin-bottom: 20px; /* Reduced to avoid excessive space */
 }
 
 .row {
@@ -54,7 +66,20 @@ body {
     gap: 5px;
 }
 
-.row:nth-child(odd) {
+/* In partial keyboard mode, shift the first and third rows (indices 0 and 2) to the left */
+.partial .row:nth-child(1),
+.partial .row:nth-child(3) {
+    margin-left: -25px; /* Shift left */
+}
+
+/* In partial keyboard mode, shift the second and fourth rows (indices 1 and 3) to the right */
+.partial .row:nth-child(2),
+.partial .row:nth-child(4) {
+    margin-left: 50px; /* Shift right */
+}
+
+/* In whole keyboard mode, shift odd-numbered rows to the left */
+.whole .row:nth-child(odd) {
     margin-left: -25px;
 }
 
@@ -143,6 +168,30 @@ input[type="text"]#arpeggiatorPattern {
     border-radius: 5px;
     font-size: 14px;
     color: #535050;
+}
+
+/* Style for the keyboard toggle container */
+.keyboard-toggle-container {
+    margin-top: 30px; /* Reduced space between keyboard and button */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 34px; /* Reserve space for the partial keyboard note to prevent layout shift */
+}
+
+/* Style for the partial keyboard note */
+.partial-keyboard-note {
+    color: #535050;
+    font-size: 14px;
+    margin-top: 10px;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease; /* Smooth transition for visibility */
+}
+
+/* Show the note in partial keyboard mode */
+.partial ~ .keyboard-toggle-container .partial-keyboard-note {
+    opacity: 1; /* Show the note */
 }
 
 /* Style for the keyboard toggle button */

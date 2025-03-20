@@ -11,33 +11,27 @@
         <h1>Isomorphic Piano Simulator</h1>
         <div class="control-row">
             <button id="single" class="active">
-                <span class="icon">♪</span>
-                <span class="text">Single</span>
+                <span class="text"> ♪ Single</span>
                 <div style="color: #666; font-size: 0.8em;">keyboard (`)</div>
             </button>
             <button id="octave">
-                <span class="icon">♪♪</span>
-                <span class="text">Octave</span>
+                <span class="text">♪♪ Octave</span>
                 <div style="color: #666; font-size: 0.8em;">keyboard (1)</div>
             </button>
             <button id="major">
-                <span class="icon" style="font-size: 0.8em;">△</span>
-                <span class="text">Major</span>
+                <span class="text">△ Major</span>
                 <div style="color: #666; font-size: 0.8em;">keyboard (2)</div>
             </button>
             <button id="minor">
-                <span class="icon">−</span>
-                <span class="text">Minor</span>
+                <span class="text">- Minor</span>
                 <div style="color: #666; font-size: 0.8em;">keyboard (3)</div>
             </button>
             <button id="diminished">
-                <span class="icon">○</span>
-                <span class="text">Diminished</span>
+                <span class="text">○ Diminished</span>
                 <div style="color: #666; font-size: 0.8em;">keyboard (4)</div>
             </button>
             <button id="augmented">
-                <span class="icon">+</span>
-                <span class="text">Augmented</span>
+                <span class="text">+ Augmented</span>
                 <div style="color: #666; font-size: 0.8em;">keyboard (5)</div>
             </button>
         </div>
@@ -73,15 +67,14 @@
             <span id="bpmDisplay">120 BPM</span>
         </div>
         <div class="control-row">
-            <label>Arpeggiator Pattern: <input type="text" id="arpeggiatorPattern" value="12345345"></label>
+            <label>Arpeggiator Pattern: <input type="text" id="arpeggiatorPattern" value="12345345"></label> <span class="text">(The default pattern reflects that of BWV 846.)</span>
         </div>
     </div>
-    <div id="keyboard"></div>
-
-    <span class="text">......</span>
-
+    <div id="keyboard" class="partial"></div>
     <div class="keyboard-toggle-container">
-        <button id="keyboardToggle">Switch to Whole Keyboard</button>
+        <button id="keyboardToggle">Switch to Whole Keyboard</button>         
+        <div class="partial-keyboard-note">(In partial keyboard mode, the two bars are duplicates.)</div>
+        <div class="whole-keyboard-note">...</div>
     </div>
 
     <script src="constants.js"></script>

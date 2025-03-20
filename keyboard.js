@@ -3,6 +3,10 @@ function buildKeyboard(layout) {
     keyboard.innerHTML = ""; // Clear existing keyboard
     appState.keyElements = [];
 
+    // Update the keyboard's class based on the current layout
+    keyboard.className = "keyboard";
+    keyboard.classList.add(appState.currentKeyboardLayout);
+
     layout.forEach((row, rowIndex) => {
         const rowDiv = document.createElement("div");
         rowDiv.className = `row ${rowIndex < 2 ? "lower-section" : "upper-section"}`;

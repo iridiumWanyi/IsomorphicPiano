@@ -6,14 +6,14 @@ const modeColors = {
     "minor": "#dce5d2",
     "diminished": "#cedfdf",
     "augmented": "#ebd3d3",
-    "domSeven": "#c9d5d3", // Lightened Morandi: muted teal
-    "majSeven": "#e4d7d2", // Lightened Morandi: soft peach
-    "minSeven": "#c0ccd5", // Lightened Morandi: pale blue-gray
-    "susSeven": "#d6d1cb", // Lightened Morandi: light taupe
-    "domNine": "#c6ccba", // Lightened Morandi: muted sage
-    "majNine": "#ded2d8", // Lightened Morandi: dusty rose
-    "minNine": "#c0ccc9", // Lightened Morandi: soft slate
-    "susNine": "#d4c9ba", // Lightened Morandi: warm beige
+    "domSeven": "#c9d5d3", 
+    "majSeven": "#e4d7d2", 
+    "minSeven": "#c0ccd5", 
+    "susSeven": "#d6d1cb", 
+    "domNine": "#c6ccba", 
+    "majNine": "#ded2d8", 
+    "minNine": "#c0ccc9", 
+    "susNine": "#d4c9ba", 
     "arpeggiatorToggle": "#e3e1de"
 };
 
