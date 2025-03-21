@@ -1,24 +1,14 @@
 const chordIntervals = {
-    "octave": [0, 12],
-    "major": [0, 4, 7],
-    "minor": [0, 3, 7],
-    "diminished": [0, 3, 6],
-    "augmented": [0, 4, 8],
-    "domSeven": [0, 4, 7, 10],
-    "majSeven": [0, 4, 7, 11],
-    "minSeven": [0, 3, 7, 10],
-    "susSeven": [0, 5, 7, 10],
-    "domNine": [0, 4, 7, 10, 14],
-    "majNine": [0, 4, 7, 11, 14],
-    "minNine": [0, 3, 7, 10, 14],
-    "susNine": [0, 5, 7, 10, 14]
+    "octave": [0, 12], "major": [0, 4, 7], "minor": [0, 3, 7], "diminished": [0, 3, 6],
+    "augmented": [0, 4, 8], "domSeven": [0, 4, 7, 10], "majSeven": [0, 4, 7, 11],
+    "minSeven": [0, 3, 7, 10], "susSeven": [0, 5, 7, 10], "domNine": [0, 4, 7, 10, 14],
+    "majNine": [0, 4, 7, 11, 14], "minNine": [0, 3, 7, 10, 14], "susNine": [0, 5, 7, 10, 14]
 };
 
 function buildKeyboard(layout) {
     const keyboard = document.getElementById("keyboard");
-    keyboard.innerHTML = ""; // Clear existing keyboard
+    keyboard.innerHTML = "";
     appState.keyElements = [];
-
     keyboard.className = "keyboard";
     keyboard.classList.add(appState.currentKeyboardLayout);
 
@@ -54,10 +44,10 @@ function buildKeyboard(layout) {
                 if (appState.currentMode !== "single") {
                     clearHoverHighlights();
                     const chordKeys = getChordKeys(note, rowIndex, colIndex);
-                    const highlightColor = modeColors[appState.currentMode] || "#d3d3d3"; // Fallback color
+                    const highlightColor = modeColors[appState.currentMode] || "#d3d3d3";
                     chordKeys.forEach(chordKey => {
                         chordKey.classList.add("hover-highlight");
-                        chordKey.style.backgroundColor = highlightColor; // Apply button color on hover
+                        chordKey.style.backgroundColor = highlightColor;
                     });
                 }
             });
@@ -66,9 +56,9 @@ function buildKeyboard(layout) {
                 if (appState.currentMode !== "single") {
                     const chordKeys = getChordKeys(note, rowIndex, colIndex);
                     chordKeys.forEach(chordKey => {
-                        if (!chordKey.classList.contains("active-highlight")) { // Preserve active state
+                        if (!chordKey.classList.contains("active-highlight")) {
                             chordKey.classList.remove("hover-highlight");
-                            chordKey.style.backgroundColor = chordKey.classList.contains("dark") ? "#555" : "#fff"; // Reset to default
+                            chordKey.style.backgroundColor = chordKey.classList.contains("dark") ? "#555" : "#fff";
                         }
                     });
                 }
@@ -84,8 +74,8 @@ function buildKeyboard(layout) {
 function clearHoverHighlights() {
     appState.keyElements.forEach(key => {
         key.classList.remove("hover-highlight");
-        if (!key.classList.contains("active-highlight")) { // Preserve active state
-            key.style.backgroundColor = key.classList.contains("dark") ? "#555" : "#fff"; // Reset to default
+        if (!key.classList.contains("active-highlight")) {
+            key.style.backgroundColor = key.classList.contains("dark") ? "#555" : "#fff";
         }
     });
 }
@@ -109,7 +99,7 @@ function findClosestKey(note, referenceRow, referenceCol) {
 }
 
 function getChordKeys(note, row, col) {
-    const intervals = chordIntervals[appState.currentMode] || [0];
+    const intervals = chordIntervals[appState.currentMode] || appState.userChordIntervals[appState.currentMode] || [0];
     const baseIndex = noteToChromaticIndex[note];
     const chordNotes = intervals.map(interval => {
         const targetIndex = baseIndex + interval;
@@ -133,15 +123,14 @@ function playNote(note, referenceRow, referenceCol) {
 
     const closestKey = findClosestKey(note, referenceRow, referenceCol);
     if (closestKey) {
-        const highlightColor = modeColors[appState.currentMode] || "#d3d3d3"; // Use mode color, fallback to default
-        closestKey.classList.add("active-highlight"); // New class for active state
-        closestKey.style.backgroundColor = highlightColor; // Apply button color
-        // Remove active highlight after a short delay to simulate key press
+        const highlightColor = modeColors[appState.currentMode] || "#d3d3d3";
+        closestKey.classList.add("active-highlight");
+        closestKey.style.backgroundColor = highlightColor;
         setTimeout(() => {
             closestKey.classList.remove("active-highlight");
             if (!closestKey.classList.contains("hover-highlight")) {
-                closestKey.style.backgroundColor = closestKey.classList.contains("dark") ? "#555" : "#fff"; // Reset
+                closestKey.style.backgroundColor = closestKey.classList.contains("dark") ? "#555" : "#fff";
             }
-        }, 300); // 300ms delay for visual feedback
+        }, 300);
     }
 }

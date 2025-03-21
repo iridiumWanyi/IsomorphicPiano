@@ -1,4 +1,3 @@
-// Apply colors to buttons
 Object.keys(modeColors).forEach(mode => {
     const btn = document.getElementById(mode);
     if (btn) {
@@ -30,7 +29,9 @@ function preloadAudioFiles() {
 
 const modes = ["single", "octave", "major", "minor", "diminished", 
     "augmented", "domSeven", "majSeven", "minSeven", "susSeven",
-    "domNine", "majNine", "minNine", "susNine"];
+    "domNine", "majNine", "minNine", "susNine",
+    "userChord1", "userChord2", "userChord3", "userChord4"];
+
 modes.forEach(mode => {
     const btn = document.getElementById(mode);
     if (btn) {
@@ -59,8 +60,6 @@ if (keyboardToggleBtn) {
             console.error("Error switching keyboard layout:", error);
         }
     });
-} else {
-    console.error("Keyboard toggle button not found!");
 }
 
 const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
@@ -68,13 +67,10 @@ if (arpeggiatorToggleBtn) {
     arpeggiatorToggleBtn.addEventListener("click", () => {
         appState.arpeggiatorOn = !appState.arpeggiatorOn;
         arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (${appState.arpeggiatorOn ? "On" : "Off"})`;
-        arpeggiatorToggleBtn.style.backgroundColor = appState.arpeggiatorOn 
-            ? "#ffdab9" 
-            : modeColors["arpeggiatorToggle"];
+        arpeggiatorToggleBtn.style.backgroundColor = appState.arpeggiatorOn ? "#e8d0d4" : modeColors["arpeggiatorToggle"];
         if (!appState.arpeggiatorOn && appState.arpeggiatorTimeoutId) {
             stopArpeggiator();
         }
-        console.log("Arpeggiator toggled:", appState.arpeggiatorOn);
     });
 }
 
@@ -85,16 +81,11 @@ if (arpeggiatorSpeedSlider && bpmDisplay) {
         const delayPerNote = 60000 / (bpm * 2);
         appState.arpeggiatorSpeed = delayPerNote;
         bpmDisplay.textContent = `${bpm} BPM`;
-        console.log(`Arpeggiator BPM: ${bpm}, Delay per note: ${delayPerNote} ms`);
     }
-
     updateArpeggiatorSpeed(parseInt(arpeggiatorSpeedSlider.value));
     arpeggiatorSpeedSlider.addEventListener("input", () => {
-        const bpm = parseInt(arpeggiatorSpeedSlider.value);
-        updateArpeggiatorSpeed(bpm);
+        updateArpeggiatorSpeed(parseInt(arpeggiatorSpeedSlider.value));
     });
-} else {
-    console.error("Arpeggiator speed slider or BPM display not found!");
 }
 
 const arpeggiatorPatternInput = document.getElementById("arpeggiatorPattern");
@@ -103,32 +94,32 @@ if (arpeggiatorPatternInput) {
         const pattern = arpeggiatorPatternInput.value;
         if (/^[1-9]+$/.test(pattern)) {
             appState.arpeggiatorPattern = pattern;
-            console.log("Arpeggiator pattern updated:", appState.arpeggiatorPattern);
         } else {
-            console.warn("Invalid arpeggiator pattern. Use digits 1-9 only.");
             arpeggiatorPatternInput.value = appState.arpeggiatorPattern;
         }
     });
-} else {
-    console.error("Arpeggiator pattern input not found!");
+}
+
+// Custom Chord Interval Inputs
+for (let i = 1; i <= 4; i++) {
+    const input = document.getElementById(`userChord${i}Intervals`);
+    if (input) {
+        input.addEventListener("input", () => {
+            const value = input.value;
+            if (/^(\d+,)*\d+$/.test(value)) {
+                appState.userChordIntervals[`userChord${i}`] = value.split(",").map(Number);
+            } else {
+                input.value = appState.userChordIntervals[`userChord${i}`].join(",");
+            }
+        });
+    }
 }
 
 document.addEventListener("keydown", (event) => {
     const keyMap = {
-        "`": "single",
-        "1": "octave",
-        "2": "major",
-        "3": "minor",
-        "4": "diminished",
-        "5": "augmented",
-        "6": "domSeven",
-        "7": "majSeven",
-        "8": "minSeven",
-        "9": "susSeven",
-        "q": "domNine",
-        "w": "majNine",
-        "e": "minNine",
-        "r": "susNine"
+        "`": "single", "1": "octave", "2": "major", "3": "minor", "4": "diminished",
+        "5": "augmented", "6": "domSeven", "7": "majSeven", "8": "minSeven", "9": "susSeven",
+        "q": "domNine", "w": "majNine", "e": "minNine", "r": "susNine"
     };
     const mode = keyMap[event.key.toLowerCase()];
     if (mode) {

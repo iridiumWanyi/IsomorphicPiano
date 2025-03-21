@@ -7,72 +7,61 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="controls">
+    <div class="controls-container">
         <h1>Isomorphic Piano Simulator</h1>
-        <div class="control-row">
-            <button id="single" class="active">
-                <span class="text"> ♪ Single</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (`)</div>
-            </button>
-            <button id="octave">
-                <span class="text">♪♪ Octave</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (1)</div>
-            </button>
-            <button id="major">
-                <span class="text">△ Major</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (2)</div>
-            </button>
-            <button id="minor">
-                <span class="text">- Minor</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (3)</div>
-            </button>
-            <button id="diminished">
-                <span class="text">○ Diminished</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (4)</div>
-            </button>
-            <button id="augmented">
-                <span class="text">+ Augmented</span>
-                <div style="color: #666; font-size: 0.8em;">keyboard (5)</div>
-            </button>
-        </div>
-        <div class="control-row">
-            <button id="domSeven">
-                <span class="text">Dom 7</span>
-            </button>
-            <button id="majSeven">
-                <span class="text">Maj 7</span>
-            </button>
-            <button id="minSeven">
-                <span class="text">Min 7</span>
-            </button>
-            <button id="susSeven">
-                <span class="text">Sus 7</span>
-            </button>
-            <button id="domNine">
-                <span class="text">Dom 9</span>
-            </button>
-            <button id="majNine">
-                <span class="text">Maj 9</span>
-            </button>
-            <button id="minNine">
-                <span class="text">Min 9</span>
-            </button>
-            <button id="susNine">
-                <span class="text">Sus 9</span>
-            </button>
-        </div>
-        <div class="control-row">
-            <button id="arpeggiatorToggle">Toggle Arpeggiator (Off)</button>
-            <label>Arpeggiator BPM: <input type="range" id="arpeggiatorSpeed" min="40" max="200" value="120"></label>
-            <span id="bpmDisplay">120 BPM</span>
-        </div>
-        <div class="control-row">
-            <label>Arpeggiator Pattern: <input type="text" id="arpeggiatorPattern" value="12345345"></label> <span class="text">(The default pattern reflects that of BWV 846.)</span>
+        <div class="controls">
+            <div class="main-controls">
+                <div class="control-row">
+                    <button id="single" class="active"><span class="text"> ♪ Single</span><div style="color: #666; font-size: 0.8em;">keyboard (`)</div></button>
+                    <button id="octave"><span class="text">♪♪ Octave</span><div style="color: #666; font-size: 0.8em;">keyboard (1)</div></button>
+                    <button id="major"><span class="text">△ Major</span><div style="color: #666; font-size: 0.8em;">keyboard (2)</div></button>
+                    <button id="minor"><span class="text">- Minor</span><div style="color: #666; font-size: 0.8em;">keyboard (3)</div></button>
+                    <button id="diminished"><span class="text">○ Diminished</span><div style="color: #666; font-size: 0.8em;">keyboard (4)</div></button>
+                    <button id="augmented"><span class="text">+ Augmented</span><div style="color: #666; font-size: 0.8em;">keyboard (5)</div></button>
+                </div>
+                <div class="control-row">
+                    <button id="domSeven"><span class="text">Dom 7</span></button>
+                    <button id="majSeven"><span class="text">Maj 7</span></button>
+                    <button id="minSeven"><span class="text">Min 7</span></button>
+                    <button id="susSeven"><span class="text">Sus 7</span></button>
+                    <button id="domNine"><span class="text">Dom 9</span></button>
+                    <button id="majNine"><span class="text">Maj 9</span></button>
+                    <button id="minNine"><span class="text">Min 9</span></button>
+                    <button id="susNine"><span class="text">Sus 9</span></button>
+                </div>
+                <div class="control-row">
+                    <button id="arpeggiatorToggle">Toggle Arpeggiator (Off)</button>
+                    <label>Arpeggiator BPM: <input type="range" id="arpeggiatorSpeed" min="40" max="200" value="120"></label>
+                    <span id="bpmDisplay">120 BPM</span>
+                </div>
+                <div class="control-row">
+                    <label>Arpeggiator Pattern: <input type="text" id="arpeggiatorPattern" value="12345345"></label>
+                    <span class="text"  style="font-size: 14px; color: #4b4847;">(The default pattern reflects that of BWV 846.)</span>
+                </div>
+            </div>
+            <div class="custom-controls">
+                <div class="control-row">
+                    <button id="userChord1"><span class="text">Custom Chord 1</span></button>
+                    <label>Intervals: <input type="text" id="userChord1Intervals" value="0,2,4,7" placeholder="e.g., 0,2,4,7"></label>
+                </div>
+                <div class="control-row">
+                    <button id="userChord2"><span class="text">Custom Chord 2</span></button>
+                    <label>Intervals: <input type="text" id="userChord2Intervals" value="0,3,6,9" placeholder="e.g., 0,3,6,9"></label>
+                </div>
+                <div class="control-row">
+                    <button id="userChord3"><span class="text">Custom Chord 3</span></button>
+                    <label>Intervals: <input type="text" id="userChord3Intervals" value="0,4,8" placeholder="e.g., 0,4,8"></label>
+                </div>
+                <div class="control-row">
+                    <button id="userChord4"><span class="text">Custom Chord 4</span></button>
+                    <label>Intervals: <input type="text" id="userChord4Intervals" value="0,5,7" placeholder="e.g., 0,5,7"></label>
+                </div>
+            </div>
         </div>
     </div>
     <div id="keyboard" class="partial"></div>
     <div class="keyboard-toggle-container">
-        <button id="keyboardToggle">Switch to Whole Keyboard</button>         
+        <button id="keyboardToggle">Switch to Whole Keyboard</button>
         <div class="partial-keyboard-note">(In partial keyboard mode, the two bars are duplicates.)</div>
         <div class="whole-keyboard-note">...</div>
     </div>
@@ -81,6 +70,5 @@
     <script src="keyboard.js"></script>
     <script src="arpeggiator.js"></script>
     <script src="main.js"></script>
-    <!-- Removed: <script src="chords.js"></script> -->
 </body>
 </html>

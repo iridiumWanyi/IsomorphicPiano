@@ -9,11 +9,28 @@ body {
     background-color: #ddd9d6;
 }
 
-.controls {
+.controls-container {
+    width: 100%;
+    max-width: 1200px; /* Adjust as needed */
+    text-align: center;
+}
+
+.controls-container h1 {
     margin-bottom: 20px;
+    color: #535050;
+}
+
+.controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px; /* Space between main and custom controls */
+    margin-bottom: 20px;
+}
+
+.main-controls, .custom-controls {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 10px;
 }
 
@@ -21,12 +38,6 @@ body {
     display: flex;
     gap: 15px;
     align-items: center;
-}
-
-.controls h1 {
-    text-align: center;
-    margin-bottom: 20px;
-    color: #535050;
 }
 
 .controls button {
@@ -105,7 +116,7 @@ body {
 }
 
 .key.white {
-    background-color: #fff;
+    background-color: #f4f2f0;
 }
 
 .key.white:hover, .key.white.hover-highlight {
@@ -155,7 +166,7 @@ input[type="range"]::-moz-range-thumb {
     font-size: 14px;
 }
 
-input[type="text"]#arpeggiatorPattern {
+input[type="text"] {
     width: 100px;
     padding: 5px;
     border: 1px solid #ccc;
@@ -192,4 +203,8 @@ input[type="text"]#arpeggiatorPattern {
     background-color: #e3e1de;
     color: #535050;
     font-size: 14px;
+}
+
+#keyboard {
+    min-height: 200px;
 }

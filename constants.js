@@ -1,23 +1,26 @@
-// Mode colors with lightened Morandi colors for 7th and 9th chords
+// Mode colors with lightened Morandi colors
 const modeColors = {
     "single": "#e3e1de",
     "octave": "#ebe3cd",
-    "major": "#ecd6da",
+    "major": "#ebd3d3",
     "minor": "#dce5d2",
     "diminished": "#cedfdf",
-    "augmented": "#ebd3d3",
-    "domSeven": "#c9d5d3", 
-    "majSeven": "#e4d7d2", 
-    "minSeven": "#c0ccd5", 
-    "susSeven": "#d6d1cb", 
-    "domNine": "#c6ccba", 
-    "majNine": "#ded2d8", 
-    "minNine": "#c0ccc9", 
-    "susNine": "#d4c9ba", 
-    "arpeggiatorToggle": "#e3e1de"
+    "augmented": "#d7cfdd",
+    "domSeven": "#c9d5d3",
+    "majSeven": "#e4d7d2",
+    "minSeven": "#c0ccd5",
+    "susSeven": "#d6d1cb",
+    "domNine": "#c6ccba",
+    "majNine": "#ded2d8",
+    "minNine": "#c0ccc9",
+    "susNine": "#d4c9ba",
+    "arpeggiatorToggle": "#e3e1de",
+    "userChord1": "#eeeae6",
+    "userChord2": "#eeeae6",
+    "userChord3": "#eeeae6",
+    "userChord4": "#eeeae6"
 };
 
-// Note-to-file mapping (A0 to C8 maps to 0.mp3 to 87.mp3)
 const noteToFileNumber = {
     "A0": 0, "A#0": 1, "B0": 2,
     "C1": 3, "C#1": 4, "D1": 5, "D#1": 6, "E1": 7, "F1": 8, "F#1": 9, "G1": 10, "G#1": 11, "A1": 12, "A#1": 13, "B1": 14,
@@ -30,7 +33,6 @@ const noteToFileNumber = {
     "C8": 87
 };
 
-// Keyboard layouts
 const partialKeyboardLayout = [
     ["F2", "G2", "A2", "B2", "C#3", "D#3", "F3", "G3", "A3", "B3", "C#4", "D#4", "F4", "G4", "A4", "B4", "C#5", "D#5", "F5", "G5", "A5", "B5"],
     ["F#2", "G#2", "A#2", "C3", "D3", "E3", "F#3", "G#3", "A#3", "C4", "D4", "E4", "F#4", "G#4", "A#4", "C5", "D5", "E5", "F#5", "G#5", "A#5", "C6"],
@@ -45,7 +47,6 @@ const wholeKeyboardLayout = [
     ["F4", "G4", "A4", "B4", "C#5", "D#5", "F5", "G5", "A5", "B5", "C#6", "D#6", "F6", "G6", "A6", "B6", "C#7", "D#7", "F7", "G7", "A7", "B7"]
 ];
 
-// Shared state
 const appState = {
     currentMode: "single",
     keyElements: [],
@@ -54,12 +55,17 @@ const appState = {
     arpeggiatorOn: false,
     arpeggiatorTimeoutId: null,
     currentArpeggioNotes: [],
-    arpeggiatorSpeed: 250, // Default to 120 BPM (60,000 / (120 * 2) = 250 ms for eighth notes)
+    arpeggiatorSpeed: 250,
     arpeggiatorPattern: "12345345",
-    audioMap: {} // Map of note to preloaded Audio objects
+    audioMap: {},
+    userChordIntervals: {
+        "userChord1": [0, 2, 4, 7],
+        "userChord2": [0, 3, 6, 9],
+        "userChord3": [0, 4, 8],
+        "userChord4": [0, 5, 7]
+    }
 };
 
-// Chromatic scale for note indexing (A0 = 0, ..., C8 = 87)
 const chromaticScale = [
     "A0", "A#0", "B0",
     "C1", "C#1", "D1", "D#1", "E1", "F1", "F#1", "G1", "G#1", "A1", "A#1", "B1",
@@ -72,7 +78,6 @@ const chromaticScale = [
     "C8"
 ];
 
-// Map notes to their chromatic index (A0 = 0, ..., C8 = 87)
 const noteToChromaticIndex = {};
 chromaticScale.forEach((note, index) => {
     noteToChromaticIndex[note] = index;
