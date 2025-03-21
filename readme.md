@@ -1,11 +1,11 @@
-Isomorphic Piano Simulator
+##Isomorphic Piano Simulator
 A web-based isomorphic keyboard simulator that allows users to play notes, chords, and arpeggios with customizable layouts and user-defined chords. 
 
-Features
-Isomorphic(Janko) Keyboard Layout
-Chord Modes: Play predefined chords (e.g., Major, Minor, Dominant 7, Major 9) with a single key press.
-Custom Chords: Define up to four custom chords with user-specified intervals (e.g., "0,4,7" is the major chord).
-Arpeggiator: Toggle an arpeggiator with adjustable BPM and pattern (e.g., "12345345" inspired by BWV 846).
+##Features
+- Isomorphic(Janko) Keyboard Layout
+- Chord Modes: Play predefined chords (e.g., Major, Minor, Dominant 7, Major 9) with a single key press.
+- Custom Chords: Define up to four custom chords with user-specified intervals (e.g., "0,4,7" is the major chord).
+- Arpeggiator: Toggle an arpeggiator with adjustable BPM and pattern (e.g., "12345345" inspired by BWV 846).
 
 ## Prerequisites
 - A modern web browser (e.g., Chrome, Firefox).
@@ -16,11 +16,6 @@ Arpeggiator: Toggle an arpeggiator with adjustable BPM and pattern (e.g., "12345
 
 ## Usage
  **Launch**: Open `index.html` via your local server.
-
-## Customization
-- **Add Chords**: Edit `chords.js`’s `getChordKeys` function to define new chord patterns.
-- **Styling**: Modify `styles.css` for colors, key sizes, or layout tweaks.
-- **Audio**: Replace `audio/` files with your own, ensuring filenames match `noteToFileNumber`.
 
 ## Notes
 - The Isomorphic (Janko) layout’s unique geometry affects chord calculations—verify intervals in `chords.js` if chords sound off.
