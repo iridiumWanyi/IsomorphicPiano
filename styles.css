@@ -58,7 +58,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin-bottom: 20px; /* Reduced to avoid excessive space */
+    margin-bottom: 20px;
 }
 
 .row {
@@ -66,33 +66,30 @@ body {
     gap: 5px;
 }
 
-/* In partial keyboard mode, shift the first and third rows (indices 0 and 2) to the left */
 .partial .row:nth-child(1),
 .partial .row:nth-child(3) {
-    margin-left: -25px; /* Shift left */
+    margin-left: -25px;
 }
 
-/* In partial keyboard mode, shift the second and fourth rows (indices 1 and 3) to the right */
 .partial .row:nth-child(2),
 .partial .row:nth-child(4) {
-    margin-left: 50px; /* Shift right */
+    margin-left: 50px;
 }
 
-/* In whole keyboard mode, shift odd-numbered rows to the left */
 .whole .row:nth-child(odd) {
     margin-left: -25px;
 }
 
 .row.lower-section + .row.upper-section {
-    margin-top: 20px; /* Add space between the 2nd and 3rd rows in Whole Keyboard mode */
+    margin-top: 20px;
 }
 
 .row.lower-section:nth-child(1) {
-    margin-left: 25px; /* Shift the first row to the right in Whole Keyboard mode */
+    margin-left: 25px;
 }
 
 .row.upper-section:nth-child(3) {
-    margin-left: 25px; /* Shift the third row to the right in Whole Keyboard mode */
+    margin-left: 25px;
 }
 
 .key {
@@ -124,7 +121,6 @@ body {
     background-color: #888;
 }
 
-/* Style for the arpeggiator speed slider */
 input[type="range"] {
     width: 150px;
     -webkit-appearance: none;
@@ -153,14 +149,12 @@ input[type="range"]::-moz-range-thumb {
     cursor: pointer;
 }
 
-/* Style for the BPM display */
 #bpmDisplay {
     margin-left: 10px;
     color: #535050;
     font-size: 14px;
 }
 
-/* Style for the arpeggiator pattern input */
 input[type="text"]#arpeggiatorPattern {
     width: 100px;
     padding: 5px;
@@ -170,36 +164,32 @@ input[type="text"]#arpeggiatorPattern {
     color: #535050;
 }
 
-/* Style for the keyboard toggle container */
 .keyboard-toggle-container {
-    margin-top: 30px; /* Reduced space between keyboard and button */
+    margin-top: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    min-height: 34px; /* Reserve space for the partial keyboard note to prevent layout shift */
+    min-height: 34px;
 }
 
-/* Style for the partial keyboard note */
 .partial-keyboard-note {
     color: #535050;
     font-size: 14px;
     margin-top: 10px;
-    opacity: 0; /* Hidden by default */
-    transition: opacity 0.3s ease; /* Smooth transition for visibility */
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-/* Show the note in partial keyboard mode */
 .partial ~ .keyboard-toggle-container .partial-keyboard-note {
-    opacity: 1; /* Show the note */
+    opacity: 1;
 }
 
-/* Style for the keyboard toggle button */
 #keyboardToggle {
-    width: 200px; /* Fixed width to make it more square */
-    height: 40px; /* Fixed height to make it more square */
-    border-radius: 8px; /* Slightly rounded corners for a rounded square */
-    background-color: #e3e1de; /* Match the Morandi color scheme */
+    width: 200px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #e3e1de;
     color: #535050;
     font-size: 14px;
 }
