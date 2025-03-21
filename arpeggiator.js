@@ -71,15 +71,19 @@ function playArpeggio(chordKeys, referenceRow, referenceCol) {
             return;
         }
 
+        // Stop if we've played all notes in the pattern
+        if (currentStep >= appState.currentArpeggioNotes.length) {
+            appState.arpeggiatorTimeoutId = null;
+            appState.currentArpeggioNotes = [];
+            return;
+        }
+
         // Play the current note
         const key = appState.currentArpeggioNotes[currentStep];
         playNote(key.dataset.note, referenceRow, referenceCol);
 
-        // Move to the next step, looping back to 0 if at the end
+        // Move to the next step
         currentStep++;
-        if (currentStep >= appState.currentArpeggioNotes.length) {
-            currentStep = 0; // Loop back to the start of the pattern
-        }
 
         // Schedule the next note
         appState.arpeggiatorTimeoutId = setTimeout(playNextNote, appState.arpeggiatorSpeed);
