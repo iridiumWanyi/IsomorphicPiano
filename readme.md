@@ -1,7 +1,7 @@
-##Isomorphic Piano Simulator
+## Isomorphic Piano Simulator
 A web-based isomorphic keyboard simulator that allows users to play notes, chords, and arpeggios with customizable layouts and user-defined chords. 
 
-##Features
+## Features
 - Isomorphic(Janko) Keyboard Layout
 - Chord Modes: Play predefined chords (e.g., Major, Minor, Dominant 7, Major 9) with a single key press.
 - Custom Chords: Define up to four custom chords with user-specified intervals (e.g., "0,4,7" is the major chord).
