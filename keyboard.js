@@ -24,7 +24,7 @@ function buildKeyboard(layout) {
             key.dataset.col = colIndex;
 
             key.addEventListener("click", () => {
-                appState.lastClickedPosition = { row: rowIndex, col: colIndex };
+                appState.lastClickedPosition = { row: rowIndex, colIndex };
                 clearHoverHighlights();
                 if (appState.currentMode === "single") {
                     playNote(note, rowIndex, colIndex);
@@ -33,13 +33,44 @@ function buildKeyboard(layout) {
                     if (appState.arpeggiatorOn) {
                         playArpeggio(chordKeys, rowIndex, colIndex);
                     } else {
+                        // Prepare all audio elements for the chord
+                        const audioElements = chordKeys.map(chordKey => {
+                            const note = chordKey.dataset.note;
+                            const originalAudio = appState.audioMap[note];
+                            if (!originalAudio) {
+                                console.error(`Audio for note ${note} not found in audioMap`);
+                                return null;
+                            }
+                            // Clone the audio element for independent playback
+                            const audio = new Audio(originalAudio.src);
+                            audio.currentTime = 0; // Reset position (optional for new instance)
+                            return audio;
+                        }).filter(Boolean);
+            
+                        // Trigger all audio playbacks together
+                        audioElements.forEach(audio => {
+                            audio.play().catch(error => console.error(`Error playing audio:`, error));
+                        });
+            
+                        // Handle key highlighting for all chord keys
                         chordKeys.forEach(chordKey => {
-                            playNote(chordKey.dataset.note, rowIndex, colIndex);
+                            const closestKey = findClosestKey(chordKey.dataset.note, rowIndex, colIndex);
+                            if (closestKey) {
+                                const highlightColor = modeColors[appState.currentMode] || "#d3d3d3";
+                                closestKey.classList.add("active-highlight");
+                                closestKey.style.backgroundColor = highlightColor;
+                                setTimeout(() => {
+                                    closestKey.classList.remove("active-highlight");
+                                    if (!closestKey.classList.contains("hover-highlight")) {
+                                        closestKey.style.backgroundColor = closestKey.classList.contains("dark") ? "#555" : "#fff";
+                                    }
+                                }, 300);
+                            }
                         });
                     }
                 }
             });
-
+            
             key.addEventListener("mouseover", () => {
                 if (appState.currentMode !== "single") {
                     clearHoverHighlights();
