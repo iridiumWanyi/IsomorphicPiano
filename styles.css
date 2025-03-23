@@ -91,8 +91,14 @@ body {
     margin-left: -25px;
 }
 
+/* Existing rule causing the space */
 .row.lower-section + .row.upper-section {
     margin-top: 10px;
+}
+
+/* Override in partial mode to remove the space */
+#keyboard.partial .row.lower-section + .row.upper-section {
+    margin-top: 0 !important;
 }
 
 .row.lower-section:nth-child(1) {

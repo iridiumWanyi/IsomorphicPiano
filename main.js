@@ -95,7 +95,6 @@ const arpeggiatorPatternInput = document.getElementById("arpeggiatorPattern");
 if (arpeggiatorPatternInput) {
     arpeggiatorPatternInput.addEventListener("input", () => {
         const pattern = arpeggiatorPatternInput.value;
-        // Updated regex: numbers from 1 to 88, optional trailing comma
         if (/^([1-9]|[1-7][0-9]|8[0-8])(,([1-9]|[1-7][0-9]|8[0-8]))*,?$/.test(pattern)) {
             appState.arpeggiatorPattern = pattern;
         } else {
@@ -122,7 +121,7 @@ for (let i = 1; i <= 4; i++) {
     if (input) {
         input.addEventListener("input", () => {
             const value = input.value;
-            // Ensure this regex allows 0-12 and optional trailing comma
+            // Allow numbers 0-12 with optional trailing comma
             if (/^(1[0-2]|[0-9])(,(1[0-2]|[0-9]))*,?$/.test(value)) {
                 const intervals = value.split(",").filter(x => x !== "").map(Number);
                 appState.userChordIntervals[`userChord${i}`] = intervals;
