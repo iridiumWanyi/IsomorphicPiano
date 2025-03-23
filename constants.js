@@ -56,7 +56,7 @@ const appState = {
     arpeggiatorTimeoutId: null,
     currentArpeggioNotes: [],
     arpeggiatorSpeed: 250,
-    arpeggiatorPattern: "12345345",
+    arpeggiatorPattern: "1,2,3,4,5,3,4,5",  // Changed from "12345345"
     audioMap: {},
     userChordIntervals: {
         "userChord1": [0, 2, 4, 7],

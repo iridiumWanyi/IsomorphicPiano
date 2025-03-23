@@ -2,7 +2,10 @@ function stopArpeggiator() {
     appState.arpeggiatorOn = false;
     const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
     if (arpeggiatorToggleBtn) {
-        arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (Off)`;
+        const textSpan = arpeggiatorToggleBtn.querySelector('.text');
+        if (textSpan) {
+            textSpan.textContent = `Toggle Arpeggiator (Off)`;
+        }
         arpeggiatorToggleBtn.style.backgroundColor = modeColors["arpeggiatorToggle"];
     }
     if (appState.arpeggiatorTimeoutId) {
@@ -26,7 +29,7 @@ function playArpeggio(chordKeys, referenceRow, referenceCol) {
         return indexA - indexB;
     });
 
-    const pattern = appState.arpeggiatorPattern.split("").map(Number);
+    const pattern = appState.arpeggiatorPattern.split(",").filter(x => x !== "").map(Number);
     const maxPatternIndex = Math.max(...pattern);
     const baseNotes = sortedKeys.map(k => k.dataset.note);
     const extendedNotes = [];
@@ -45,7 +48,12 @@ function playArpeggio(chordKeys, referenceRow, referenceCol) {
         }
     }
 
-    const noteIndices = pattern.map(p => p - 1);
+    let noteIndices = pattern.map(p => p - 1);
+    // Reverse the pattern if direction is "down"
+    if (appState.arpeggiatorDirection === "down") {
+        noteIndices = noteIndices.reverse();
+    }
+
     appState.currentArpeggioNotes = noteIndices.map(index => {
         const note = extendedNotes[index];
         const closestKey = findClosestKey(note, referenceRow, referenceCol);

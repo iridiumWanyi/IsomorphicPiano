@@ -11,7 +11,7 @@ body {
 
 .controls-container {
     width: 100%;
-    max-width: 1200px; /* Adjust as needed */
+    max-width: 1200px;
     text-align: center;
 }
 
@@ -24,7 +24,7 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 30px; /* Space between main and custom controls */
+    gap: 40px; /* Space between main and custom controls */
     margin-bottom: 20px;
 }
 
@@ -92,7 +92,7 @@ body {
 }
 
 .row.lower-section + .row.upper-section {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .row.lower-section:nth-child(1) {
@@ -208,3 +208,4 @@ input[type="text"] {
 #keyboard {
     min-height: 200px;
 }
+

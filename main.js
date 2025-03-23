@@ -66,7 +66,10 @@ const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
 if (arpeggiatorToggleBtn) {
     arpeggiatorToggleBtn.addEventListener("click", () => {
         appState.arpeggiatorOn = !appState.arpeggiatorOn;
-        arpeggiatorToggleBtn.textContent = `Toggle Arpeggiator (${appState.arpeggiatorOn ? "On" : "Off"})`;
+        const textSpan = arpeggiatorToggleBtn.querySelector('.text');
+        if (textSpan) {
+            textSpan.textContent = `Toggle Arpeggiator (${appState.arpeggiatorOn ? "On" : "Off"})`;
+        }
         arpeggiatorToggleBtn.style.backgroundColor = appState.arpeggiatorOn ? "#e8d0d4" : modeColors["arpeggiatorToggle"];
         if (!appState.arpeggiatorOn && appState.arpeggiatorTimeoutId) {
             stopArpeggiator();
@@ -92,10 +95,23 @@ const arpeggiatorPatternInput = document.getElementById("arpeggiatorPattern");
 if (arpeggiatorPatternInput) {
     arpeggiatorPatternInput.addEventListener("input", () => {
         const pattern = arpeggiatorPatternInput.value;
-        if (/^[1-9]+$/.test(pattern)) {
+        // Updated regex: numbers from 1 to 88, optional trailing comma
+        if (/^([1-9]|[1-7][0-9]|8[0-8])(,([1-9]|[1-7][0-9]|8[0-8]))*,?$/.test(pattern)) {
             appState.arpeggiatorPattern = pattern;
         } else {
             arpeggiatorPatternInput.value = appState.arpeggiatorPattern;
+        }
+    });
+}
+
+const arpeggiatorDirectionBtn = document.getElementById("arpeggiatorDirection");
+if (arpeggiatorDirectionBtn) {
+    appState.arpeggiatorDirection = "up"; // Default direction
+    arpeggiatorDirectionBtn.addEventListener("click", () => {
+        appState.arpeggiatorDirection = appState.arpeggiatorDirection === "up" ? "down" : "up";
+        arpeggiatorDirectionBtn.textContent = appState.arpeggiatorDirection === "up" ? "↑" : "↓";
+        if (appState.arpeggiatorOn && appState.arpeggiatorTimeoutId) {
+            stopArpeggiator(); // Stop current arpeggio to restart with new direction
         }
     });
 }
@@ -106,8 +122,10 @@ for (let i = 1; i <= 4; i++) {
     if (input) {
         input.addEventListener("input", () => {
             const value = input.value;
-            if (/^(\d+,)*\d+$/.test(value)) {
-                appState.userChordIntervals[`userChord${i}`] = value.split(",").map(Number);
+            // Ensure this regex allows 0-12 and optional trailing comma
+            if (/^(1[0-2]|[0-9])(,(1[0-2]|[0-9]))*,?$/.test(value)) {
+                const intervals = value.split(",").filter(x => x !== "").map(Number);
+                appState.userChordIntervals[`userChord${i}`] = intervals;
             } else {
                 input.value = appState.userChordIntervals[`userChord${i}`].join(",");
             }
@@ -115,21 +133,108 @@ for (let i = 1; i <= 4; i++) {
     }
 }
 
+// Arpeggiator Pattern Help Button
+const arpeggiatorHelpBtn = document.getElementById("arpeggiatorHelp");
+if (arpeggiatorHelpBtn) {
+    let popup = null;
+    arpeggiatorHelpBtn.addEventListener("mouseover", () => {
+        if (!popup) {
+            popup = document.createElement("div");
+            popup.className = "popup";
+            popup.textContent = "Enter a sequence of numbers separated by commas to specify the order in which chord notes should be played. Numbers exceeding the count of notes in the chord will trigger the corresponding notes in higher octaves. The default pattern reflects that of BWV 846.";
+            document.body.appendChild(popup);
+            
+            const rect = arpeggiatorHelpBtn.getBoundingClientRect();
+            popup.style.left = `${rect.left}px`;
+            popup.style.top = `${rect.bottom + 5}px`;
+            
+            popup.style.display = "block";
+        }
+    });
+    arpeggiatorHelpBtn.addEventListener("mouseout", () => {
+        if (popup) {
+            popup.style.display = "none";
+            document.body.removeChild(popup);
+            popup = null;
+        }
+    });
+}
+
+// Custom Chord Help Button
+const customChordHelpBtn = document.getElementById("customChordHelp");
+if (customChordHelpBtn) {
+    let popup = null;
+    customChordHelpBtn.addEventListener("mouseover", () => {
+        if (!popup) {
+            popup = document.createElement("div");
+            popup.className = "popup";
+            popup.textContent = "Enter a sequence of numbers from 0 to 11, separated by commas, to define the intervals of your custom chord relative to the root note (0). For example, '0,4,7' creates a major triad.";
+            document.body.appendChild(popup);
+            
+            const rect = customChordHelpBtn.getBoundingClientRect();
+            popup.style.left = `${rect.left}px`;
+            popup.style.top = `${rect.bottom + 5}px`;
+            
+            popup.style.display = "block";
+        }
+    });
+    customChordHelpBtn.addEventListener("mouseout", () => {
+        if (popup) {
+            popup.style.display = "none";
+            document.body.removeChild(popup);
+            popup = null;
+        }
+    });
+}
+
 document.addEventListener("keydown", (event) => {
+    if (document.activeElement.tagName === "INPUT") return;
+
     const keyMap = {
-        "`": "single", "1": "octave", "2": "major", "3": "minor", "4": "diminished",
-        "5": "augmented", "6": "domSeven", "7": "majSeven", "8": "minSeven", "9": "susSeven",
-        "q": "domNine", "w": "majNine", "e": "minNine", "r": "susNine"
+        "`": "single", 
+        "1": "octave", 
+        "2": "major", 
+        "3": "minor", 
+        "4": "diminished",
+        "5": "augmented", 
+        "6": "domSeven", 
+        "7": "majSeven", 
+        "8": "minSeven", 
+        "9": "susSeven",
+        "q": "domNine", 
+        "w": "majNine", 
+        "e": "minNine", 
+        "r": "susNine",
+        "a": "arpeggiatorToggle",
+        "w": "arpeggiatorUp",   // Added for up direction
+        "s": "arpeggiatorDown"  // Added for down direction
     };
     const mode = keyMap[event.key.toLowerCase()];
     if (mode) {
-        appState.currentMode = mode;
-        const btn = document.getElementById(mode);
-        if (btn) {
-            setActiveButton(btn);
-            clearHoverHighlights();
-            if (appState.currentMode === "single" && appState.arpeggiatorOn) {
-                stopArpeggiator();
+        if (mode === "arpeggiatorToggle") {
+            appState.arpeggiatorOn = !appState.arpeggiatorOn;
+            const arpeggiatorToggleBtn = document.getElementById("arpeggiatorToggle");
+            if (arpeggiatorToggleBtn) {
+                const textSpan = arpeggiatorToggleBtn.querySelector('.text');
+                if (textSpan) textSpan.textContent = `Toggle Arpeggiator (${appState.arpeggiatorOn ? "On" : "Off"})`;
+                arpeggiatorToggleBtn.style.backgroundColor = appState.arpeggiatorOn ? "#e8d0d4" : modeColors["arpeggiatorToggle"];
+            }
+            if (!appState.arpeggiatorOn && appState.arpeggiatorTimeoutId) stopArpeggiator();
+        } else if (mode === "arpeggiatorUp") {
+            appState.arpeggiatorDirection = "up";
+            arpeggiatorDirectionBtn.textContent = "↑";
+            if (appState.arpeggiatorOn && appState.arpeggiatorTimeoutId) stopArpeggiator();
+        } else if (mode === "arpeggiatorDown") {
+            appState.arpeggiatorDirection = "down";
+            arpeggiatorDirectionBtn.textContent = "↓";
+            if (appState.arpeggiatorOn && appState.arpeggiatorTimeoutId) stopArpeggiator();
+        } else {
+            appState.currentMode = mode;
+            const btn = document.getElementById(mode);
+            if (btn) {
+                setActiveButton(btn);
+                clearHoverHighlights();
+                if (appState.currentMode === "single" && appState.arpeggiatorOn) stopArpeggiator();
             }
         }
     }

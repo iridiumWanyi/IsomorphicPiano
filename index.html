@@ -5,6 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Isomorphic Piano Simulator</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .popup {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 1000;
+            max-width: 300px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .help-button {
+            margin-left: 0px;
+            width: 6px;
+            height: 14px;
+            font-size: 12px;
+            line-height: 0px;
+            text-align: center;
+            border: 1px solid #666;
+            background: #e3e1df;
+            color: #666;
+            cursor: help;
+            padding: 0;
+            border-radius: 0;
+        }
+        .direction-button {
+            margin-right: 0px;
+            width: 12px;
+            height: 20px;
+            font-size: 14px;
+            line-height: 0px;
+            text-align: center;
+            border: 1px solid #666;
+            background: #fff;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 1px;
+        }
+    </style>
+    
 </head>
 <body>
     <div class="controls-container">
@@ -30,19 +70,22 @@
                     <button id="susNine"><span class="text">Sus 9</span></button>
                 </div>
                 <div class="control-row">
-                    <button id="arpeggiatorToggle">Toggle Arpeggiator (Off)</button>
+                    <button id="arpeggiatorToggle"><span class="text">Toggle Arpeggiator (Off)</span><div style="color: #666; font-size: 0.8em;">keyboard (a)</div></button>
                     <label>Arpeggiator BPM: <input type="range" id="arpeggiatorSpeed" min="40" max="200" value="120"></label>
                     <span id="bpmDisplay">120 BPM</span>
                 </div>
                 <div class="control-row">
-                    <label>Arpeggiator Pattern: <input type="text" id="arpeggiatorPattern" value="12345345"></label>
-                    <span class="text"  style="font-size: 14px; color: #4b4847;">(The default pattern reflects that of BWV 846.)</span>
+                    <label>Arpeggiator Pattern:</label>
+                        <button class="direction-button" id="arpeggiatorDirection">↑</button>
+                        <input type="text" id="arpeggiatorPattern" value="1,2,3,4,5,3,4,5">
+                    <button class="help-button" id="arpeggiatorHelp">?</button>
                 </div>
             </div>
             <div class="custom-controls">
                 <div class="control-row">
                     <button id="userChord1"><span class="text">Custom Chord 1</span></button>
                     <label>Intervals: <input type="text" id="userChord1Intervals" value="0,2,4,7" placeholder="e.g., 0,2,4,7"></label>
+                    <button class="help-button" id="customChordHelp">?</button>
                 </div>
                 <div class="control-row">
                     <button id="userChord2"><span class="text">Custom Chord 2</span></button>
@@ -70,5 +113,5 @@
     <script src="keyboard.js"></script>
     <script src="arpeggiator.js"></script>
     <script src="main.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'924b0bb1886bbd32',t:'MTc0MjcwMjY3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
