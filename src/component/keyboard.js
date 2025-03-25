@@ -18,26 +18,12 @@ const chordIntervals = {
   susNine: [0, 5, 7, 10, 14],
 };
 
-// 模拟 chromaticScale（音符到索引的映射）
-const chromaticScale = [
-  'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2',
-  'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3',
-  'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
-  'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5',
-  'C6',
-];
 
-const noteToChromaticIndex = chromaticScale.reduce((acc, note, index) => {
+const noteToChromaticIndex = constants.chromaticScale.reduce((acc, note, index) => {
   acc[note] = index;
   return acc;
 }, {});
 
-const modeColors = {
-  single: '#d3d3d3',
-  major: '#ff9999',
-  minor: '#99ccff',
-  // 可根据需要扩展其他模式的颜色
-};
 
 const Keyboard = ({ layout }) => {
   // 状态管理
@@ -88,7 +74,7 @@ const Keyboard = ({ layout }) => {
     const baseIndex = noteToChromaticIndex[note];
     const chordNotes = intervals.map((interval) => {
       const targetIndex = baseIndex + interval;
-      return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : note;
+      return targetIndex < constants.chromaticScale.length ? constants.chromaticScale[targetIndex] : note;
     });
 
     return chordNotes
@@ -104,7 +90,7 @@ const Keyboard = ({ layout }) => {
 
     const closestKey = findClosestKey(note, referenceRow, referenceCol);
     if (closestKey) {
-      const highlightColor = modeColors[currentMode] || '#d3d3d3';
+      const highlightColor = constants.modeColors[currentMode] || '#d3d3d3';
       closestKey.classList.add('active-highlight');
       closestKey.style.backgroundColor = highlightColor;
       setTimeout(() => {
@@ -140,7 +126,7 @@ const Keyboard = ({ layout }) => {
     chordKeys.forEach((chordKey) => {
       const closestKey = findClosestKey(chordKey.dataset.note, row, col);
       if (closestKey) {
-        const highlightColor = modeColors[currentMode] || '#d3d3d3';
+        const highlightColor = constants.modeColors[currentMode] || '#d3d3d3';
         closestKey.classList.add('active-highlight');
         closestKey.style.backgroundColor = highlightColor;
         setTimeout(() => {
@@ -169,7 +155,7 @@ const Keyboard = ({ layout }) => {
     if (currentMode !== 'single') {
       clearHoverHighlights();
       const chordKeys = getChordKeys(note, rowIndex, colIndex);
-      const highlightColor = modeColors[currentMode] || '#d3d3d3';
+      const highlightColor = constants.modeColors[currentMode] || '#d3d3d3';
       chordKeys.forEach((chordKey) => {
         chordKey.classList.add('hover-highlight');
         chordKey.style.backgroundColor = highlightColor;

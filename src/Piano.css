@@ -60,3 +60,16 @@
 .partial ~ .keyboard-toggle-container .partial-keyboard-note {
     opacity: 1;
 }
+
+#keyboardToggle {
+    width: 200px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #e3e1de;
+    color: #535050;
+    font-size: 14px;
+}
+
+#keyboard {
+    min-height: 200px;
+}

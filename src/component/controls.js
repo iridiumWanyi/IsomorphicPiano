@@ -48,11 +48,7 @@ const Controls = () => {
       <div className="controls">
         <div className="main-controls">
           <div className="control-row">
-            <button
-              id="single"
-              className="active"
-              onClick={() => handleModeClick('single')}
-            >
+            <button id="single" className="active" onClick={() => handleModeClick('single')}>
               <span className="text">♪ Single</span>
               <div style={{ color: '#666', fontSize: '0.8em' }}>keyboard (`)</div>
             </button>

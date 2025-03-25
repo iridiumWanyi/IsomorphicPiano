@@ -12,8 +12,8 @@ const Piano = () => {
       <h1>Isomorphic Piano Simulator</h1>
       <Controls />
       <Keyboard layout={currentKeyboardLayout} />
-      <div class="keyboard-toggle-container">
-        <button onClick={() => setCurrentKeyboardLayout(currentKeyboardLayout === 'partial' ? 'whole' : 'partial')}>Switch Keyboard</button>
+      <div className="keyboard-toggle-container">
+        <button id="keyboardToggle" onClick={() => setCurrentKeyboardLayout(currentKeyboardLayout === 'partial' ? 'whole' : 'partial')}>Switch Keyboard</button>
       </div>
     </div>
   );
