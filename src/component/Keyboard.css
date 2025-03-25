@@ -1,0 +1,77 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.row {
+  display: flex;
+  gap: 5px;
+}
+
+.partial .row:nth-child(1),
+.partial .row:nth-child(3) {
+    margin-left: -25px;
+}
+
+.partial .row:nth-child(2),
+.partial .row:nth-child(4) {
+    margin-left: 50px;
+}
+
+.whole .row:nth-child(odd) {
+    margin-left: -25px;
+}
+
+/* Existing rule causing the space */
+.row.lower-section + .row.upper-section {
+    margin-top: 10px;
+}
+
+/* Override in partial mode to remove the space */
+#keyboard.partial .row.lower-section + .row.upper-section {
+    margin-top: 0 !important;
+}
+
+.row.lower-section:nth-child(1) {
+    margin-left: 25px;
+}
+
+.row.upper-section:nth-child(3) {
+    margin-left: 25px;
+}
+
+.key {
+  width: 48px;
+  height: 72px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.white {
+  background-color: #fff;
+}
+
+.dark {
+  background-color: #555;
+  color: #fff;
+}
+
+.hover-highlight {
+  opacity: 0.8;
+}
+
+.active-highlight {
+  opacity: 1;
+}
+
+.lower-section,
+.upper-section {
+  flex: 1;
+}

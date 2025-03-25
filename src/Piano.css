@@ -1,0 +1,46 @@
+.popup {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000;
+    max-width: 300px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.help-button {
+    margin-left: 0px;
+    width: 6px;
+    height: 14px;
+    font-size: 12px;
+    line-height: 0px;
+    text-align: center;
+    border: 1px solid #666;
+    background: #e3e1df;
+    color: #666;
+    cursor: help;
+    padding: 0;
+    border-radius: 0;
+}
+.direction-button {
+    margin-right: 0px;
+    width: 12px;
+    height: 20px;
+    font-size: 14px;
+    line-height: 0px;
+    text-align: center;
+    border: 1px solid #666;
+    background: #fff;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 1px;
+}
+
+.keyboard-toggle-container {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 34px;
+}

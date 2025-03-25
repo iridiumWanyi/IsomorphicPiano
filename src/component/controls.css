@@ -1,0 +1,59 @@
+.controls-container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .main-controls,
+  .custom-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .control-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  button {
+    padding: 8px 16px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 4px;
+  }
+  
+  button.active {
+    background-color: #ddd;
+  }
+  
+  .text {
+    font-weight: bold;
+  }
+  
+  .direction-button,
+  .help-button {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+  }
+  
+  input[type='range'],
+  input[type='text'] {
+    padding: 5px;
+  }
+  
+  label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
