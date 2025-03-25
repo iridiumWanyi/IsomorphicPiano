@@ -16,7 +16,7 @@ function preloadAudioFiles() {
     try {
         Object.keys(noteToFileNumber).forEach(note => {
             const fileNumber = noteToFileNumber[note];
-            const audio = new Audio(`audio/${fileNumber}.mp3`);
+            const audio = new Audio(`../public/sounds/${fileNumber}.mp3`);
             appState.audioMap[note] = audio;
             audio.preload = "auto";
             audio.load();

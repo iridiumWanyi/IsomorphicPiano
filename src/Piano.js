@@ -8,7 +8,8 @@ const Piano = () => {
   const [currentKeyboardLayout, setCurrentKeyboardLayout] = useState("partial"); // 键盘样式
 
   return (
-    <div id="piano-container">
+    <div className="piano-container">
+      <h1>Isomorphic Piano Simulator</h1>
       <Controls />
       <Keyboard layout={currentKeyboardLayout} />
       <div class="keyboard-toggle-container">

@@ -1,5 +1,5 @@
 {
-  "name": "piano-demo",
+  "name": "isomorphic-piano",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

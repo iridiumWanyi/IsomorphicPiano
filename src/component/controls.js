@@ -44,7 +44,7 @@ const Controls = () => {
 
   return (
     <div className="controls-container">
-      <h1>Isomorphic Piano Simulator</h1>
+
       <div className="controls">
         <div className="main-controls">
           <div className="control-row">

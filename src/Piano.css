@@ -36,6 +36,10 @@
     border-radius: 1px;
 }
 
+.piano-container {
+    text-align: center;
+}
+
 .keyboard-toggle-container {
     margin-top: 30px;
     display: flex;
@@ -43,4 +47,16 @@
     align-items: center;
     gap: 10px;
     min-height: 34px;
+}
+
+.partial-keyboard-note {
+    color: #535050;
+    font-size: 14px;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.partial ~ .keyboard-toggle-container .partial-keyboard-note {
+    opacity: 1;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Keyboard.css';
+import './keyboard.css';
 import * as constants from './constants.js'
 
 const chordIntervals = {
@@ -26,6 +26,7 @@ const chromaticScale = [
   'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5',
   'C6',
 ];
+
 const noteToChromaticIndex = chromaticScale.reduce((acc, note, index) => {
   acc[note] = index;
   return acc;
@@ -98,11 +99,6 @@ const Keyboard = ({ layout }) => {
   // 播放单音
   const playNote = (note, referenceRow, referenceCol) => {
     const audio = audioMap[note];
-    if (!audio) {
-      console.error(`Audio for note ${note} not found in audioMap`);
-      return;
-    }
-
     audio.currentTime = 0;
     audio.play().catch((error) => console.error(`Error playing note ${note}:`, error));
 
@@ -157,7 +153,7 @@ const Keyboard = ({ layout }) => {
     });
   };
 
-  // 处理点击事件
+  // 点击事件
   const handleKeyClick = (note, rowIndex, colIndex) => {
     setLastClickedPosition({ row: rowIndex, col: colIndex });
     clearHoverHighlights();
@@ -168,7 +164,7 @@ const Keyboard = ({ layout }) => {
     }
   };
 
-  // 处理鼠标悬浮
+  // 鼠标悬浮
   const handleKeyMouseOver = (note, rowIndex, colIndex) => {
     if (currentMode !== 'single') {
       clearHoverHighlights();
