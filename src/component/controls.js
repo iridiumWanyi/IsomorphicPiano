@@ -1,11 +1,13 @@
 
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './controls.css';
+import * as constants from './constants.js'
 
 const Controls = () => {
   // 状态管理
+  const [activeMode, setActiveMode] = useState("single");
   const [arpeggiatorSpeed, setArpeggiatorSpeed] = useState(120); // BPM
   const [arpeggiatorPattern, setArpeggiatorPattern] = useState('1,2,3,4,5,3,4,5');
   const [arpeggiatorOn, setArpeggiatorOn] = useState(false);
@@ -15,6 +17,16 @@ const Controls = () => {
     chord3: '0,4,8',
     chord4: '0,5,7',
   });
+
+  // 在组件挂载时设置按钮颜色
+  useEffect(() => {
+    Object.keys(constants.modeColors).forEach((mode) => {
+      const btn = document.getElementById(mode);
+      if (btn) {
+        btn.style.backgroundColor = constants.modeColors[mode];
+      }
+    });
+  }, []);
 
   // 处理输入框变化
   const handleArpeggiatorSpeedChange = (e) => {
@@ -32,10 +44,22 @@ const Controls = () => {
     }));
   };
 
+  const setActiveButton = (clickedButton) => {
+    document.querySelectorAll('.controls button').forEach(button => {
+        button.classList.remove('active');
+    });
+    clickedButton.classList.add('active');
+}
+
   // 模式切换
   const handleModeClick = (mode) => {
     console.log(`Selected mode: ${mode}`);
-    // 这里可以添加切换模式的逻辑，例如与 Keyboard 组件联动
+    setActiveMode(mode);
+    // setActiveButton(btn);
+    // clearHoverHighlights();
+    // if (currentMode === "single" && appState.arpeggiatorOn) {
+    //     stopArpeggiator();
+    // }
   };
 
   const toggleArpeggiator = () => {
@@ -48,27 +72,27 @@ const Controls = () => {
       <div className="controls">
         <div className="main-controls">
           <div className="control-row">
-            <button id="single" className="active" onClick={() => handleModeClick('single')}>
+            <button id="single" className={activeMode === 'single' ? 'active' : ''} onClick={() => handleModeClick('single')}>
               <span className="text">♪ Single</span>
               <div style={{ color: '#666', fontSize: '0.8em' }}>keyboard (`)</div>
             </button>
-            <button id="octave" onClick={() => handleModeClick('octave')}>
+            <button id="octave" className={activeMode === 'octave' ? 'active' : ''} onClick={() => handleModeClick('octave')}>
               <span className="text">♪♪ Octave</span>
               <div style={{ color: '#666', fontSize: '0.8em' }}>keyboard (1)</div>
             </button>
-            <button id="major" onClick={() => handleModeClick('major')}>
+            <button id="major" className={activeMode === 'major' ? 'active' : ''} onClick={() => handleModeClick('major')}>
               <span className="text">△ Major</span>
               <div style={{ color: '#666', fontSize: '0.8em' }}>keyboard (2)</div>
             </button>
-            <button id="minor" onClick={() => handleModeClick('minor')}>
+            <button id="minor" className={activeMode === 'minor' ? 'active' : ''} onClick={() => handleModeClick('minor')}>
               <span className="text">- Minor</span>
               <div style={{ color: '#666', fontSize: '0.8em' }}>keyboard (3)</div>
             </button>
-            <button id="diminished" onClick={() => handleModeClick('diminished')}>
+            <button id="diminished" className={activeMode === 'diminished' ? 'active' : ''} onClick={() => handleModeClick('diminished')}>
               <span className="text">○ Diminished</span>
               <div style={{ color: '#666', fontSize: '0.8em' }}>keyboard (4)</div>
             </button>
-            <button id="augmented" onClick={() => handleModeClick('augmented')}>
+            <button id="augmented" className={activeMode === 'augmented' ? 'active' : ''} onClick={() => handleModeClick('augmented')}>
               <span className="text">+ Augmented</span>
               <div style={{ color: '#666', fontSize: '0.8em' }}>keyboard (5)</div>
             </button>
