@@ -9,6 +9,7 @@
   display: flex;
   gap: 10px;
   align-items: center;
+  justify-content: center;
 }
 
 .custom-chord-row {
@@ -83,5 +84,71 @@
 }
 
 .keyboard-toggle {
-  background-color: #e3e1de; /* Match single mode color */
+  background-color: #eeeae6; /* Match single mode color */
+}
+
+.help-arpeggiatorPattern {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: help;
+  margin-left: 5px;
+  font-size: 14px;
+  position: relative;
+}
+
+.help-arpeggiatorPattern:hover::after,
+.help-arpeggiatorPattern:focus::after {
+  content: "Enter a sequence of numbers separated by commas to specify the order in which chord notes should be played. Numbers exceeding the count of notes in the chord will trigger the corresponding notes in higher octaves. The default pattern reflects that of BWV 846."; /* Placeholder text */
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 300px; /* Fixed width to trigger wrapping */
+  white-space: normal; /* Allow text to wrap */
+  text-align: center; /* Optional: center the wrapped text */
+  z-index: 10;
+}
+
+.help-customChords {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: help;
+  margin-left: 5px;
+  font-size: 14px;
+  position: relative;
+}
+
+.help-customChords:hover::after,
+.help-customChords:focus::after {
+  content: "Enter a sequence of numbers from 0 to 11, separated by commas, to define the intervals of your custom chord relative to the root note (0). For example, '0,4,7' creates a major triad."; /* Placeholder text */
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 200px; /* Fixed width to trigger wrapping */
+  white-space: normal; /* Allow text to wrap */
+  text-align: center; /* Optional: center the wrapped text */
+  z-index: 10;
 }

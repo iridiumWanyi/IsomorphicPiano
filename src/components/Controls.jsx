@@ -94,6 +94,7 @@ function Controls({
           </button>
 
         ))}
+        <span className="help-customChords">?</span>
       </div>
 
       
@@ -113,6 +114,7 @@ function Controls({
             onChange={handlePatternChange}
             placeholder="e.g., 1,2,3"
           />
+          <span className="help-arpeggiatorPattern">?</span>
         </label>
         <button
           onClick={() => setArpeggiatorDirection(arpeggiatorDirection === 'up' ? 'down' : 'up')}

@@ -37,7 +37,7 @@ export const wholeKeyboardLayout = [
 ];
 
 export const modeColors = {
-  "single": "#e3e1de",
+  "single": "#eeeae6",
   "octave": "#ebe3cd",
   "major": "#ebd3d3",
   "minor": "#dce5d2",
@@ -51,7 +51,7 @@ export const modeColors = {
   "majNine": "#ded2d8",
   "minNine": "#c0ccc9",
   "susNine": "#d4c9ba",
-  "arpeggiatorToggle": "#e3e1de",
+  "arpeggiatorToggle": "#eeeae6",
   "custom1": "#eeeae6",
   "custom2": "#eeeae6",
   "custom3": "#eeeae6",

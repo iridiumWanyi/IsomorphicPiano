@@ -4,7 +4,7 @@ import { partialKeyboardLayout, wholeKeyboardLayout, chromaticScale, modeColors 
 import './Keyboard.css';
 
 function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiatorBpm, arpeggiatorDirection, customChords, keyboardMode }) {
-  const [activeNotes, setActiveNotes] = useState([]); // Array to track all pressed notes
+  const [activeNotes, setActiveNotes] = useState([]);
   const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
 
   const getChordNotes = (baseNote) => {
@@ -54,18 +54,18 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiat
     }
   };
 
-  const playArpeggio = (baseNotes) => {
-    const allChordNotes = baseNotes.map(baseNote => getChordNotes(baseNote)).flat();
-    if (allChordNotes.length === 0) return;
+  const playArpeggio = (baseNote) => {
+    const baseChordNotes = getChordNotes(baseNote);
+    if (baseChordNotes.length === 0) return;
 
     const pattern = arpeggiatorPattern.split(',').filter(x => x !== '').map(Number);
     const maxPatternIndex = Math.max(...pattern);
     const extendedNotes = [];
 
     for (let i = 0; i < maxPatternIndex; i++) {
-      const noteIndex = i % allChordNotes.length;
-      const octaveShift = Math.floor(i / allChordNotes.length);
-      const baseNoteIndex = chromaticScale.indexOf(allChordNotes[noteIndex]);
+      const noteIndex = i % baseChordNotes.length;
+      const octaveShift = Math.floor(i / baseChordNotes.length);
+      const baseNoteIndex = chromaticScale.indexOf(baseChordNotes[noteIndex]);
       const targetIndex = baseNoteIndex + (octaveShift * 12);
       extendedNotes[i] = targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
     }
@@ -80,11 +80,14 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiat
 
     const playNextNote = () => {
       if (step >= arpeggioNotes.length || !arpeggiatorOn) {
-        setActiveNotes([]);
+        setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n))); // Clear only arpeggio notes
         return;
       }
       const note = arpeggioNotes[step];
-      setActiveNotes([note]);
+      setActiveNotes(prev => {
+        const newNotes = prev.filter(n => !arpeggioNotes.includes(n) || n === note); // Keep other pressed notes
+        return [...newNotes, note];
+      });
       playNote(note);
       step++;
       setTimeout(playNextNote, delay);
@@ -99,7 +102,7 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiat
       setActiveNotes(prev => [...prev, ...chordNotes.filter(n => !prev.includes(n))]);
       
       if (arpeggiatorOn) {
-        playArpeggio([note]); // For simplicity, arpeggio uses the latest note
+        playArpeggio(note);
       } else {
         chordNotes.forEach(playNote);
       }
@@ -107,7 +110,8 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiat
   };
 
   const handleNoteRelease = (note) => {
-    setActiveNotes(prev => prev.filter(n => n !== note));
+    const chordNotes = getChordNotes(note);
+    setActiveNotes(prev => prev.filter(n => !chordNotes.includes(n)));
   };
 
   return (
