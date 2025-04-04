@@ -3,10 +3,12 @@ import { modeColors } from '../constants';
 import './Controls.css';
 
 const row1Modes = [
-  { id: 'major', label: 'Major' },
-  { id: 'minor', label: 'Minor' },
-  { id: 'diminished', label: 'Diminished' },
-  { id: 'augmented', label: 'Augmented' },
+  { id: 'single', label: 'Single' },
+  { id: 'octave', label: 'Octave' },
+  { id: 'major', label: 'Δ Major' },
+  { id: 'minor', label: '- Minor' },
+  { id: 'diminished', label: 'o Diminished' },
+  { id: 'augmented', label: '+ Augmented' },
 ];
 
 const row2Modes = [
@@ -20,10 +22,6 @@ const row2Modes = [
   { id: 'susNine', label: 'Sus 9' },
 ];
 
-const row3Modes = [
-  { id: 'single', label: 'Single' },
-  { id: 'octave', label: 'Octave' },
-];
 
 const customChordIds = ['custom1', 'custom2', 'custom3', 'custom4'];
 
@@ -79,16 +77,6 @@ function Controls({
         ))}
       </div>
       <div className="control-row">
-        {row3Modes.map(m => (
-          <button
-            key={m.id}
-            className={mode === m.id ? 'active' : ''}
-            onClick={() => setMode(m.id)}
-            style={{ backgroundColor: modeColors[m.id] }}
-          >
-            {m.label}
-          </button>
-        ))}
         <button
           className={arpeggiatorOn ? 'active' : ''}
           onClick={() => setArpeggiatorOn(!arpeggiatorOn)}
@@ -115,8 +103,8 @@ function Controls({
           BPM:
           <input
             type="range"
-            min="40"
-            max="240"
+            min="60"
+            max="480"
             value={arpeggiatorBpm}
             onChange={(e) => setArpeggiatorBpm(Number(e.target.value))}
           />

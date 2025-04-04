@@ -13,14 +13,14 @@ function App() {
   const [mode, setMode] = useState('single');
   const [audioMap, setAudioMap] = useState({});
   const [arpeggiatorOn, setArpeggiatorOn] = useState(false);
-  const [arpeggiatorPattern, setArpeggiatorPattern] = useState('1,2,3');
-  const [arpeggiatorBpm, setArpeggiatorBpm] = useState(120);
+  const [arpeggiatorPattern, setArpeggiatorPattern] = useState('1,2,3,4,5,3,4,5');
+  const [arpeggiatorBpm, setArpeggiatorBpm] = useState(240);
   const [arpeggiatorDirection, setArpeggiatorDirection] = useState('up');
   const [customChords, setCustomChords] = useState({
     custom1: [0, 4, 7],
     custom2: [0, 3, 7],
-    custom3: [0, 3, 6],
-    custom4: [0, 4, 8],
+    custom3: [0, 3, 6, 9],
+    custom4: [0, 4, 8, 10],
   });
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
   const [keyboardMode, setKeyboardMode] = useState('partial'); // New state: 'partial' or 'whole'
