@@ -1,0 +1,22 @@
+.key {
+  width: 48px;
+  height: 70px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.key.white {
+  background-color: #f5f3f3;
+  border: none
+}
+
+.key.dark {
+  background-color: #555;
+  color: #ffffff;
+}
+
+/* .active class no longer needed here; handled via inline style */

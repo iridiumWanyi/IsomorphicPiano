@@ -17,15 +17,11 @@ A web-based isomorphic keyboard simulator that allows users to play notes, chord
 ## Usage
  **Launch**: Open `index.html` via your local server.
 
-## Notes
-- The Isomorphic (Janko) layout’s unique geometry affects chord calculations—verify intervals in `chords.js` if chords sound off.
-- Audio files must be present and correctly named, or playback will fail silently (check console for errors).
 
 ## Contributing
 Feel free to fork, tweak, or submit pull requests! Ideas:
-- More chord types (e.g., ninth).
-- Adjustable tempo for music samples.
-- Visual chord diagrams on hover.
+- More chord types.
+- More apeggiator patterns.
 
 ## License
 This project is open-source under the MIT License—use it freely, just credit Ivanium where appropriate.

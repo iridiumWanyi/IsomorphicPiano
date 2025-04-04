@@ -1,0 +1,20 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.row {
+  display: flex;
+  gap: 5px;
+}
+
+.row:nth-child(1),
+.row:nth-child(3) {
+  margin-left: -28px;
+}
+
+.row:nth-child(2),
+.row:nth-child(4) {
+  margin-left: 0;
+}
