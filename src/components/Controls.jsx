@@ -96,7 +96,6 @@ function Controls({
         ))}
       </div>
 
-
       
       <div className="control-row">
         <button
@@ -133,12 +132,16 @@ function Controls({
           <span>{arpeggiatorBpm}</span>
         </label>
         
-        <button
+      </div>
+      
+      <div className="control-row">
+      <button
           onClick={() => setKeyboardMode(keyboardMode === 'partial' ? 'whole' : 'partial')}
           className="keyboard-toggle"
         >
           {keyboardMode === 'partial' ? 'Switch to Whole Keyboard' : 'Switch to Partial Keyboard'}
         </button>
+
       </div>
 
     </div>

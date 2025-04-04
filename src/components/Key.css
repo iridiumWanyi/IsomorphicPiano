@@ -7,6 +7,10 @@
   align-items: center;
   cursor: pointer;
   transition: background-color 0.2s;
+  user-select: none; /* Prevent text selection on click */
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE/Edge */
+  touch-action: manipulation; /* Improve touch responsiveness */
 }
 
 .key.white {
@@ -17,4 +21,8 @@
 .key.dark {
   background-color: #555;
   color: #fff;
+}
+
+.key.active {
+  transform: scale(0.95); /* Slight press effect */
 }
