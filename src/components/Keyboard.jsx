@@ -29,7 +29,7 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiat
       case 'minSeven':
         return [baseNote, chromaticScale[baseIndex + 3], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10]].filter(n => n);
       case 'susFour':
-        return [baseNote, chromaticScale[baseIndex + 5], chromaticScale[baseIndex + 7]].filter(n => n);
+        return [baseNote, chromaticScale[baseIndex + 5], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10]].filter(n => n);
       case 'domNine':
         return [baseNote, chromaticScale[baseIndex + 4], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10], chromaticScale[baseIndex + 14]].filter(n => n);
       case 'majNine':
@@ -37,7 +37,7 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiat
       case 'minNine':
         return [baseNote, chromaticScale[baseIndex + 3], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10], chromaticScale[baseIndex + 14]].filter(n => n);
       case 'susNine':
-        return [baseNote, chromaticScale[baseIndex + 5], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 14]].filter(n => n);
+        return [baseNote, chromaticScale[baseIndex + 5], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10], chromaticScale[baseIndex + 14]].filter(n => n);
       case 'single':
         return [baseNote];
       case 'custom1':

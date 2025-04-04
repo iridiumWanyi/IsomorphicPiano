@@ -37,11 +37,20 @@
   gap: 5px;
 }
 
-.controls input[type="text"] {
+.controls input[type="text_short"] {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 50px;
+  margin-left: 5px;
+}
+
+.controls input[type="text_long"] {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100px;
+  margin-left: 5px;
 }
 
 .controls input[type="range"] {
@@ -66,11 +75,11 @@
 }
 
 .direction-button.up {
-  background-color: #e0e8e0;
+  background-color: #e8d7d7;
 }
 
 .direction-button.down {
-  background-color: #e8e0e0;
+  background-color: #cfdae2;
 }
 
 .keyboard-toggle {

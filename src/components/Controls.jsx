@@ -12,14 +12,14 @@ const row1Modes = [
 ];
 
 const row2Modes = [
-  { id: 'domSeven', label: 'Dom 7' },
-  { id: 'majSeven', label: 'Maj 7' },
-  { id: 'minSeven', label: 'Min 7' },
-  { id: 'susFour', label: 'Sus 4' },
-  { id: 'domNine', label: 'Dom 9' },
-  { id: 'majNine', label: 'Maj 9' },
-  { id: 'minNine', label: 'Min 9' },
-  { id: 'susNine', label: 'Sus 9' },
+  { id: 'domSeven', label: 'Dom7' },
+  { id: 'majSeven', label: 'Maj7' },
+  { id: 'minSeven', label: 'Min7' },
+  { id: 'susFour', label: 'Sus4' },
+  { id: 'domNine', label: 'Dom9' },
+  { id: 'majNine', label: 'Maj9' },
+  { id: 'minNine', label: 'Min9' },
+  { id: 'susNine', label: 'Sus9' },
 ];
 
 
@@ -76,6 +76,28 @@ function Controls({
           </button>
         ))}
       </div>
+
+      <div className="control-row custom-chord-row">
+        {customChordIds.map(id => (
+          <button
+          className={mode === id ? 'active' : ''}
+          onClick={() => setMode(id)}
+          style={{ backgroundColor: modeColors[id] }}
+        >
+          {id.replace('custom', 'Custom')}
+          <input
+            type="text_short"
+            value={customChords[id].join(',')}
+            onChange={(e) => handleCustomChordChange(id, e.target.value)}
+            placeholder="e.g., 0,4,7"
+          />
+          </button>
+
+        ))}
+      </div>
+
+
+      
       <div className="control-row">
         <button
           className={arpeggiatorOn ? 'active' : ''}
@@ -87,7 +109,7 @@ function Controls({
         <label>
           Pattern:
           <input
-            type="text"
+            type="text_long"
             value={arpeggiatorPattern}
             onChange={handlePatternChange}
             placeholder="e.g., 1,2,3"
@@ -110,6 +132,7 @@ function Controls({
           />
           <span>{arpeggiatorBpm}</span>
         </label>
+        
         <button
           onClick={() => setKeyboardMode(keyboardMode === 'partial' ? 'whole' : 'partial')}
           className="keyboard-toggle"
@@ -117,23 +140,7 @@ function Controls({
           {keyboardMode === 'partial' ? 'Switch to Whole Keyboard' : 'Switch to Partial Keyboard'}
         </button>
       </div>
-      {customChordIds.map(id => (
-        <div key={id} className="control-row custom-chord-row">
-          <button
-            className={mode === id ? 'active' : ''}
-            onClick={() => setMode(id)}
-            style={{ backgroundColor: modeColors[id] }}
-          >
-            {id.replace('custom', 'Custom ')}
-          </button>
-          <input
-            type="text"
-            value={customChords[id].join(',')}
-            onChange={(e) => handleCustomChordChange(id, e.target.value)}
-            placeholder="e.g., 0,4,7"
-          />
-        </div>
-      ))}
+
     </div>
   );
 }
