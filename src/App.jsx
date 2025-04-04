@@ -14,35 +14,56 @@ function App() {
   const [audioMap, setAudioMap] = useState({});
   const [arpeggiatorOn, setArpeggiatorOn] = useState(false);
   const [arpeggiatorPattern, setArpeggiatorPattern] = useState('1,2,3');
+  const [arpeggiatorBpm, setArpeggiatorBpm] = useState(120);
+  const [arpeggiatorDirection, setArpeggiatorDirection] = useState('up');
   const [customChords, setCustomChords] = useState({
-    custom1: [0, 4, 7], // Default: Major triad
-    custom2: [0, 3, 7], // Default: Minor triad
-    custom3: [0, 3, 6], // Default: Diminished triad
-    custom4: [0, 4, 8], // Default: Augmented triad
+    custom1: [0, 4, 7],
+    custom2: [0, 3, 7],
+    custom3: [0, 3, 6],
+    custom4: [0, 4, 8],
   });
+  const [isAudioLoaded, setIsAudioLoaded] = useState(false);
+  const [keyboardMode, setKeyboardMode] = useState('partial'); // New state: 'partial' or 'whole'
 
   useEffect(() => {
     preloadAudioFiles();
   }, []);
 
-  const preloadAudioFiles = () => {
+  const preloadAudioFiles = async () => {
     const map = {};
-    Object.keys(noteToFileNumber).forEach(note => {
+    const preloadPromises = Object.keys(noteToFileNumber).map(note => {
       const fileNumber = noteToFileNumber[note];
-      const audio = new Audio(`audio/${fileNumber}.mp3`);
-      audio.preload = 'auto';
-      audio.load();
-      map[note] = audio;
+      const audioUrl = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
+      return new Promise((resolve) => {
+        const audio = new Audio(audioUrl);
+        audio.preload = 'auto';
+        audio.oncanplaythrough = () => {
+          console.log(`Loaded ${note} (${audioUrl})`);
+          map[note] = audio;
+          resolve();
+        };
+        audio.onerror = () => {
+          console.error(`Failed to load ${note} (${audioUrl})`);
+          map[note] = null;
+          resolve();
+        };
+        audio.load();
+      });
     });
+
+    await Promise.all(preloadPromises);
     setAudioMap(map);
+    setIsAudioLoaded(true);
+    console.log('All audio files preloaded:', Object.keys(map).length);
   };
 
   const playNote = (note) => {
     const audio = audioMap[note];
-    if (audio) {
+    if (audio && audio.readyState >= 2) {
       audio.currentTime = 0;
       audio.play().catch(err => console.error(`Error playing ${note}:`, err));
     } else {
+      console.warn(`Audio not ready for ${note}, using oscillator`);
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       oscillator.type = 'sine';
@@ -56,6 +77,7 @@ function App() {
   return (
     <div className="app">
       <h1>Isomorphic Piano Simulator</h1>
+      {!isAudioLoaded && <p>Loading audio files, please wait...</p>}
       <Controls 
         mode={mode} 
         setMode={setMode} 
@@ -63,15 +85,24 @@ function App() {
         setArpeggiatorOn={setArpeggiatorOn}
         arpeggiatorPattern={arpeggiatorPattern}
         setArpeggiatorPattern={setArpeggiatorPattern}
+        arpeggiatorBpm={arpeggiatorBpm}
+        setArpeggiatorBpm={setArpeggiatorBpm}
+        arpeggiatorDirection={arpeggiatorDirection}
+        setArpeggiatorDirection={setArpeggiatorDirection}
         customChords={customChords}
         setCustomChords={setCustomChords}
+        keyboardMode={keyboardMode}
+        setKeyboardMode={setKeyboardMode}
       />
       <Keyboard 
         mode={mode} 
         playNote={playNote} 
         arpeggiatorOn={arpeggiatorOn} 
         arpeggiatorPattern={arpeggiatorPattern}
+        arpeggiatorBpm={arpeggiatorBpm}
+        arpeggiatorDirection={arpeggiatorDirection}
         customChords={customChords}
+        keyboardMode={keyboardMode}
       />
     </div>
   );

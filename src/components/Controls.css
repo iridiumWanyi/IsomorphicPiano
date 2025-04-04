@@ -12,7 +12,7 @@
 }
 
 .custom-chord-row {
-  margin-left: 20px; /* Indent custom chords to the right */
+  margin-left: 20px;
 }
 
 .controls button {
@@ -24,7 +24,7 @@
 }
 
 .controls button.active {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 .controls button:hover {
@@ -37,9 +37,42 @@
   gap: 5px;
 }
 
-.controls input {
+.controls input[type="text"] {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
   width: 100px;
+}
+
+.controls input[type="range"] {
+  width: 100px;
+  margin-left: 5px;
+}
+
+.controls span {
+  margin-left: 5px;
+  font-size: 14px;
+}
+
+.direction-button {
+  padding: 5px 10px;
+  font-size: 16px;
+  width: 40px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ddd;
+}
+
+.direction-button.up {
+  background-color: #e0e8e0;
+}
+
+.direction-button.down {
+  background-color: #e8e0e0;
+}
+
+.keyboard-toggle {
+  background-color: #e3e1de; /* Match single mode color */
 }

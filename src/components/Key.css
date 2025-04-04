@@ -1,5 +1,5 @@
 .key {
-  width: 48px;
+  width: 50px;
   height: 70px;
   border-radius: 5px;
   display: flex;
@@ -10,13 +10,11 @@
 }
 
 .key.white {
-  background-color: #f5f3f3;
-  border: none
+  background-color: #fff;
+  border: 1px solid #ccc;
 }
 
 .key.dark {
   background-color: #555;
-  color: #ffffff;
+  color: #fff;
 }
-
-/* .active class no longer needed here; handled via inline style */

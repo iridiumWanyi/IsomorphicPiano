@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Key from './Key';
-import { partialKeyboardLayout, chromaticScale, modeColors } from '../constants';
+import { partialKeyboardLayout, wholeKeyboardLayout, chromaticScale, modeColors } from '../constants';
 import './Keyboard.css';
 
-function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, customChords }) {
+function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiatorBpm, arpeggiatorDirection, customChords, keyboardMode }) {
   const [activeNotes, setActiveNotes] = useState([]);
+  const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
 
   const getChordNotes = (baseNote) => {
     const baseIndex = chromaticScale.indexOf(baseNote);
@@ -69,7 +70,12 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, customCho
       extendedNotes[i] = targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
     }
 
-    const arpeggioNotes = pattern.map(p => extendedNotes[p - 1]).filter(n => n);
+    let arpeggioNotes = pattern.map(p => extendedNotes[p - 1]).filter(n => n);
+    if (arpeggiatorDirection === 'down') {
+      arpeggioNotes = arpeggioNotes.reverse();
+    }
+
+    const delay = 60000 / arpeggiatorBpm;
     let step = 0;
 
     const playNextNote = () => {
@@ -81,7 +87,7 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, customCho
       setActiveNotes([note]);
       playNote(note);
       step++;
-      setTimeout(playNextNote, 250);
+      setTimeout(playNextNote, delay);
     };
 
     playNextNote();
@@ -102,16 +108,20 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, customCho
 
   return (
     <div className="keyboard">
-      {partialKeyboardLayout.map((row, rowIndex) => (
+      {layout.map((row, rowIndex) => (
         <div key={rowIndex} className="row">
           {row.map((note, colIndex) => (
-            <Key
-              key={`${rowIndex}-${colIndex}`}
-              note={note}
-              playNotes={() => handlePlayNotes(note)}
-              isActive={activeNotes.includes(note)}
-              highlightColor={modeColors[mode] || '#d3d3d3'} // Pass highlight color
-            />
+            note ? (
+              <Key
+                key={`${rowIndex}-${colIndex}`}
+                note={note}
+                playNotes={() => handlePlayNotes(note)}
+                isActive={activeNotes.includes(note)}
+                highlightColor={modeColors[mode] || '#d3d3d3'}
+              />
+            ) : (
+              <div key={`${rowIndex}-${colIndex}`} className="key-placeholder" />
+            )
           ))}
         </div>
       ))}
