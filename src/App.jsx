@@ -3,6 +3,7 @@ import Keyboard from './components/Keyboard';
 import Controls from './components/Controls';
 import { chromaticScale, noteToFileNumber } from './constants';
 import './App.css';
+import * as Tone from 'tone';
 
 const noteToChromaticIndex = {};
 chromaticScale.forEach((note, index) => {
@@ -26,55 +27,56 @@ function App() {
   const [keyboardMode, setKeyboardMode] = useState('partial'); // New state: 'partial' or 'whole'
 
   useEffect(() => {
-    preloadAudioFiles();
+    const startAudioContext = async () => {
+      await Tone.start(); // Starts the AudioContext
+      console.log('AudioContext started');
+      preloadAudioFiles(); // Load samples after context is started
+    };
+  
+    // Call this on first interaction (e.g., a button click or app load)
+    startAudioContext();
   }, []);
 
   const audioCacheRef = useRef({});
 
   const preloadAudioFiles = async () => {
-    const cache = audioCacheRef.current;
-    const preloadPromises = Object.keys(noteToFileNumber).map(async (note) => {
-      const fileNumber = noteToFileNumber[note];
-      const audioUrl = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
-      try {
-        const response = await fetch(audioUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${audioUrl}: ${response.statusText}`);
-        }
-        const audioBlob = await response.blob();
-        cache[note] = audioBlob;
-        console.log(`Cached ${note} (${audioUrl})`);
-      } catch (error) {
-        console.error(`Failed to cache ${note} (${audioUrl}): ${error.message}`);
-        cache[note] = null;
-      }
+    // Create the feedback delay effect
+    const echo = new Tone.FeedbackDelay({
+      delayTime: '2n', // Delay time (e.g., eighth note at current BPM)
+      feedback: 0.4,   // Amount of delayed signal fed back (0 to 1)
+      wet: 0.4        // Mix of dry (original) vs. wet (effected) signal (0 to 1)
     });
   
-    await Promise.all(preloadPromises);
-    setIsAudioLoaded(true);
-    console.log('All audio files cached:', Object.keys(cache).length);
+    // Define the sampler
+    const sampler = new Tone.Sampler({
+      urls: Object.keys(noteToFileNumber).reduce((acc, note) => {
+        const fileNumber = noteToFileNumber[note];
+        acc[note] = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
+        return acc;
+      }, {}),
+      onload: () => {
+        setIsAudioLoaded(true);
+        console.log('All audio files loaded into sampler');
+      },
+      onerror: (error) => {
+        console.error('Error loading sampler:', error);
+      },
+    });
+  
+    // Connect sampler -> echo -> destination
+    sampler.connect(echo);
+    echo.toDestination();
+  
+    audioCacheRef.current = sampler;
   };
   
   const playNote = (note) => {
-    const audioBlob = audioCacheRef.current[note];
-    if (audioBlob) {
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audio.play().catch((err) => {
-        console.error(`Error playing ${note}:`, err);
-      });
-      audio.onended = () => {
-        URL.revokeObjectURL(audioUrl);
-      };
+    const sampler = audioCacheRef.current;
+    if (sampler && sampler.loaded) {
+      // Trigger the note with a short duration (e.g., 0.3 seconds)
+      sampler.triggerAttackRelease(note, '0.3');
     } else {
-      console.warn(`Audio not cached for ${note}, using oscillator`);
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(noteToChromaticIndex[note] * 10 + 220, audioContext.currentTime);
-      oscillator.connect(audioContext.destination);
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.3);
+      console.warn(`Sampler not ready or note ${note} not loaded`);
     }
   };
 
