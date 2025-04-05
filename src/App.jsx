@@ -39,36 +39,68 @@ function App() {
 
   const audioCacheRef = useRef({});
 
-  const preloadAudioFiles = async () => {
-    // Create the feedback delay effect
-    const echo = new Tone.FeedbackDelay({
-      delayTime: '2n', // Delay time (e.g., eighth note at current BPM)
-      feedback: 0.4,   // Amount of delayed signal fed back (0 to 1)
-      wet: 0.4        // Mix of dry (original) vs. wet (effected) signal (0 to 1)
-    });
+  // const preloadAudioFiles = async () => {
+  //   // Create the feedback delay effect
+  //   const echo = new Tone.FeedbackDelay({
+  //     delayTime: '2n', // Delay time (e.g., eighth note at current BPM)
+  //     feedback: 0.3,   // Amount of delayed signal fed back (0 to 1)
+  //     wet: 0.3        // Mix of dry (original) vs. wet (effected) signal (0 to 1)
+  //   });
   
-    // Define the sampler
-    const sampler = new Tone.Sampler({
-      urls: Object.keys(noteToFileNumber).reduce((acc, note) => {
-        const fileNumber = noteToFileNumber[note];
-        acc[note] = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
-        return acc;
-      }, {}),
-      onload: () => {
-        setIsAudioLoaded(true);
-        console.log('All audio files loaded into sampler');
-      },
-      onerror: (error) => {
-        console.error('Error loading sampler:', error);
-      },
-    });
+  //   // Define the sampler
+  //   const sampler = new Tone.Sampler({
+  //     urls: Object.keys(noteToFileNumber).reduce((acc, note) => {
+  //       const fileNumber = noteToFileNumber[note];
+  //       acc[note] = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
+  //       return acc;
+  //     }, {}),
+  //     onload: () => {
+  //       setIsAudioLoaded(true);
+  //       console.log('All audio files loaded into sampler');
+  //     },
+  //     onerror: (error) => {
+  //       console.error('Error loading sampler:', error);
+  //     },
+  //   });
   
-    // Connect sampler -> echo -> destination
-    sampler.connect(echo);
-    echo.toDestination();
+  //   // Connect sampler -> echo -> destination
+  //   sampler.connect(echo);
+  //   echo.toDestination();
   
-    audioCacheRef.current = sampler;
-  };
+  //   audioCacheRef.current = sampler;
+  // };
+
+const preloadAudioFiles = async () => {
+  // Create the reverb effect without connecting it yet
+  const reverb = new Tone.Reverb({
+    decay: 1.2,
+    wet: 0.3
+  });
+
+  // Generate the reverb impulse response asynchronously
+  await reverb.generate(); // This ensures the reverb is ready
+
+  const sampler = new Tone.Sampler({
+    urls: Object.keys(noteToFileNumber).reduce((acc, note) => {
+      const fileNumber = noteToFileNumber[note];
+      acc[note] = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
+      return acc;
+    }, {}),
+    onload: () => {
+      setIsAudioLoaded(true);
+      console.log('All audio files loaded into sampler');
+    },
+    onerror: (error) => {
+      console.error('Error loading sampler:', error);
+    },
+  });
+
+  // Connect the audio chain after both are ready
+  sampler.connect(reverb);
+  reverb.toDestination();
+
+  audioCacheRef.current = sampler;
+};
   
   const playNote = (note) => {
     const sampler = audioCacheRef.current;
