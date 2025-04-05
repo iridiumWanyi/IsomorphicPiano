@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Keyboard from './components/Keyboard';
 import Controls from './components/Controls';
 import { chromaticScale, noteToFileNumber } from './constants';
@@ -11,7 +11,7 @@ chromaticScale.forEach((note, index) => {
 
 function App() {
   const [mode, setMode] = useState('single');
-  const [audioMap, setAudioMap] = useState({});
+
   const [arpeggiatorOn, setArpeggiatorOn] = useState(false);
   const [arpeggiatorPattern, setArpeggiatorPattern] = useState('1,2,3,4,5,3,4,5');
   const [arpeggiatorBpm, setArpeggiatorBpm] = useState(240);
@@ -29,41 +29,45 @@ function App() {
     preloadAudioFiles();
   }, []);
 
+  const audioCacheRef = useRef({});
+
   const preloadAudioFiles = async () => {
-    const map = {};
-    const preloadPromises = Object.keys(noteToFileNumber).map(note => {
+    const cache = audioCacheRef.current;
+    const preloadPromises = Object.keys(noteToFileNumber).map(async (note) => {
       const fileNumber = noteToFileNumber[note];
       const audioUrl = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
-      return new Promise((resolve) => {
-        const audio = new Audio(audioUrl);
-        audio.preload = 'auto';
-        audio.oncanplaythrough = () => {
-          console.log(`Loaded ${note} (${audioUrl})`);
-          map[note] = audio;
-          resolve();
-        };
-        audio.onerror = () => {
-          console.error(`Failed to load ${note} (${audioUrl})`);
-          map[note] = null;
-          resolve();
-        };
-        audio.load();
-      });
+      try {
+        const response = await fetch(audioUrl);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${audioUrl}: ${response.statusText}`);
+        }
+        const audioBlob = await response.blob();
+        cache[note] = audioBlob;
+        console.log(`Cached ${note} (${audioUrl})`);
+      } catch (error) {
+        console.error(`Failed to cache ${note} (${audioUrl}): ${error.message}`);
+        cache[note] = null;
+      }
     });
-
+  
     await Promise.all(preloadPromises);
-    setAudioMap(map);
     setIsAudioLoaded(true);
-    console.log('All audio files preloaded:', Object.keys(map).length);
+    console.log('All audio files cached:', Object.keys(cache).length);
   };
-
+  
   const playNote = (note) => {
-    const audio = audioMap[note];
-    if (audio && audio.readyState >= 2) {
-      audio.currentTime = 0;
-      audio.play().catch(err => console.error(`Error playing ${note}:`, err));
+    const audioBlob = audioCacheRef.current[note];
+    if (audioBlob) {
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      audio.play().catch((err) => {
+        console.error(`Error playing ${note}:`, err);
+      });
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+      };
     } else {
-      console.warn(`Audio not ready for ${note}, using oscillator`);
+      console.warn(`Audio not cached for ${note}, using oscillator`);
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const oscillator = audioContext.createOscillator();
       oscillator.type = 'sine';
