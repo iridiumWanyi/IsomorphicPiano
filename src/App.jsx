@@ -87,21 +87,11 @@ function App() {
     if (audioBlob) {
       const audioUrl = URL.createObjectURL(audioBlob);
       const audio = new Audio(audioUrl);
-      audio.play().catch((err) => {
-        console.error(`Error playing ${note}:`, err);
-      });
-      audio.onended = () => {
-        URL.revokeObjectURL(audioUrl);
-      };
+      audio.play().catch(err => console.error(`Error playing ${note}:`, err));
+      audio.onended = () => URL.revokeObjectURL(audioUrl);
     } else {
-      console.warn(`Audio not cached for ${note}, using oscillator`);
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(noteToChromaticIndex[note] * 10 + 220, audioContext.currentTime);
-      oscillator.connect(audioContext.destination);
-      oscillator.start();
-      oscillator.stop(audioContext.currentTime + 0.3);
+      console.warn(`Audio not cached for ${note}, skipping playback`);
+      // Do nothing, remain silent
     }
   };
 
