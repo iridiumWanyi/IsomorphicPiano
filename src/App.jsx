@@ -42,44 +42,52 @@ function App() {
     );
     const otherNotes = allNotes.filter(note => !priorityNotes.includes(note));
   
+    console.log('Starting preload, priority notes:', priorityNotes);
+  
     // Load priority notes first (F2 to F5)
     const priorityPromises = priorityNotes.map(async (note) => {
       const fileNumber = noteToFileNumber[note];
-      const audioUrl = `https://example.com/audio/${fileNumber}.mp3`; // Replace with actual URL
+      const audioUrl = `/audio/${fileNumber}.mp3`; // Adjust this to your actual path
+      console.log(`Fetching ${note} from ${audioUrl}`);
       try {
         const response = await fetch(audioUrl);
-        if (!response.ok) throw new Error(`Failed to fetch ${audioUrl}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${audioUrl}: ${response.status} ${response.statusText}`);
+        }
         const audioBlob = await response.blob();
         cache[note] = audioBlob;
-        console.log(`Cached ${note} (${audioUrl})`);
+        console.log(`Successfully cached ${note}`);
       } catch (error) {
-        console.error(`Failed to cache ${note}: ${error.message}`);
+        console.error(`Error caching ${note}: ${error.message}`);
         cache[note] = null;
       }
     });
   
     await Promise.all(priorityPromises);
-    console.log('Priority notes (F2 to F5) loaded:', priorityNotes.length);
+    console.log('Priority notes (F2 to F5) completed, cached count:', Object.keys(cache).length);
   
     // Load remaining notes
     const remainingPromises = otherNotes.map(async (note) => {
       const fileNumber = noteToFileNumber[note];
-      const audioUrl = `https://example.com/audio/${fileNumber}.mp3`; // Replace with actual URL
+      const audioUrl = `public/audio/${fileNumber}.mp3`; 
+      console.log(`Fetching ${note} from ${audioUrl}`);
       try {
         const response = await fetch(audioUrl);
-        if (!response.ok) throw new Error(`Failed to fetch ${audioUrl}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${audioUrl}: ${response.status} ${response.statusText}`);
+        }
         const audioBlob = await response.blob();
         cache[note] = audioBlob;
-        console.log(`Cached ${note} (${audioUrl})`);
+        console.log(`Successfully cached ${note}`);
       } catch (error) {
-        console.error(`Failed to cache ${note}: ${error.message}`);
+        console.error(`Error caching ${note}: ${error.message}`);
         cache[note] = null;
       }
     });
   
     await Promise.all(remainingPromises);
+    console.log('All notes completed, total cached:', Object.keys(cache).length);
     setIsAudioLoaded(true);
-    console.log('All audio files cached:', Object.keys(cache).length);
   };
   
   const playNote = (note) => {
