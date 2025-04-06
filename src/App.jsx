@@ -31,110 +31,122 @@ function App() {
 
   const audioCacheRef = useRef({});
 
-  const preloadAudioFiles = async () => {
-    const cache = audioCacheRef.current;
-    const allNotes = Object.keys(noteToFileNumber);
-  
-    // Priority range: F2 (20) to F5 (56)
-    const priorityNotes = chromaticScale.slice(
-      chromaticScale.indexOf('F2'),
-      chromaticScale.indexOf('F5') + 1
-    );
-    const otherNotes = allNotes.filter(note => !priorityNotes.includes(note));
-  
-    console.log('Starting preload, priority notes:', priorityNotes);
-  
-    // Load priority notes first (F2 to F5)
-    const priorityPromises = priorityNotes.map(async (note) => {
-      const fileNumber = noteToFileNumber[note];
-      const audioUrl = `/audio/${fileNumber}.mp3`; // Adjust this to your actual path
-      console.log(`Fetching ${note} from ${audioUrl}`);
-      try {
-        const response = await fetch(audioUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${audioUrl}: ${response.status} ${response.statusText}`);
-        }
-        const audioBlob = await response.blob();
-        cache[note] = audioBlob;
-        console.log(`Successfully cached ${note}`);
-      } catch (error) {
-        console.error(`Error caching ${note}: ${error.message}`);
-        cache[note] = null;
-      }
-    });
-  
-    await Promise.all(priorityPromises);
-    console.log('Priority notes (F2 to F5) completed, cached count:', Object.keys(cache).length);
-  
-    // Load remaining notes
-    const remainingPromises = otherNotes.map(async (note) => {
-      const fileNumber = noteToFileNumber[note];
-      const audioUrl = `public/audio/${fileNumber}.mp3`; 
-      console.log(`Fetching ${note} from ${audioUrl}`);
-      try {
-        const response = await fetch(audioUrl);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${audioUrl}: ${response.status} ${response.statusText}`);
-        }
-        const audioBlob = await response.blob();
-        cache[note] = audioBlob;
-        console.log(`Successfully cached ${note}`);
-      } catch (error) {
-        console.error(`Error caching ${note}: ${error.message}`);
-        cache[note] = null;
-      }
-    });
-  
-    await Promise.all(remainingPromises);
-    console.log('All notes completed, total cached:', Object.keys(cache).length);
-    setIsAudioLoaded(true);
-  };
-  
-  const playNote = (note) => {
-    const audioBlob = audioCacheRef.current[note];
-    if (audioBlob) {
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audio.play().catch(err => console.error(`Error playing ${note}:`, err));
-      audio.onended = () => URL.revokeObjectURL(audioUrl);
-    } else {
-      console.warn(`Audio not cached for ${note}, skipping playback`);
-      // Do nothing, remain silent
-    }
-  };
+  const [isPriorityAudioLoaded, setIsPriorityAudioLoaded] = useState(false);
 
-  return (
-    <div className="app">
-      <h1>Isomorphic Piano Simulator</h1>
-      {!isAudioLoaded && <p>Loading audio files, please wait...</p>}
-      <Controls 
-        mode={mode} 
-        setMode={setMode} 
-        arpeggiatorOn={arpeggiatorOn} 
-        setArpeggiatorOn={setArpeggiatorOn}
-        arpeggiatorPattern={arpeggiatorPattern}
-        setArpeggiatorPattern={setArpeggiatorPattern}
-        arpeggiatorBpm={arpeggiatorBpm}
-        setArpeggiatorBpm={setArpeggiatorBpm}
-        arpeggiatorDirection={arpeggiatorDirection}
-        setArpeggiatorDirection={setArpeggiatorDirection}
-        customChords={customChords}
-        setCustomChords={setCustomChords}
-        keyboardMode={keyboardMode}
-        setKeyboardMode={setKeyboardMode}
-      />
-      <Keyboard 
-        mode={mode} 
-        playNote={playNote} 
-        arpeggiatorOn={arpeggiatorOn} 
-        arpeggiatorPattern={arpeggiatorPattern}
-        arpeggiatorBpm={arpeggiatorBpm}
-        arpeggiatorDirection={arpeggiatorDirection}
-        customChords={customChords}
-        keyboardMode={keyboardMode}
-      />
-    </div>
+ const preloadAudioFiles = async () => {
+  const cache = audioCacheRef.current;
+  const allNotes = Object.keys(noteToFileNumber);
+
+  // Priority range: F2 (20) to F5 (56)
+  const priorityNotes = chromaticScale.slice(
+    chromaticScale.indexOf('F2'),
+    chromaticScale.indexOf('F5') + 1
   );
+  const otherNotes = allNotes.filter(note => !priorityNotes.includes(note));
+
+  console.log('Starting preload, priority notes:', priorityNotes);
+
+  // Load priority notes first (F2 to F5)
+  const priorityPromises = priorityNotes.map(async (note) => {
+    const fileNumber = noteToFileNumber[note];
+    const audioUrl = `/audio/${fileNumber}.mp3`; // Adjust to your actual path
+    console.log(`Fetching ${note} from ${audioUrl}`);
+    try {
+      const response = await fetch(audioUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${audioUrl}: ${response.status} ${response.statusText}`);
+      }
+      const audioBlob = await response.blob();
+      cache[note] = audioBlob;
+      console.log(`Successfully cached ${note}`);
+    } catch (error) {
+      console.error(`Error caching ${note}: ${error.message}`);
+      cache[note] = null;
+    }
+  });
+
+  await Promise.all(priorityPromises);
+  // Check if all priority notes loaded successfully
+  const priorityLoaded = priorityNotes.every(note => cache[note] !== null && cache[note] !== undefined);
+  setIsPriorityAudioLoaded(priorityLoaded);
+  console.log('Priority notes (F2 to F5) completed, all loaded:', priorityLoaded, 'Cached count:', Object.keys(cache).length);
+
+  // Load remaining notes
+  const remainingPromises = otherNotes.map(async (note) => {
+    const fileNumber = noteToFileNumber[note];
+    const audioUrl = `/audio/${fileNumber}.mp3`; // Adjust to your actual path
+    console.log(`Fetching ${note} from ${audioUrl}`);
+    try {
+      const response = await fetch(audioUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${audioUrl}: ${response.status} ${response.statusText}`);
+      }
+      const audioBlob = await response.blob();
+      cache[note] = audioBlob;
+      console.log(`Successfully cached ${note}`);
+    } catch (error) {
+      console.error(`Error caching ${note}: ${error.message}`);
+      cache[note] = null;
+    }
+  });
+
+  await Promise.all(remainingPromises);
+  console.log('All notes completed, total cached:', Object.keys(cache).length);
+  setIsAudioLoaded(true);
+};
+  
+const playNote = (note) => {
+  if (!isPriorityAudioLoaded) {
+    console.log(`Playback disabled until F2-F5 are loaded, attempted note: ${note}`);
+    return;
+  }
+  const audioBlob = audioCacheRef.current[note];
+  if (audioBlob) {
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
+    audio.play().catch(err => console.error(`Error playing ${note}:`, err));
+    audio.onended = () => URL.revokeObjectURL(audioUrl);
+  } else {
+    console.warn(`Audio not cached for ${note}, skipping playback`);
+  }
+};
+
+return (
+  <div className="app">
+    <h1>Isomorphic Piano Simulator</h1>
+    {!isPriorityAudioLoaded && <p>Loading F2 to F5 audio files, please wait...</p>}
+    {isPriorityAudioLoaded && (
+      <>
+        <Controls 
+          mode={mode} 
+          setMode={setMode} 
+          arpeggiatorOn={arpeggiatorOn} 
+          setArpeggiatorOn={setArpeggiatorOn}
+          arpeggiatorPattern={arpeggiatorPattern}
+          setArpeggiatorPattern={setArpeggiatorPattern}
+          arpeggiatorBpm={arpeggiatorBpm}
+          setArpeggiatorBpm={setArpeggiatorBpm}
+          arpeggiatorDirection={arpeggiatorDirection}
+          setArpeggiatorDirection={setArpeggiatorDirection}
+          customChords={customChords}
+          setCustomChords={setCustomChords}
+          keyboardMode={keyboardMode}
+          setKeyboardMode={setKeyboardMode}
+        />
+        <Keyboard 
+          mode={mode} 
+          playNote={playNote} 
+          arpeggiatorOn={arpeggiatorOn} 
+          arpeggiatorPattern={arpeggiatorPattern}
+          arpeggiatorBpm={arpeggiatorBpm}
+          arpeggiatorDirection={arpeggiatorDirection}
+          customChords={customChords}
+          keyboardMode={keyboardMode}
+        />
+      </>
+    )}
+  </div>
+);
 }
 
 export default App;
