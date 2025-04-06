@@ -22,6 +22,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: transform 0.1s;
+  color: #333
 }
 
 .controls button.active {

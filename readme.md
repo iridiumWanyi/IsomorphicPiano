@@ -11,12 +11,6 @@ A web-based isomorphic keyboard simulator that allows users to play notes, chord
 - A modern web browser (e.g., Chrome, Firefox).
 - A local server (e.g., VS Code’s Live Server) to avoid CORS issues with audio file loading.
 
-## Setup
-**Clone or Download**: Get the project files to your local machine.
-
-## Usage
- **Launch**: Open `index.html` via your local server.
-
 
 ## Contributing
 Feel free to fork, tweak, or submit pull requests! Ideas:
