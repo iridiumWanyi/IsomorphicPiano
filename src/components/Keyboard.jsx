@@ -61,7 +61,7 @@ function Keyboard({
 
   const playArpeggio = (baseNote, arpeggiatorOn, pattern, bpm, direction) => {
     const baseChordNotes = getChordNotes(baseNote);
-    if (baseChordNotes.length === 0) return;
+    if (baseChordNotes.length === 0 || !arpeggiatorOn) return;
 
     const patternArray = pattern.split(',').filter(x => x !== '').map(Number);
     const maxPatternIndex = Math.max(...patternArray);
@@ -84,21 +84,34 @@ function Keyboard({
     let step = 0;
 
     const playNextNote = () => {
-      if (step >= arpeggioNotes.length || !arpeggiatorOn) {
+      if (!arpeggiatorOn) {
         setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n)));
         return;
       }
-      const note = arpeggioNotes[step];
-      setActiveNotes(prev => {
-        const newNotes = prev.filter(n => !arpeggioNotes.includes(n) || n === note);
-        return [...newNotes, note];
-      });
-      playNote(note);
-      step++;
-      setTimeout(playNextNote, delay);
+      if (step < arpeggioNotes.length) {
+        const note = arpeggioNotes[step];
+        setActiveNotes(prev => {
+          const newNotes = prev.filter(n => !arpeggioNotes.includes(n) || n === note);
+          return [...newNotes, note];
+        });
+        playNote(note);
+        step++;
+        setTimeout(playNextNote, delay);
+      } else {
+        setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n)));
+      }
     };
 
-    playNextNote();
+    // Start immediately
+    if (arpeggioNotes.length > 0) {
+      const firstNote = arpeggioNotes[0];
+      setActiveNotes(prev => [...prev.filter(n => !arpeggioNotes.includes(n)), firstNote]);
+      playNote(firstNote);
+      step = 1;
+      if (step < arpeggioNotes.length) {
+        setTimeout(playNextNote, delay);
+      }
+    }
   };
 
   const handleNotePress = (note) => {
