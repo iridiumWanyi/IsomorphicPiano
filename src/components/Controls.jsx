@@ -43,7 +43,7 @@ const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
 
   return (
     <div className={`mini-keyboard ${id ? '' : 'static'}`}>
-      <div className="janko-row bottom-row">
+      <div className="mini-row bottom-row">
         {row2.map((index) => (
           <div
             key={index}
@@ -53,7 +53,7 @@ const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
           />
         ))}
       </div>
-      <div className="janko-row top-row">
+      <div className="mini-row top-row">
         {row1.map((index) => (
           <div
             key={index}
@@ -82,11 +82,13 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
   return (
     <div className="chord-controls">
       <div className="control-row">
+        <span className="row-label">Basic Modes:</span>
         {row0Modes.map(m => (
           <div key={m.id} className="chord-button-container">
             <button
               className={mode === m.id ? 'active' : ''}
               onClick={() => setMode(m.id)}
+              onTouchStart={() => setMode(m.id)}
               style={{ backgroundColor: modeColors[m.id] }}
             >
               {m.label}
@@ -98,6 +100,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
             <button
               className={mode === m.id ? 'active' : ''}
               onClick={() => setMode(m.id)}
+              onTouchStart={() => setMode(m.id)}
               style={{ backgroundColor: modeColors[m.id] }}
             >
               {m.label}
@@ -113,11 +116,13 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
         ))}
       </div>
       <div className="control-row">
+        <span className="row-label">Extended Chords:</span>
         {row2Modes.map(m => (
           <div key={m.id} className="chord-button-container">
             <button
               className={mode === m.id ? 'active' : ''}
               onClick={() => setMode(m.id)}
+              onTouchStart={() => setMode(m.id)}
               style={{ backgroundColor: modeColors[m.id] }}
             >
               {m.label}
@@ -133,11 +138,13 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
         ))}
       </div>
       <div className="control-row custom-chord-row">
+      <span className="row-label">Custom Chords:</span>
         {customChordIds.map(id => (
           <div key={id} className="custom-chord-container">
             <button
               className={mode === id ? 'active' : ''}
               onClick={() => setMode(id)}
+              onTouchStart={() => setMode(id)}
               style={{ backgroundColor: modeColors[id] }}
             >
               {id.replace('custom', 'Custom')}

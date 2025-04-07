@@ -36,8 +36,8 @@
   color: #333;
 }
 
+
 .chord-controls button.active,
-.arpeggiator-controls button.active,
 .keyboard-toggle-container button.active {
   transform: scale(1.1);
 }
@@ -52,10 +52,10 @@
 .keyboard-toggle-container label {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: px;
 }
 
-.arpeggiator-controls input[type="text_long"] {
+.arpeggiator-controls input[type="text"] {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -76,7 +76,6 @@
   border-radius: 4px;
 }
 
-/* Thumb */
 .arpeggiator-controls input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
@@ -91,13 +90,13 @@
 .arpeggiator-controls span,
 .keyboard-toggle-container span {
   margin-left: 5px;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .direction-button {
-  padding: 5px 10px;
+  padding: 2px 6px;
   font-size: 16px;
-  width: 40px;
+  width: 12px;
   height: 30px;
   display: flex;
   justify-content: center;
@@ -106,7 +105,7 @@
 }
 
 .direction-button.up {
-  background-color: #e8d7d7;
+  background-color: #e8cece;
 }
 
 .direction-button.down {
@@ -159,8 +158,8 @@
   background-color: #ccc;
   border-radius: 50%;
   cursor: help;
-  margin-left: 5px;
-  font-size: 14px;
+  margin-left: 0px;
+  font-size: 12px;
   position: relative;
 }
 
@@ -195,15 +194,15 @@
   margin-left: 5px;
 }
 
-.mini-keyboard .janko-row.top-row {
+.mini-keyboard .mini-row.top-row {
   margin-left: 5px;
 }
 
-.mini-keyboard .janko-row.bottom-row {
+.mini-keyboard .mini-row.bottom-row {
   margin-left: 10;
 }
 
-.janko-row {
+.mini-row {
   display: flex;
 }
 
