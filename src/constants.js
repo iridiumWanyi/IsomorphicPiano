@@ -40,7 +40,7 @@ export const modeColors = {
   "single": "#eeeae6",
   "octave": "#ebe3cd",
   "major": "#ebd3d3",
-  "minor": "#dce5d2",
+  "minor": "#d6e2c6",
   "diminished": "#cedfdf",
   "augmented": "#d7cfdd",
   "domSeven": "#c9d5d3",

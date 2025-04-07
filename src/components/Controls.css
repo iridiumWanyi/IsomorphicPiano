@@ -22,7 +22,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: transform 0.1s;
-  color: #333
+  color: #333;
 }
 
 .controls button.active {
@@ -85,7 +85,7 @@
 }
 
 .keyboard-toggle {
-  background-color: #eeeae6; /* Match single mode color */
+  background-color: #eeeae6;
 }
 
 .help-arpeggiatorPattern {
@@ -104,7 +104,7 @@
 
 .help-arpeggiatorPattern:hover::after,
 .help-arpeggiatorPattern:focus::after {
-  content: "Enter a sequence of numbers separated by commas to specify the order in which chord notes should be played. Numbers exceeding the count of notes in the chord will trigger the corresponding notes in higher octaves. The default pattern reflects that of BWV 846."; /* Placeholder text */
+  content: "Enter a sequence of numbers separated by commas to specify the order in which chord notes should be played. Numbers exceeding the count of notes in the chord will trigger the corresponding notes in higher octaves. The default pattern reflects that of BWV 846.";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -115,9 +115,9 @@
   color: #fff;
   border-radius: 5px;
   font-size: 14px;
-  width: 300px; /* Fixed width to trigger wrapping */
-  white-space: normal; /* Allow text to wrap */
-  text-align: center; /* Optional: center the wrapped text */
+  width: 300px;
+  white-space: normal;
+  text-align: center;
   z-index: 10;
 }
 
@@ -137,7 +137,7 @@
 
 .help-customChords:hover::after,
 .help-customChords:focus::after {
-  content: "Click the notes you want in the mini keyboard for your chord, with the bottom-left key being the root note"; /* Placeholder text */
+  content: "Click the notes you want in the mini keyboard for your chord, with the bottom-left key being the root note";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -148,9 +148,9 @@
   color: #fff;
   border-radius: 5px;
   font-size: 14px;
-  width: 200px; /* Fixed width to trigger wrapping */
-  white-space: normal; /* Allow text to wrap */
-  text-align: center; /* Optional: center the wrapped text */
+  width: 200px;
+  white-space: normal;
+  text-align: center;
   z-index: 10;
 }
 
@@ -160,33 +160,58 @@
   margin-right: 10px;
 }
 
-.mini-keyboard {
+.mini-keyboard.janko {
   display: flex;
   flex-direction: column;
   margin-left: 5px;
 }
 
-.mini-row {
+.janko-row {
   display: flex;
 }
 
-.mini-row.top-row {
-  margin-left: 5px; /* Matches 8px width */
+.mini-keyboard.janko .janko-row.top-row {
+  margin-left: 5px;
 }
 
 .mini-key {
-  width: 10px !important;
-  height: 15px !important;
-  border: .2px solid #948f8c; /* Added border to show radius */
-  margin: .5px;
+  width: 12px;
+  height: 15px;
+  border: 1px solid #ddd9d6;
+  margin: .2px;
   padding: 0;
   cursor: pointer;
   background-color: #fff;
-  min-width: 0;
-  min-height: 0;
-  border-radius: 3px !important; /* Increased from 1px to 5px for visible rounding */
+  box-sizing: border-box;
+  border-radius: 3px;
 }
 
 .mini-key.active {
-  background-color: #ff9999; /* Highlight selected notes */
+  background-color: #ff9999; /* Default for custom chords */
+}
+
+.chord-button-container {
+  position: relative;
+}
+
+.floating-keyboard {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  padding: 5px;
+  background-color: rgba(239, 235, 233, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.chord-button-container:hover .floating-keyboard,
+.chord-button-container:focus-within .floating-keyboard {
+  display: block;
+}
+
+.mini-keyboard.static .mini-key {
+  cursor: default;
 }
