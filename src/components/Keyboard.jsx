@@ -131,7 +131,7 @@ function Keyboard({
   const handleNoteRelease = (note) => {
     const chordNotes = getChordNotes(note);
     setActiveNotes(prev => prev.filter(n => !chordNotes.includes(n)));
-    // If arpeggiators are on, they will stop naturally via arpeggiatorOnRef checks
+    // Arpeggio continues until toggled off or pattern ends via arpeggiatorOnRef
   };
 
   return (

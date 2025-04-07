@@ -181,12 +181,33 @@ export const ArpeggiatorControls = ({
   };
 
   const handleTouchToggle = (setter, current) => (e) => {
-    e.preventDefault();
-    setter(!current);
+    e.preventDefault(); // Prevent default touch behavior
+    e.stopPropagation(); // Stop event from bubbling up
+    setter(!current); // Toggle immediately
+    e.target.dataset.touched = 'true'; // Mark as touched to block onClick
+  };
+
+  const handleClickToggle = (setter, current) => (e) => {
+    if (e.target.dataset.touched) {
+      // If touched, reset flag and skip click to avoid double-toggle
+      delete e.target.dataset.touched;
+      return;
+    }
+    setter(!current); // Normal click behavior for non-touch devices
   };
 
   const handleTouchDirection = (setter, current) => (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    setter(current === 'up' ? 'down' : 'up');
+    e.target.dataset.touched = 'true';
+  };
+
+  const handleClickDirection = (setter, current) => (e) => {
+    if (e.target.dataset.touched) {
+      delete e.target.dataset.touched;
+      return;
+    }
     setter(current === 'up' ? 'down' : 'up');
   };
 
@@ -195,7 +216,7 @@ export const ArpeggiatorControls = ({
       <div className="control-row">
         <button
           className={arpeggiator1On ? 'active' : ''}
-          onClick={() => setArpeggiator1On(!arpeggiator1On)}
+          onClick={handleClickToggle(setArpeggiator1On, arpeggiator1On)}
           onTouchStart={handleTouchToggle(setArpeggiator1On, arpeggiator1On)}
           style={{ backgroundColor: arpeggiator1On ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
         >
@@ -212,7 +233,7 @@ export const ArpeggiatorControls = ({
           <span className="help-arpeggiatorPattern">?</span>
         </label>
         <button
-          onClick={() => setArpeggiator1Direction(arpeggiator1Direction === 'up' ? 'down' : 'up')}
+          onClick={handleClickDirection(setArpeggiator1Direction, arpeggiator1Direction)}
           onTouchStart={handleTouchDirection(setArpeggiator1Direction, arpeggiator1Direction)}
           className={`direction-button ${arpeggiator1Direction}`}
         >
@@ -233,7 +254,7 @@ export const ArpeggiatorControls = ({
       <div className="control-row">
         <button
           className={arpeggiator2On ? 'active' : ''}
-          onClick={() => setArpeggiator2On(!arpeggiator2On)}
+          onClick={handleClickToggle(setArpeggiator2On, arpeggiator2On)}
           onTouchStart={handleTouchToggle(setArpeggiator2On, arpeggiator2On)}
           style={{ backgroundColor: arpeggiator2On ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
         >
@@ -250,7 +271,7 @@ export const ArpeggiatorControls = ({
           <span className="help-arpeggiatorPattern">?</span>
         </label>
         <button
-          onClick={() => setArpeggiator2Direction(arpeggiator2Direction === 'up' ? 'down' : 'up')}
+          onClick={handleClickDirection(setArpeggiator2Direction, arpeggiator2Direction)}
           onTouchStart={handleTouchDirection(setArpeggiator2Direction, arpeggiator2Direction)}
           className={`direction-button ${arpeggiator2Direction}`}
         >
