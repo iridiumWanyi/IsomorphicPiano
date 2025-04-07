@@ -11,10 +11,14 @@ chromaticScale.forEach((note, index) => {
 
 function App() {
   const [mode, setMode] = useState('single');
-  const [arpeggiatorOn, setArpeggiatorOn] = useState(false);
-  const [arpeggiatorPattern, setArpeggiatorPattern] = useState('1,2,3,4,5,3,4,5');
-  const [arpeggiatorBpm, setArpeggiatorBpm] = useState(240);
-  const [arpeggiatorDirection, setArpeggiatorDirection] = useState('up');
+  const [arpeggiator1On, setArpeggiator1On] = useState(false);
+  const [arpeggiator1Pattern, setArpeggiator1Pattern] = useState('1,2,3,4,5,3,4,5');
+  const [arpeggiator1Bpm, setArpeggiator1Bpm] = useState(240);
+  const [arpeggiator1Direction, setArpeggiator1Direction] = useState('up');
+  const [arpeggiator2On, setArpeggiator2On] = useState(false);
+  const [arpeggiator2Pattern, setArpeggiator2Pattern] = useState('1,3,5,6,4,2');
+  const [arpeggiator2Bpm, setArpeggiator2Bpm] = useState(180);
+  const [arpeggiator2Direction, setArpeggiator2Direction] = useState('down');
   const [customChords, setCustomChords] = useState({
     custom1: [0, 4, 7],
     custom2: [0, 3, 7],
@@ -137,30 +141,43 @@ function App() {
             setCustomChords={setCustomChords}
           />
           <ArpeggiatorControls
-            arpeggiatorOn={arpeggiatorOn}
-            setArpeggiatorOn={setArpeggiatorOn}
-            arpeggiatorPattern={arpeggiatorPattern}
-            setArpeggiatorPattern={setArpeggiatorPattern}
-            arpeggiatorBpm={arpeggiatorBpm}
-            setArpeggiatorBpm={setArpeggiatorBpm}
-            arpeggiatorDirection={arpeggiatorDirection}
-            setArpeggiatorDirection={setArpeggiatorDirection}
+            arpeggiator1On={arpeggiator1On}
+            setArpeggiator1On={setArpeggiator1On}
+            arpeggiator1Pattern={arpeggiator1Pattern}
+            setArpeggiator1Pattern={setArpeggiator1Pattern}
+            arpeggiator1Bpm={arpeggiator1Bpm}
+            setArpeggiator1Bpm={setArpeggiator1Bpm}
+            arpeggiator1Direction={arpeggiator1Direction}
+            setArpeggiator1Direction={setArpeggiator1Direction}
+            arpeggiator2On={arpeggiator2On}
+            setArpeggiator2On={setArpeggiator2On}
+            arpeggiator2Pattern={arpeggiator2Pattern}
+            setArpeggiator2Pattern={setArpeggiator2Pattern}
+            arpeggiator2Bpm={arpeggiator2Bpm}
+            setArpeggiator2Bpm={setArpeggiator2Bpm}
+            arpeggiator2Direction={arpeggiator2Direction}
+            setArpeggiator2Direction={setArpeggiator2Direction}
           />
           <Keyboard
             mode={mode}
             playNote={playNote}
-            playChord={playChord}
-            arpeggiatorOn={arpeggiatorOn}
-            arpeggiatorPattern={arpeggiatorPattern}
-            arpeggiatorBpm={arpeggiatorBpm}
-            arpeggiatorDirection={arpeggiatorDirection}
+            arpeggiator1On={arpeggiator1On}
+            arpeggiator1Pattern={arpeggiator1Pattern}
+            arpeggiator1Bpm={arpeggiator1Bpm}
+            arpeggiator1Direction={arpeggiator1Direction}
+            arpeggiator2On={arpeggiator2On}
+            arpeggiator2Pattern={arpeggiator2Pattern}
+            arpeggiator2Bpm={arpeggiator2Bpm}
+            arpeggiator2Direction={arpeggiator2Direction}
             customChords={customChords}
             keyboardMode={keyboardMode}
           />
-          <KeyboardToggle
-            keyboardMode={keyboardMode}
-            setKeyboardMode={setKeyboardMode}
-          />
+          <div className="keyboard-toggle-wrapper">
+            <KeyboardToggle
+              keyboardMode={keyboardMode}
+              setKeyboardMode={setKeyboardMode}
+            />
+          </div>
         </>
       )}
     </div>

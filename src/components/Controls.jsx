@@ -26,7 +26,7 @@ const row2Modes = [
   { id: 'susNine', label: 'Sus9' },
 ];
 
-const customChordIds = ['custom1', 'custom2', 'custom3'];
+const customChordIds = ['custom1', 'custom2', 'custom3', 'custom4'];
 
 const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
   const row1 = [1, 3, 5, 7, 9, 11];
@@ -147,7 +147,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
               onTouchStart={() => setMode(id)}
               style={{ backgroundColor: modeColors[id] }}
             >
-              {id.replace('custom', 'Custom')}
+              {id.replace('custom', 'Chord')}
             </button>
             <MiniKeyboard
               chord={customChords[id] || []}
@@ -164,15 +164,19 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
 };
 
 export const ArpeggiatorControls = ({
-  arpeggiatorOn, setArpeggiatorOn,
-  arpeggiatorPattern, setArpeggiatorPattern,
-  arpeggiatorBpm, setArpeggiatorBpm,
-  arpeggiatorDirection, setArpeggiatorDirection
+  arpeggiator1On, setArpeggiator1On,
+  arpeggiator1Pattern, setArpeggiator1Pattern,
+  arpeggiator1Bpm, setArpeggiator1Bpm,
+  arpeggiator1Direction, setArpeggiator1Direction,
+  arpeggiator2On, setArpeggiator2On,
+  arpeggiator2Pattern, setArpeggiator2Pattern,
+  arpeggiator2Bpm, setArpeggiator2Bpm,
+  arpeggiator2Direction, setArpeggiator2Direction
 }) => {
-  const handlePatternChange = (e) => {
+  const handlePatternChange = (setter) => (e) => {
     const value = e.target.value;
     if (/^(\d+,)*\d*$/.test(value) || value === '') {
-      setArpeggiatorPattern(value);
+      setter(value);
     }
   };
 
@@ -180,27 +184,29 @@ export const ArpeggiatorControls = ({
     <div className="arpeggiator-controls">
       <div className="control-row">
         <button
-          className={arpeggiatorOn ? 'active' : ''}
-          onClick={() => setArpeggiatorOn(!arpeggiatorOn)}
-          style={{ backgroundColor: arpeggiatorOn ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
+          className={arpeggiator1On ? 'active' : ''}
+          onClick={() => setArpeggiator1On(!arpeggiator1On)}
+          onTouchStart={() => setArpeggiator1On(!arpeggiator1On)}
+          style={{ backgroundColor: arpeggiator1On ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
         >
-          Arpeggiator {arpeggiatorOn ? 'On' : 'Off'}
+          Arpeggiator 1 {arpeggiator1On ? 'On' : 'Off'}
         </button>
         <label>
           Pattern:
           <input
             type="text_long"
-            value={arpeggiatorPattern}
-            onChange={handlePatternChange}
+            value={arpeggiator1Pattern}
+            onChange={handlePatternChange(setArpeggiator1Pattern)}
             placeholder="e.g., 1,2,3"
           />
           <span className="help-arpeggiatorPattern">?</span>
         </label>
         <button
-          onClick={() => setArpeggiatorDirection(arpeggiatorDirection === 'up' ? 'down' : 'up')}
-          className={`direction-button ${arpeggiatorDirection}`}
+          onClick={() => setArpeggiator1Direction(arpeggiator1Direction === 'up' ? 'down' : 'up')}
+          onTouchStart={() => setArpeggiator1Direction(arpeggiator1Direction === 'up' ? 'down' : 'up')}
+          className={`direction-button ${arpeggiator1Direction}`}
         >
-          {arpeggiatorDirection === 'up' ? '↑' : '↓'}
+          {arpeggiator1Direction === 'up' ? '↑' : '↓'}
         </button>
         <label>
           BPM:
@@ -208,10 +214,48 @@ export const ArpeggiatorControls = ({
             type="range"
             min="60"
             max="480"
-            value={arpeggiatorBpm}
-            onChange={(e) => setArpeggiatorBpm(Number(e.target.value))}
+            value={arpeggiator1Bpm}
+            onChange={(e) => setArpeggiator1Bpm(Number(e.target.value))}
           />
-          <span>{arpeggiatorBpm}</span>
+          <span>{arpeggiator1Bpm}</span>
+        </label>
+      </div>
+      <div className="control-row">
+        <button
+          className={arpeggiator2On ? 'active' : ''}
+          onClick={() => setArpeggiator2On(!arpeggiator2On)}
+          onTouchStart={() => setArpeggiator2On(!arpeggiator2On)}
+          style={{ backgroundColor: arpeggiator2On ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
+        >
+          Arpeggiator 2 {arpeggiator2On ? 'On' : 'Off'}
+        </button>
+        <label>
+          Pattern:
+          <input
+            type="text_long"
+            value={arpeggiator2Pattern}
+            onChange={handlePatternChange(setArpeggiator2Pattern)}
+            placeholder="e.g., 1,2,3"
+          />
+          <span className="position_phantom">......</span>
+        </label>
+        <button
+          onClick={() => setArpeggiator2Direction(arpeggiator2Direction === 'up' ? 'down' : 'up')}
+          onTouchStart={() => setArpeggiator2Direction(arpeggiator2Direction === 'up' ? 'down' : 'up')}
+          className={`direction-button ${arpeggiator2Direction}`}
+        >
+          {arpeggiator2Direction === 'up' ? '↑' : '↓'}
+        </button>
+        <label>
+          BPM:
+          <input
+            type="range"
+            min="60"
+            max="480"
+            value={arpeggiator2Bpm}
+            onChange={(e) => setArpeggiator2Bpm(Number(e.target.value))}
+          />
+          <span>{arpeggiator2Bpm}</span>
         </label>
       </div>
     </div>

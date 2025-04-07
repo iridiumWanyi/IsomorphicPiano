@@ -3,7 +3,12 @@ import Key from './Key';
 import { partialKeyboardLayout, wholeKeyboardLayout, chromaticScale, modeColors } from '../constants';
 import './Keyboard.css';
 
-function Keyboard({ mode, playNote, playChord, arpeggiatorOn, arpeggiatorPattern, arpeggiatorBpm, arpeggiatorDirection, customChords, keyboardMode }) {
+function Keyboard({ 
+  mode, playNote, 
+  arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction,
+  arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction,
+  customChords, keyboardMode 
+}) {
   const [activeNotes, setActiveNotes] = useState([]);
   const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
 
@@ -43,7 +48,6 @@ function Keyboard({ mode, playNote, playChord, arpeggiatorOn, arpeggiatorPattern
       case 'custom1':
       case 'custom2':
       case 'custom3':
-      case 'custom4':
         const intervals = customChords[mode] || [];
         return intervals.map(interval => {
           const targetIndex = baseIndex + interval;
@@ -54,12 +58,12 @@ function Keyboard({ mode, playNote, playChord, arpeggiatorOn, arpeggiatorPattern
     }
   };
 
-  const playArpeggio = (baseNote) => {
+  const playArpeggio = (baseNote, arpeggiatorOn, pattern, bpm, direction) => {
     const baseChordNotes = getChordNotes(baseNote);
     if (baseChordNotes.length === 0) return;
 
-    const pattern = arpeggiatorPattern.split(',').filter(x => x !== '').map(Number);
-    const maxPatternIndex = Math.max(...pattern);
+    const patternArray = pattern.split(',').filter(x => x !== '').map(Number);
+    const maxPatternIndex = Math.max(...patternArray);
     const extendedNotes = [];
 
     for (let i = 0; i < maxPatternIndex; i++) {
@@ -70,22 +74,22 @@ function Keyboard({ mode, playNote, playChord, arpeggiatorOn, arpeggiatorPattern
       extendedNotes[i] = targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
     }
 
-    let arpeggioNotes = pattern.map(p => extendedNotes[p - 1]).filter(n => n);
-    if (arpeggiatorDirection === 'down') {
+    let arpeggioNotes = patternArray.map(p => extendedNotes[p - 1]).filter(n => n);
+    if (direction === 'down') {
       arpeggioNotes = arpeggioNotes.reverse();
     }
 
-    const delay = 60000 / arpeggiatorBpm;
+    const delay = 60000 / bpm;
     let step = 0;
 
     const playNextNote = () => {
       if (step >= arpeggioNotes.length || !arpeggiatorOn) {
-        setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n))); // Clear only arpeggio notes
+        setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n)));
         return;
       }
       const note = arpeggioNotes[step];
       setActiveNotes(prev => {
-        const newNotes = prev.filter(n => !arpeggioNotes.includes(n) || n === note); // Keep other pressed notes
+        const newNotes = prev.filter(n => !arpeggioNotes.includes(n) || n === note);
         return [...newNotes, note];
       });
       playNote(note);
@@ -101,10 +105,11 @@ function Keyboard({ mode, playNote, playChord, arpeggiatorOn, arpeggiatorPattern
       const chordNotes = getChordNotes(note);
       setActiveNotes(prev => [...prev, ...chordNotes.filter(n => !prev.includes(n))]);
       
-      if (arpeggiatorOn) {
-        playArpeggio(note);
+      if (arpeggiator1On || arpeggiator2On) {
+        if (arpeggiator1On) playArpeggio(note, arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction);
+        if (arpeggiator2On) playArpeggio(note, arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction);
       } else {
-        playChord(chordNotes);
+        chordNotes.forEach(playNote);
       }
     }
   };
