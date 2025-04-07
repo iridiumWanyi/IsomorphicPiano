@@ -78,17 +78,23 @@ function Keyboard({
 
     const delay = 60000 / bpm;
     let step = 0;
+    let timeoutId = null;
 
     const playNextNote = () => {
       if (!arpeggiatorOnRef.current || step >= arpeggioNotes.length) {
         setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n)));
+        clearTimeout(timeoutId); // Ensure no lingering timeouts
         return;
       }
       const note = arpeggioNotes[step];
       setActiveNotes(prev => [...prev.filter(n => !arpeggioNotes.includes(n)), note]);
       playNote(note);
       step++;
-      if (step < arpeggioNotes.length) setTimeout(playNextNote, delay);
+      if (step < arpeggioNotes.length) {
+        timeoutId = setTimeout(playNextNote, delay);
+      } else {
+        setTimeout(() => setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n))), delay); // Clear after last note
+      }
     };
 
     if (arpeggioNotes.length > 0) {
@@ -96,7 +102,11 @@ function Keyboard({
       setActiveNotes(prev => [...prev.filter(n => !arpeggioNotes.includes(n)), firstNote]);
       playNote(firstNote);
       step = 1;
-      if (step < arpeggioNotes.length) setTimeout(playNextNote, delay);
+      if (step < arpeggioNotes.length) {
+        timeoutId = setTimeout(playNextNote, delay);
+      } else {
+        setTimeout(() => setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n))), delay);
+      }
     }
   };
 
@@ -120,7 +130,6 @@ function Keyboard({
   const handleNoteRelease = (note) => {
     const chordNotes = getChordNotes(note);
     setActiveNotes(prev => prev.filter(n => !chordNotes.includes(n)));
-    // Arpeggio continues until toggled off or pattern ends via arpeggiatorOnRef
   };
 
   return (
