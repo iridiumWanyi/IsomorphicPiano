@@ -268,7 +268,7 @@ export const ArpeggiatorControls = ({
             onChange={handlePatternChange(setArpeggiator2Pattern)}
             placeholder="e.g., 1,2,3"
           />
-          <span className="help-arpeggiatorPattern">?</span>
+          <span className="text">......</span>
         </label>
         <button
           onClick={handleClickDirection(setArpeggiator2Direction, arpeggiator2Direction)}
