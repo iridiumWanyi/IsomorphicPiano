@@ -61,24 +61,20 @@ function Keyboard({
 
   const playArpeggio = (baseNote, arpeggiatorOnRef, pattern, bpm, direction) => {
     const baseChordNotes = getChordNotes(baseNote);
-    if (baseChordNotes.length === 0) return;
+    if (baseChordNotes.length === 0 || !arpeggiatorOnRef.current) return;
 
     const patternArray = pattern.split(',').filter(x => x !== '').map(Number);
     const maxPatternIndex = Math.max(...patternArray);
-    const extendedNotes = [];
-
-    for (let i = 0; i < maxPatternIndex; i++) {
+    const extendedNotes = Array(maxPatternIndex).fill(null).map((_, i) => {
       const noteIndex = i % baseChordNotes.length;
       const octaveShift = Math.floor(i / baseChordNotes.length);
       const baseNoteIndex = chromaticScale.indexOf(baseChordNotes[noteIndex]);
       const targetIndex = baseNoteIndex + (octaveShift * 12);
-      extendedNotes[i] = targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
-    }
+      return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
+    });
 
     let arpeggioNotes = patternArray.map(p => extendedNotes[p - 1]).filter(n => n);
-    if (direction === 'down') {
-      arpeggioNotes = arpeggioNotes.reverse();
-    }
+    if (direction === 'down') arpeggioNotes.reverse();
 
     const delay = 60000 / bpm;
     let step = 0;
@@ -89,25 +85,18 @@ function Keyboard({
         return;
       }
       const note = arpeggioNotes[step];
-      setActiveNotes(prev => {
-        const newNotes = prev.filter(n => !arpeggioNotes.includes(n) || n === note);
-        return [...newNotes, note];
-      });
+      setActiveNotes(prev => [...prev.filter(n => !arpeggioNotes.includes(n)), note]);
       playNote(note);
       step++;
-      if (step < arpeggioNotes.length) {
-        setTimeout(playNextNote, delay);
-      }
+      if (step < arpeggioNotes.length) setTimeout(playNextNote, delay);
     };
 
-    if (arpeggioNotes.length > 0 && arpeggiatorOnRef.current) {
+    if (arpeggioNotes.length > 0) {
       const firstNote = arpeggioNotes[0];
       setActiveNotes(prev => [...prev.filter(n => !arpeggioNotes.includes(n)), firstNote]);
       playNote(firstNote);
       step = 1;
-      if (step < arpeggioNotes.length) {
-        setTimeout(playNextNote, delay);
-      }
+      if (step < arpeggioNotes.length) setTimeout(playNextNote, delay);
     }
   };
 

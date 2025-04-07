@@ -16,7 +16,7 @@ function App() {
   const [arpeggiator1Bpm, setArpeggiator1Bpm] = useState(240);
   const [arpeggiator1Direction, setArpeggiator1Direction] = useState('up');
   const [arpeggiator2On, setArpeggiator2On] = useState(false);
-  const [arpeggiator2Pattern, setArpeggiator2Pattern] = useState('1,3,5,6,4,2');
+  const [arpeggiator2Pattern, setArpeggiator2Pattern] = useState('1,3,5');
   const [arpeggiator2Bpm, setArpeggiator2Bpm] = useState(180);
   const [arpeggiator2Direction, setArpeggiator2Direction] = useState('down');
   const [customChords, setCustomChords] = useState({
@@ -32,7 +32,7 @@ function App() {
     preloadAudioFiles();
   }, []);
 
-  const audioCacheRef = useRef({});
+  const audioCacheRef = useRef({}); // Now stores Audio objects, not just blobs
 
   const preloadAudioFiles = async () => {
     const cache = audioCacheRef.current;
@@ -48,12 +48,13 @@ function App() {
     const priorityPromises = priorityNotes.map(async (note) => {
       const fileNumber = noteToFileNumber[note];
       const audioUrl = `/audio/${fileNumber}.mp3`;
-      console.log(`Fetching ${note} from ${audioUrl}`);
       try {
         const response = await fetch(audioUrl);
         if (!response.ok) throw new Error(`Failed to fetch ${audioUrl}: ${response.status}`);
         const audioBlob = await response.blob();
-        cache[note] = audioBlob;
+        const audioUrlObj = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrlObj);
+        cache[note] = { audio, blob: audioBlob }; // Store Audio object and blob
         console.log(`Successfully cached ${note}`);
       } catch (error) {
         console.error(`Error caching ${note}:`, error.message);
@@ -69,12 +70,13 @@ function App() {
     const remainingPromises = otherNotes.map(async (note) => {
       const fileNumber = noteToFileNumber[note];
       const audioUrl = `/audio/${fileNumber}.mp3`;
-      console.log(`Fetching ${note} from ${audioUrl}`);
       try {
         const response = await fetch(audioUrl);
         if (!response.ok) throw new Error(`Failed to fetch ${audioUrl}: ${response.status}`);
         const audioBlob = await response.blob();
-        cache[note] = audioBlob;
+        const audioUrlObj = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrlObj);
+        cache[note] = { audio, blob: audioBlob };
         console.log(`Successfully cached ${note}`);
       } catch (error) {
         console.error(`Error caching ${note}:`, error.message);
@@ -92,12 +94,10 @@ function App() {
       console.log(`Playback disabled until F2-F5 loaded, attempted: ${note}`);
       return;
     }
-    const audioBlob = audioCacheRef.current[note];
-    if (audioBlob) {
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
+    const cached = audioCacheRef.current[note];
+    if (cached && cached.audio) {
+      const audio = new Audio(cached.audio.src); // Clone to allow overlap
       audio.play().catch(err => console.error(`Error playing ${note}:`, err));
-      audio.onended = () => URL.revokeObjectURL(audioUrl);
     } else {
       console.warn(`Audio not cached for ${note}`);
     }
@@ -112,9 +112,9 @@ function App() {
     }
 
     chordNotes.forEach((note) => {
-      const audioBlob = audioCacheRef.current[note];
-      if (audioBlob) {
-        audioBlob.arrayBuffer().then((arrayBuffer) => {
+      const cached = audioCacheRef.current[note];
+      if (cached && cached.blob) {
+        cached.blob.arrayBuffer().then((arrayBuffer) => {
           audioContext.decodeAudioData(arrayBuffer, (buffer) => {
             const source = audioContext.createBufferSource();
             source.buffer = buffer;

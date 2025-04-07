@@ -158,7 +158,7 @@
   background-color: #ccc;
   border-radius: 50%;
   cursor: help;
-  margin-left: 0px;
+  margin-left: -10px;
   font-size: 12px;
   position: relative;
 }
