@@ -23,7 +23,43 @@ const row2Modes = [
 ];
 
 
-const customChordIds = ['custom1', 'custom2', 'custom3', 'custom4'];
+const customChordIds = ['custom1', 'custom2', 'custom3'];
+
+const MiniKeyboard = ({ chord, onNoteToggle, id, setMode }) => {
+  const row1 = [1, 3, 5, 7, 9, 11]; // C#, D#, F, G, A, B indices
+  const row2 = [0, 2, 4, 6, 8, 10]; // C, D, E, F#, G#, A# indices
+
+  const handleKeyClick = (index) => {
+    onNoteToggle(index);
+    setMode(id);
+  };
+
+  const adjustedChord = chord && chord.length > 0 ? chord : [0];
+
+  return (
+    <div className="mini-keyboard janko">
+      <div className="mini-row top-row">
+        {row1.map((index) => (
+          <div
+            key={index}
+            className={`mini-key ${adjustedChord.includes(index) ? 'active' : ''}`}
+            onClick={() => handleKeyClick(index)}
+          />
+        ))}
+      </div>
+      <div className="mini-row">
+        {row2.map((index) => (
+          <div
+            key={index}
+            className={`mini-key ${adjustedChord.includes(index) ? 'active' : ''}`}
+            onClick={() => handleKeyClick(index)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 
 function Controls({ 
   mode, setMode, 
@@ -48,6 +84,26 @@ function Controls({
         [id]: value === '' ? [] : value.split(',').map(Number)
       }));
     }
+  };
+
+  const handleNoteToggle = (id, note) => {
+    setCustomChords(prev => {
+      const currentChord = prev[id] && prev[id].length > 0 ? prev[id] : [0]; // Ensure 0 is always present
+      if (note === 0) {
+        return { ...prev, [id]: currentChord }; // Do nothing if clicking the first key
+      }
+      if (currentChord.includes(note)) {
+        return {
+          ...prev,
+          [id]: currentChord.filter(n => n !== note) // Remove other notes, keep 0
+        };
+      } else {
+        return {
+          ...prev,
+          [id]: [...currentChord, note].sort((a, b) => a - b) // Add new note, keep 0
+        };
+      }
+    });
   };
 
   return (
@@ -78,24 +134,25 @@ function Controls({
       </div>
 
       <div className="control-row custom-chord-row">
-        {customChordIds.map(id => (
-          <button
-          className={mode === id ? 'active' : ''}
-          onClick={() => setMode(id)}
-          style={{ backgroundColor: modeColors[id] }}
-        >
-          {id.replace('custom', 'Custom')}
-          <input
-            type="text_short"
-            value={customChords[id].join(',')}
-            onChange={(e) => handleCustomChordChange(id, e.target.value)}
-            placeholder="e.g., 0,4,7"
-          />
-          </button>
-
-        ))}
-        <span className="help-customChords">?</span>
-      </div>
+  {customChordIds.map(id => (
+    <div key={id} className="custom-chord-container">
+      <button
+        className={mode === id ? 'active' : ''}
+        onClick={() => setMode(id)}
+        style={{ backgroundColor: modeColors[id] }}
+      >
+        {id.replace('custom', 'Custom')}
+      </button>
+      <MiniKeyboard
+        chord={customChords[id] || []}
+        onNoteToggle={(note) => handleNoteToggle(id, note)}
+        id={id} // Pass the custom chord ID
+        setMode={setMode} // Pass setMode prop
+      />
+    </div>
+  ))}
+  <span className="help-customChords">?</span>
+</div>
 
       
       <div className="control-row">

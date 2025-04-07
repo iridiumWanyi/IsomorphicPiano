@@ -137,7 +137,7 @@
 
 .help-customChords:hover::after,
 .help-customChords:focus::after {
-  content: "Enter a sequence of numbers from 0 to 11, separated by commas, to define the intervals of your custom chord relative to the root note (0). For example, '0,4,7' creates a major triad."; /* Placeholder text */
+  content: "Click the notes you want in the mini keyboard for your chord, with the bottom-left key being the root note"; /* Placeholder text */
   position: absolute;
   top: 100%;
   left: 50%;
@@ -152,4 +152,41 @@
   white-space: normal; /* Allow text to wrap */
   text-align: center; /* Optional: center the wrapped text */
   z-index: 10;
+}
+
+.custom-chord-container {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.mini-keyboard {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5px;
+}
+
+.mini-row {
+  display: flex;
+}
+
+.mini-row.top-row {
+  margin-left: 5px; /* Matches 8px width */
+}
+
+.mini-key {
+  width: 10px !important;
+  height: 15px !important;
+  border: .2px solid #948f8c; /* Added border to show radius */
+  margin: .5px;
+  padding: 0;
+  cursor: pointer;
+  background-color: #fff;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 3px !important; /* Increased from 1px to 5px for visible rounding */
+}
+
+.mini-key.active {
+  background-color: #ff9999; /* Highlight selected notes */
 }

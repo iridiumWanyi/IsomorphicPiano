@@ -114,7 +114,7 @@ const playNote = (note) => {
 return (
   <div className="app">
     <h1>Isomorphic Piano Simulator</h1>
-    {!isPriorityAudioLoaded && <p>Loading F2 to F5 audio files, please wait...</p>}
+    {!isPriorityAudioLoaded && <p>Loading audio files, please wait...</p>}
     {isPriorityAudioLoaded && (
       <>
         <Controls 
@@ -143,6 +143,7 @@ return (
           customChords={customChords}
           keyboardMode={keyboardMode}
         />
+        
       </>
     )}
   </div>

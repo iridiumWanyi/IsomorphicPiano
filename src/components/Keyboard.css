@@ -10,10 +10,10 @@
   justify-content: center;
 }
 
-/* Shift second and fourth rows (indices 1 and 3) to the right */
+/* Shift second and fourth rows for the janko layout */
 .row:nth-child(2),
 .row:nth-child(4) {
-  margin-left: -50px; /* Shift right by half a key width for subtle offset */
+  margin-left: -50px; 
 }
 
 .key-placeholder {
