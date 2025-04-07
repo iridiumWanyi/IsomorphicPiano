@@ -180,13 +180,23 @@ export const ArpeggiatorControls = ({
     }
   };
 
+  const handleTouchToggle = (setter, current) => (e) => {
+    e.preventDefault();
+    setter(!current);
+  };
+
+  const handleTouchDirection = (setter, current) => (e) => {
+    e.preventDefault();
+    setter(current === 'up' ? 'down' : 'up');
+  };
+
   return (
     <div className="arpeggiator-controls">
       <div className="control-row">
         <button
           className={arpeggiator1On ? 'active' : ''}
           onClick={() => setArpeggiator1On(!arpeggiator1On)}
-          onTouchStart={() => setArpeggiator1On(!arpeggiator1On)}
+          onTouchStart={handleTouchToggle(setArpeggiator1On, arpeggiator1On)}
           style={{ backgroundColor: arpeggiator1On ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
         >
           Arpeggiator 1 {arpeggiator1On ? 'On' : 'Off'}
@@ -203,7 +213,7 @@ export const ArpeggiatorControls = ({
         </label>
         <button
           onClick={() => setArpeggiator1Direction(arpeggiator1Direction === 'up' ? 'down' : 'up')}
-          onTouchStart={() => setArpeggiator1Direction(arpeggiator1Direction === 'up' ? 'down' : 'up')}
+          onTouchStart={handleTouchDirection(setArpeggiator1Direction, arpeggiator1Direction)}
           className={`direction-button ${arpeggiator1Direction}`}
         >
           {arpeggiator1Direction === 'up' ? '↑' : '↓'}
@@ -224,7 +234,7 @@ export const ArpeggiatorControls = ({
         <button
           className={arpeggiator2On ? 'active' : ''}
           onClick={() => setArpeggiator2On(!arpeggiator2On)}
-          onTouchStart={() => setArpeggiator2On(!arpeggiator2On)}
+          onTouchStart={handleTouchToggle(setArpeggiator2On, arpeggiator2On)}
           style={{ backgroundColor: arpeggiator2On ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
         >
           Arpeggiator 2 {arpeggiator2On ? 'On' : 'Off'}
@@ -237,11 +247,11 @@ export const ArpeggiatorControls = ({
             onChange={handlePatternChange(setArpeggiator2Pattern)}
             placeholder="e.g., 1,2,3"
           />
-          <span className="text">......</span>
+          <span className="help-arpeggiatorPattern">?</span>
         </label>
         <button
           onClick={() => setArpeggiator2Direction(arpeggiator2Direction === 'up' ? 'down' : 'up')}
-          onTouchStart={() => setArpeggiator2Direction(arpeggiator2Direction === 'up' ? 'down' : 'up')}
+          onTouchStart={handleTouchDirection(setArpeggiator2Direction, arpeggiator2Direction)}
           className={`direction-button ${arpeggiator2Direction}`}
         >
           {arpeggiator2Direction === 'up' ? '↑' : '↓'}

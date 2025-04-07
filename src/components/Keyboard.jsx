@@ -59,9 +59,9 @@ function Keyboard({
     }
   };
 
-  const playArpeggio = (baseNote, arpeggiatorOn, pattern, bpm, direction) => {
+  const playArpeggio = (baseNote, arpeggiatorOnRef, pattern, bpm, direction) => {
     const baseChordNotes = getChordNotes(baseNote);
-    if (baseChordNotes.length === 0 || !arpeggiatorOn) return;
+    if (baseChordNotes.length === 0) return;
 
     const patternArray = pattern.split(',').filter(x => x !== '').map(Number);
     const maxPatternIndex = Math.max(...patternArray);
@@ -84,26 +84,23 @@ function Keyboard({
     let step = 0;
 
     const playNextNote = () => {
-      if (!arpeggiatorOn) {
+      if (!arpeggiatorOnRef.current || step >= arpeggioNotes.length) {
         setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n)));
         return;
       }
+      const note = arpeggioNotes[step];
+      setActiveNotes(prev => {
+        const newNotes = prev.filter(n => !arpeggioNotes.includes(n) || n === note);
+        return [...newNotes, note];
+      });
+      playNote(note);
+      step++;
       if (step < arpeggioNotes.length) {
-        const note = arpeggioNotes[step];
-        setActiveNotes(prev => {
-          const newNotes = prev.filter(n => !arpeggioNotes.includes(n) || n === note);
-          return [...newNotes, note];
-        });
-        playNote(note);
-        step++;
         setTimeout(playNextNote, delay);
-      } else {
-        setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n)));
       }
     };
 
-    // Start immediately
-    if (arpeggioNotes.length > 0) {
+    if (arpeggioNotes.length > 0 && arpeggiatorOnRef.current) {
       const firstNote = arpeggioNotes[0];
       setActiveNotes(prev => [...prev.filter(n => !arpeggioNotes.includes(n)), firstNote]);
       playNote(firstNote);
@@ -119,9 +116,12 @@ function Keyboard({
       const chordNotes = getChordNotes(note);
       setActiveNotes(prev => [...prev, ...chordNotes.filter(n => !prev.includes(n))]);
       
+      const arpeggiator1OnRef = { current: arpeggiator1On };
+      const arpeggiator2OnRef = { current: arpeggiator2On };
+
       if (arpeggiator1On || arpeggiator2On) {
-        if (arpeggiator1On) playArpeggio(note, arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction);
-        if (arpeggiator2On) playArpeggio(note, arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction);
+        if (arpeggiator1On) playArpeggio(note, arpeggiator1OnRef, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction);
+        if (arpeggiator2On) playArpeggio(note, arpeggiator2OnRef, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction);
       } else {
         playChord(chordNotes);
       }
@@ -131,6 +131,7 @@ function Keyboard({
   const handleNoteRelease = (note) => {
     const chordNotes = getChordNotes(note);
     setActiveNotes(prev => prev.filter(n => !chordNotes.includes(n)));
+    // If arpeggiators are on, they will stop naturally via arpeggiatorOnRef checks
   };
 
   return (
