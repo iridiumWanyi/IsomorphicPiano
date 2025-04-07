@@ -26,7 +26,7 @@ const row2Modes = [
   { id: 'susNine', label: 'Sus9' },
 ];
 
-const customChordIds = ['custom1', 'custom2', 'custom3', 'custom4'];
+const customChordIds = ['custom1', 'custom2', 'custom3'];
 
 const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
   const row1 = [1, 3, 5, 7, 9, 11];
@@ -138,7 +138,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
         ))}
       </div>
       <div className="control-row custom-chord-row">
-      <span className="row-label">Custom Chords:</span>
+        <span className="row-label">Custom Chords:</span>
         {customChordIds.map(id => (
           <div key={id} className="custom-chord-container">
             <button
@@ -147,7 +147,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
               onTouchStart={() => setMode(id)}
               style={{ backgroundColor: modeColors[id] }}
             >
-              {id.replace('custom', 'Chord')}
+              {id.replace('custom', 'Custom')}
             </button>
             <MiniKeyboard
               chord={customChords[id] || []}
@@ -237,7 +237,7 @@ export const ArpeggiatorControls = ({
             onChange={handlePatternChange(setArpeggiator2Pattern)}
             placeholder="e.g., 1,2,3"
           />
-          <span className="position_phantom">......</span>
+          <span className="help-arpeggiatorPattern">?</span>
         </label>
         <button
           onClick={() => setArpeggiator2Direction(arpeggiator2Direction === 'up' ? 'down' : 'up')}

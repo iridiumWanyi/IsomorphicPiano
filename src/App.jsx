@@ -16,7 +16,7 @@ function App() {
   const [arpeggiator1Bpm, setArpeggiator1Bpm] = useState(240);
   const [arpeggiator1Direction, setArpeggiator1Direction] = useState('up');
   const [arpeggiator2On, setArpeggiator2On] = useState(false);
-  const [arpeggiator2Pattern, setArpeggiator2Pattern] = useState('1,3,5,6,4,2');
+  const [arpeggiator2Pattern, setArpeggiator2Pattern] = useState('1,3,5');
   const [arpeggiator2Bpm, setArpeggiator2Bpm] = useState(180);
   const [arpeggiator2Direction, setArpeggiator2Direction] = useState('down');
   const [customChords, setCustomChords] = useState({
@@ -161,6 +161,7 @@ function App() {
           <Keyboard
             mode={mode}
             playNote={playNote}
+            playChord={playChord}
             arpeggiator1On={arpeggiator1On}
             arpeggiator1Pattern={arpeggiator1Pattern}
             arpeggiator1Bpm={arpeggiator1Bpm}
@@ -172,12 +173,10 @@ function App() {
             customChords={customChords}
             keyboardMode={keyboardMode}
           />
-          <div className="keyboard-toggle-wrapper">
-            <KeyboardToggle
-              keyboardMode={keyboardMode}
-              setKeyboardMode={setKeyboardMode}
-            />
-          </div>
+          <KeyboardToggle
+            keyboardMode={keyboardMode}
+            setKeyboardMode={setKeyboardMode}
+          />
         </>
       )}
     </div>

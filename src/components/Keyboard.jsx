@@ -4,7 +4,7 @@ import { partialKeyboardLayout, wholeKeyboardLayout, chromaticScale, modeColors 
 import './Keyboard.css';
 
 function Keyboard({ 
-  mode, playNote, 
+  mode, playNote, playChord, 
   arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction,
   arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction,
   customChords, keyboardMode 
@@ -48,6 +48,7 @@ function Keyboard({
       case 'custom1':
       case 'custom2':
       case 'custom3':
+      case 'custom4':
         const intervals = customChords[mode] || [];
         return intervals.map(interval => {
           const targetIndex = baseIndex + interval;
@@ -109,7 +110,7 @@ function Keyboard({
         if (arpeggiator1On) playArpeggio(note, arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction);
         if (arpeggiator2On) playArpeggio(note, arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction);
       } else {
-        chordNotes.forEach(playNote);
+        playChord(chordNotes);
       }
     }
   };
