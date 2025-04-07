@@ -191,23 +191,28 @@
 
 .mini-keyboard {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   margin-left: 5px;
-}
-
-.janko-row {
-  display: flex;
 }
 
 .mini-keyboard .janko-row.top-row {
   margin-left: 5px;
 }
 
+.mini-keyboard .janko-row.bottom-row {
+  margin-left: 10;
+}
+
+.janko-row {
+  display: flex;
+}
+
+
 .mini-key {
   width: 12px;
   height: 15px;
   border: 1px solid #cfc9c4;
-  margin: .2px;
+  margin: .1px;
   padding: 0;
   cursor: pointer;
   background-color: #fff;

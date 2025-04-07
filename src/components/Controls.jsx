@@ -28,11 +28,9 @@ const row2Modes = [
 
 const customChordIds = ['custom1', 'custom2', 'custom3'];
 
-
-
 const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
-  const row1 = [1, 3, 5, 7, 9, 11]; 
-  const row2 = [0, 2, 4, 6, 8, 10]; 
+  const row1 = [1, 3, 5, 7, 9, 11];
+  const row2 = [0, 2, 4, 6, 8, 10];
 
   const handleKeyClick = (index) => {
     if (id && setMode) {
@@ -45,8 +43,8 @@ const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
 
   return (
     <div className={`mini-keyboard ${id ? '' : 'static'}`}>
-      <div className="mini-row top-row">
-        {row1.map((index) => (
+      <div className="janko-row bottom-row">
+        {row2.map((index) => (
           <div
             key={index}
             className={`mini-key ${adjustedChord.includes(index) ? 'active' : ''}`}
@@ -55,8 +53,8 @@ const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
           />
         ))}
       </div>
-      <div className="mini-row">
-        {row2.map((index) => (
+      <div className="janko-row top-row">
+        {row1.map((index) => (
           <div
             key={index}
             className={`mini-key ${adjustedChord.includes(index) ? 'active' : ''}`}
