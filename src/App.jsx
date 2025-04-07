@@ -99,6 +99,31 @@ function App() {
     }
   };
 
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  const playChord = (chordNotes) => {
+    if (!isPriorityAudioLoaded) {
+      console.log(`Playback disabled until F2-F5 loaded, attempted: ${chordNotes}`);
+      return;
+    }
+
+    chordNotes.forEach((note) => {
+      const audioBlob = audioCacheRef.current[note];
+      if (audioBlob) {
+        audioBlob.arrayBuffer().then((arrayBuffer) => {
+          audioContext.decodeAudioData(arrayBuffer, (buffer) => {
+            const source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(audioContext.destination);
+            source.start(audioContext.currentTime);
+          }).catch(err => console.error(`Error decoding ${note}:`, err));
+        }).catch(err => console.error(`Error converting blob for ${note}:`, err));
+      } else {
+        console.warn(`Audio not cached for ${note}`);
+      }
+    });
+  };
+
   return (
     <div className="app">
       <h1>Isomorphic Piano Simulator</h1>
@@ -124,6 +149,7 @@ function App() {
           <Keyboard
             mode={mode}
             playNote={playNote}
+            playChord={playChord}
             arpeggiatorOn={arpeggiatorOn}
             arpeggiatorPattern={arpeggiatorPattern}
             arpeggiatorBpm={arpeggiatorBpm}

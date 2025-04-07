@@ -3,7 +3,7 @@ import Key from './Key';
 import { partialKeyboardLayout, wholeKeyboardLayout, chromaticScale, modeColors } from '../constants';
 import './Keyboard.css';
 
-function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiatorBpm, arpeggiatorDirection, customChords, keyboardMode }) {
+function Keyboard({ mode, playNote, playChord, arpeggiatorOn, arpeggiatorPattern, arpeggiatorBpm, arpeggiatorDirection, customChords, keyboardMode }) {
   const [activeNotes, setActiveNotes] = useState([]);
   const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
 
@@ -104,7 +104,7 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiat
       if (arpeggiatorOn) {
         playArpeggio(note);
       } else {
-        chordNotes.forEach(playNote);
+        playChord(chordNotes);
       }
     }
   };
