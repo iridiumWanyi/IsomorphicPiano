@@ -1,8 +1,17 @@
-.controls {
+.chord-controls,
+.arpeggiator-controls{
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+}
+
+.keyboard-toggle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .control-row {
@@ -16,7 +25,9 @@
   margin-left: 20px;
 }
 
-.controls button {
+.chord-controls button,
+.arpeggiator-controls button,
+.keyboard-toggle-container button {
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
@@ -25,29 +36,26 @@
   color: #333;
 }
 
-.controls button.active {
+.chord-controls button.active,
+.arpeggiator-controls button.active,
+.keyboard-toggle-container button.active {
   transform: scale(1.1);
 }
 
-.controls button:hover {
+.chord-controls button:hover,
+.arpeggiator-controls button:hover,
+.keyboard-toggle-container button:hover {
   opacity: 0.9;
 }
 
-.controls label {
+.arpeggiator-controls label,
+.keyboard-toggle-container label {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-.controls input[type="text_short"] {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 50px;
-  margin-left: 5px;
-}
-
-.controls input[type="text_long"] {
+.arpeggiator-controls input[type="text_long"] {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -55,12 +63,34 @@
   margin-left: 5px;
 }
 
-.controls input[type="range"] {
+.arpeggiator-controls input[type="range"] {
   width: 100px;
   margin-left: 5px;
+  -webkit-appearance: none; /* Remove default styling */
+  background: transparent; /* Ensure container background doesn’t interfere */
 }
 
-.controls span {
+/* Track */
+.arpeggiator-controls input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: #d3cdc7; 
+  border-radius: 4px;
+}
+
+/* Thumb */
+.arpeggiator-controls input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #6e6c6a; /* Change this to your desired thumb color */
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -4px; /* Center thumb on track */
+}
+
+
+.arpeggiator-controls span,
+.keyboard-toggle-container span {
   margin-left: 5px;
   font-size: 14px;
 }
@@ -104,7 +134,7 @@
 
 .help-arpeggiatorPattern:hover::after,
 .help-arpeggiatorPattern:focus::after {
-  content: "Enter a sequence of numbers separated by commas to specify the order in which chord notes should be played. Numbers exceeding the count of notes in the chord will trigger the corresponding notes in higher octaves. The default pattern reflects that of BWV 846.";
+  content: "Enter a sequence of numbers to specify the order in which chord notes should be played. Numbers exceeding the notes count in the chord will trigger the corresponding notes in higher octaves. The default pattern reflects that of BWV 846.";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -160,7 +190,7 @@
   margin-right: 10px;
 }
 
-.mini-keyboard.janko {
+.mini-keyboard {
   display: flex;
   flex-direction: column;
   margin-left: 5px;
@@ -170,14 +200,14 @@
   display: flex;
 }
 
-.mini-keyboard.janko .janko-row.top-row {
+.mini-keyboard .janko-row.top-row {
   margin-left: 5px;
 }
 
 .mini-key {
   width: 12px;
   height: 15px;
-  border: 1px solid #ddd9d6;
+  border: 1px solid #cfc9c4;
   margin: .2px;
   padding: 0;
   cursor: pointer;
@@ -187,7 +217,7 @@
 }
 
 .mini-key.active {
-  background-color: #ff9999; /* Default for custom chords */
+  background-color: #ff9999;
 }
 
 .chord-button-container {
@@ -202,7 +232,7 @@
   transform: translateX(-50%);
   z-index: 20;
   padding: 5px;
-  background-color: rgba(239, 235, 233, 0.9);
+  background-color: rgba(241, 236, 234, 0.9);
   border: 1px solid #ccc;
   border-radius: 3px;
 }

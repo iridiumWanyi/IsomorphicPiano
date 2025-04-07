@@ -117,7 +117,10 @@ function Keyboard({ mode, playNote, arpeggiatorOn, arpeggiatorPattern, arpeggiat
   return (
     <div className={`keyboard ${keyboardMode}`}>
       {layout.map((row, rowIndex) => (
-        <div key={rowIndex} className="row">
+        <div
+          key={rowIndex}
+          className={`row ${keyboardMode === 'whole' && rowIndex === 1 ? 'extra-space-below' : ''}`}
+        >
           {row.map((note, colIndex) => (
             note ? (
               <Key

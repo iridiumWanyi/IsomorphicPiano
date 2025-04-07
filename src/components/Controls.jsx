@@ -1,5 +1,6 @@
 import React from 'react';
 import { modeColors } from '../constants';
+import { chordNotes } from '../constants';
 import './Controls.css';
 
 const row0Modes = [
@@ -27,102 +28,63 @@ const row2Modes = [
 
 const customChordIds = ['custom1', 'custom2', 'custom3'];
 
-const chordNotes = {
-  'single': [0],
-  'octave': [0, 12],
-  'major': [0, 4, 7],
-  'minor': [0, 3, 7],
-  'diminished': [0, 3, 6],
-  'augmented': [0, 4, 8],
-  'domSeven': [0, 4, 7, 10],
-  'majSeven': [0, 4, 7, 11],
-  'minSeven': [0, 3, 7, 10],
-  'susFour': [0, 5, 7],
-  'domNine': [0, 4, 7, 10, 14],
-  'majNine': [0, 4, 7, 11, 14],
-  'minNine': [0, 3, 7, 10, 14],
-  'susNine': [0, 5, 7, 14]
-};
 
-function Controls({ 
-  mode, setMode, 
-  arpeggiatorOn, setArpeggiatorOn, 
-  arpeggiatorPattern, setArpeggiatorPattern, 
-  arpeggiatorBpm, setArpeggiatorBpm,
-  arpeggiatorDirection, setArpeggiatorDirection,
-  customChords, setCustomChords,
-  keyboardMode, setKeyboardMode
-}) {
-  const handlePatternChange = (e) => {
-    const value = e.target.value;
-    if (/^(\d+,)*\d*$/.test(value) || value === '') {
-      setArpeggiatorPattern(value);
+
+const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
+  const row1 = [1, 3, 5, 7, 9, 11]; // C#, D#, F, G, A, B
+  const row2 = [0, 2, 4, 6, 8, 10]; // C, D, E, F#, G#, A#
+
+  const handleKeyClick = (index) => {
+    if (id && setMode) {
+      onNoteToggle(index);
+      setMode(id);
     }
   };
 
+  const adjustedChord = chord && chord.length > 0 ? chord : id ? [0] : [];
+
+  return (
+    <div className={`mini-keyboard ${id ? '' : 'static'}`}>
+      <div className="mini-row top-row">
+        {row1.map((index) => (
+          <div
+            key={index}
+            className={`mini-key ${adjustedChord.includes(index) ? 'active' : ''}`}
+            onClick={() => handleKeyClick(index)}
+            style={adjustedChord.includes(index) && highlightColor ? { backgroundColor: highlightColor } : {}}
+          />
+        ))}
+      </div>
+      <div className="mini-row">
+        {row2.map((index) => (
+          <div
+            key={index}
+            className={`mini-key ${adjustedChord.includes(index) ? 'active' : ''}`}
+            onClick={() => handleKeyClick(index)}
+            style={adjustedChord.includes(index) && highlightColor ? { backgroundColor: highlightColor } : {}}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) => {
   const handleNoteToggle = (id, note) => {
     setCustomChords(prev => {
       const currentChord = prev[id] && prev[id].length > 0 ? prev[id] : [0];
-      if (note === 0) {
-        return { ...prev, [id]: currentChord };
-      }
+      if (note === 0) return { ...prev, [id]: currentChord };
       if (currentChord.includes(note)) {
-        return {
-          ...prev,
-          [id]: currentChord.filter(n => n !== note)
-        };
-      } else {
-        return {
-          ...prev,
-          [id]: [...currentChord, note].sort((a, b) => a - b)
-        };
+        return { ...prev, [id]: currentChord.filter(n => n !== note) };
       }
+      return { ...prev, [id]: [...currentChord, note].sort((a, b) => a - b) };
     });
   };
 
-  const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
-    const row1 = [1, 3, 5, 7, 9, 11]; // C#, D#, F, G, A, B
-    const row2 = [0, 2, 4, 6, 8, 10]; // C, D, E, F#, G#, A#
-
-    const handleKeyClick = (index) => {
-      if (id && setMode) { // Only for custom chords
-        onNoteToggle(index);
-        setMode(id);
-      }
-    };
-
-    const adjustedChord = chord && chord.length > 0 ? chord : id ? [0] : [];
-
-    return (
-      <div className={`mini-keyboard janko ${id ? '' : 'static'}`}>
-        <div className="janko-row top-row">
-          {row1.map((index) => (
-            <div
-              key={index}
-              className={`mini-key ${adjustedChord.includes(index) ? 'active' : ''}`}
-              onClick={() => handleKeyClick(index)}
-              style={adjustedChord.includes(index) && highlightColor ? { backgroundColor: highlightColor } : {}}
-            />
-          ))}
-        </div>
-        <div className="janko-row">
-          {row2.map((index) => (
-            <div
-              key={index}
-              className={`mini-key ${adjustedChord.includes(index) ? 'active' : ''}`}
-              onClick={() => handleKeyClick(index)}
-              style={adjustedChord.includes(index) && highlightColor ? { backgroundColor: highlightColor } : {}}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="controls">
+    <div className="chord-controls">
       <div className="control-row">
-      {row0Modes.map(m => (
+        {row0Modes.map(m => (
           <div key={m.id} className="chord-button-container">
             <button
               className={mode === m.id ? 'active' : ''}
@@ -192,6 +154,25 @@ function Controls({
         ))}
         <span className="help-customChords">?</span>
       </div>
+    </div>
+  );
+};
+
+export const ArpeggiatorControls = ({
+  arpeggiatorOn, setArpeggiatorOn,
+  arpeggiatorPattern, setArpeggiatorPattern,
+  arpeggiatorBpm, setArpeggiatorBpm,
+  arpeggiatorDirection, setArpeggiatorDirection
+}) => {
+  const handlePatternChange = (e) => {
+    const value = e.target.value;
+    if (/^(\d+,)*\d*$/.test(value) || value === '') {
+      setArpeggiatorPattern(value);
+    }
+  };
+
+  return (
+    <div className="arpeggiator-controls">
       <div className="control-row">
         <button
           className={arpeggiatorOn ? 'active' : ''}
@@ -228,16 +209,19 @@ function Controls({
           <span>{arpeggiatorBpm}</span>
         </label>
       </div>
-      <div className="control-row">
-        <button
-          onClick={() => setKeyboardMode(keyboardMode === 'partial' ? 'whole' : 'partial')}
-          className="keyboard-toggle"
-        >
-          {keyboardMode === 'partial' ? 'Switch to Whole Keyboard' : 'Switch to Partial Keyboard'}
-        </button>
-      </div>
     </div>
   );
-}
+};
 
-export default Controls;
+export const KeyboardToggle = ({ keyboardMode, setKeyboardMode }) => (
+  <div className="keyboard-toggle-container">
+    <div className="control-row">
+      <button
+        onClick={() => setKeyboardMode(keyboardMode === 'partial' ? 'whole' : 'partial')}
+        className="keyboard-toggle"
+      >
+        {keyboardMode === 'partial' ? 'Switch to Whole Keyboard' : 'Switch to Partial Keyboard'}
+      </button>
+    </div>
+  </div>
+);

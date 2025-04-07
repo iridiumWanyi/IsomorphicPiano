@@ -5,12 +5,11 @@ A web-based isomorphic keyboard simulator that allows users to play notes, chord
 - Isomorphic(Janko) Keyboard Layout
 - Chord Modes: Play predefined chords (e.g., Major, Minor, Dominant 7, Major 9) with a single key press.
 - Custom Chords: Define up to four custom chords with user-specified intervals (e.g., "0,4,7" is the major chord).
-- Arpeggiator: Toggle an arpeggiator with adjustable BPM and pattern (e.g., "12345345" inspired by BWV 846).
+- Arpeggiator: Toggle an arpeggiator with adjustable BPM and pattern.
 
 ## Prerequisites
 - A modern web browser (e.g., Chrome, Firefox).
 - A local server (e.g., VS Code’s Live Server) to avoid CORS issues with audio file loading.
-
 
 ## Contributing
 Feel free to fork, tweak, or submit pull requests! Ideas:
