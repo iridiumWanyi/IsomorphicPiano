@@ -66,11 +66,10 @@
 .arpeggiator-controls input[type="range"] {
   width: 100px;
   margin-left: 5px;
-  -webkit-appearance: none; /* Remove default styling */
-  background: transparent; /* Ensure container background doesn’t interfere */
+  -webkit-appearance: none; 
+  background: transparent; 
 }
 
-/* Track */
 .arpeggiator-controls input[type="range"]::-webkit-slider-runnable-track {
   height: 8px;
   background: #d3cdc7; 
@@ -82,10 +81,10 @@
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
-  background: #6e6c6a; /* Change this to your desired thumb color */
+  background: #6e6c6a;
   border-radius: 50%;
   cursor: pointer;
-  margin-top: -4px; /* Center thumb on track */
+  margin-top: -4px;
 }
 
 

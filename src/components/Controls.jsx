@@ -31,8 +31,8 @@ const customChordIds = ['custom1', 'custom2', 'custom3'];
 
 
 const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
-  const row1 = [1, 3, 5, 7, 9, 11]; // C#, D#, F, G, A, B
-  const row2 = [0, 2, 4, 6, 8, 10]; // C, D, E, F#, G#, A#
+  const row1 = [1, 3, 5, 7, 9, 11]; 
+  const row2 = [0, 2, 4, 6, 8, 10]; 
 
   const handleKeyClick = (index) => {
     if (id && setMode) {
