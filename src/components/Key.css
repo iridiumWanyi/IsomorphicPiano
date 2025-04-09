@@ -33,6 +33,7 @@
 }
 
 .key.octavehighlight {
-  background-color: #53504f !important; 
+  background-color: #b3aeac !important; 
+  border: 1px solid #ccc;
   color: #fff !important; /* White text for visibility */
 }

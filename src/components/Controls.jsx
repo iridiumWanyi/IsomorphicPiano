@@ -218,7 +218,7 @@ export const ArpeggiatorControls = ({
           className={arpeggiator1On ? 'active' : ''}
           onClick={handleClickToggle(setArpeggiator1On, arpeggiator1On)}
           onTouchStart={handleTouchToggle(setArpeggiator1On, arpeggiator1On)}
-          style={{ backgroundColor: arpeggiator1On ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
+          style={{ backgroundColor: arpeggiator1On ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
         >
           Arpeggiator 1 {arpeggiator1On ? 'On' : 'Off'}
         </button>
@@ -256,7 +256,7 @@ export const ArpeggiatorControls = ({
           className={arpeggiator2On ? 'active' : ''}
           onClick={handleClickToggle(setArpeggiator2On, arpeggiator2On)}
           onTouchStart={handleTouchToggle(setArpeggiator2On, arpeggiator2On)}
-          style={{ backgroundColor: arpeggiator2On ? '#e8d0d4' : modeColors['arpeggiatorToggle'] }}
+          style={{ backgroundColor: arpeggiator2On ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
         >
           Arpeggiator 2 {arpeggiator2On ? 'On' : 'Off'}
         </button>
@@ -293,7 +293,7 @@ export const ArpeggiatorControls = ({
   );
 };
 
-export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKeyShape, keyColorScheme, setKeyColorScheme }) => {
+export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKeyShape, keyColorScheme, setKeyColorScheme, highlightNotes, setHighlightNotes }) => {
   const toggleKeyShape = () => {
     if (keyShape === 'rectangle') setKeyShape('hexagon');
     else if (keyShape === 'hexagon') setKeyShape('circle');
@@ -305,6 +305,14 @@ export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKey
     else if (keyColorScheme === 'uniformWhite') setKeyColorScheme('octavehighlight');
     else setKeyColorScheme('blackWhite');
   };
+
+  const handleHighlightToggle = (note) => {
+    setHighlightNotes(prev => 
+      prev.includes(note) ? prev.filter(n => n !== note) : [...prev, note]
+    );
+  };
+
+  const noteList = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
   return (
     <div className="keyboard-toggle-container">
@@ -329,9 +337,25 @@ export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKey
         >
           {keyColorScheme === 'blackWhite' ? 'Black/White Coloring' :
            keyColorScheme === 'uniformWhite' ? 'Uniform Coloring' :
-           'Octave Highlights'}
+           'Custom Highlighted Keys'}
         </button>
       </div>
+      {keyColorScheme === 'octavehighlight' && (
+        <div className="highlight-selector-row">
+          <span className="highlight-label">Select Notes:</span>
+          <div className="note-list">
+            {noteList.map(note => (
+              <button
+                key={note}
+                className={`note-button ${highlightNotes.includes(note) ? 'active' : ''}`}
+                onClick={() => handleHighlightToggle(note)}
+              >
+                {note}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

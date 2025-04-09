@@ -28,6 +28,7 @@ function App() {
   const [keyboardMode, setKeyboardMode] = useState('partial');
   const [keyShape, setKeyShape] = useState('rectangle');
   const [keyColorScheme, setKeyColorScheme] = useState('blackWhite');
+  const [highlightNotes, setHighlightNotes] = useState(['C']);
   const [isPriorityAudioLoaded, setIsPriorityAudioLoaded] = useState(false);
 
   useEffect(() => {
@@ -176,6 +177,7 @@ function App() {
             keyboardMode={keyboardMode}
             keyShape={keyShape}
             keyColorScheme={keyColorScheme}
+            highlightNotes={highlightNotes} // Pass new prop
           />
           <KeyboardToggle
             keyboardMode={keyboardMode}
@@ -184,6 +186,8 @@ function App() {
             setKeyShape={setKeyShape}
             keyColorScheme={keyColorScheme}
             setKeyColorScheme={setKeyColorScheme}
+            highlightNotes={highlightNotes} // Pass new prop
+            setHighlightNotes={setHighlightNotes} // Pass setter
           />
         </>
       )}

@@ -250,3 +250,41 @@
 .mini-keyboard.static .mini-key {
   cursor: default;
 }
+
+.highlight-selector-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px; 
+}
+
+.highlight-label {
+  font-size: 14px;
+}
+
+.note-list {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap; /* Allow wrapping if needed */
+}
+
+.note-button {
+  padding: 1px 2px;
+  font-size: 12px;
+  width: 10px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  font-size: 8px;
+}
+
+.note-button.active {
+  background-color: #dab3b3; /* Matches .key.octavehighlight */
+  color: #fff;
+}
+
+
+

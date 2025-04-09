@@ -1,18 +1,19 @@
 import React from 'react';
 import './Key.css';
 
-function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor, keyShape, keyColorScheme }) {
+function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor, keyShape, keyColorScheme, highlightNotes }) {
   const isDark = note.includes('#');
-  const isCNote = note.match(/^C\d+$/); // Matches only "C" followed by digits (e.g., C3, C4), not C#
+  const noteBase = note.match(/^[A-G]#?/)?.[0] || ''; // Extract base note (e.g., 'C' or 'C#' from 'C3' or 'C#4')
+  const isHighlighted = highlightNotes.includes(noteBase);
   
-  // Determine base color class based on keyColorScheme
   const colorClass = keyColorScheme === 'uniformWhite' ? 'uniformWhite' :
-                    keyColorScheme === 'octavehighlight' ? (isCNote ? 'octavehighlight' : 'white') : // Only natural C notes are red, others white
+                    keyColorScheme === 'octavehighlight' ? (isHighlighted ? 'octavehighlight' : 'white') :
                     isDark ? 'dark' : 'white';
 
   const style = {
     backgroundColor: isActive ? highlightColor : ''
   };
+
   const handleMouseDown = (e) => {
     e.preventDefault();
     onNotePress(note);
@@ -46,7 +47,7 @@ function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor, keySh
   return (
     <div
       className={`key ${colorClass} ${isActive ? 'active' : ''} ${keyShape}`}
-      style={{ backgroundColor: isActive ? highlightColor : '' }}
+      style={style}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
