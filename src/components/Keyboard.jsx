@@ -7,7 +7,7 @@ function Keyboard({
   mode, playNote, playChord, 
   arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction,
   arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction,
-  customChords, keyboardMode 
+  customChords, keyboardMode, keyShape // Added keyShape prop
 }) {
   const [activeNotes, setActiveNotes] = useState([]);
   const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
@@ -83,7 +83,7 @@ function Keyboard({
     const playNextNote = () => {
       if (!arpeggiatorOnRef.current || step >= arpeggioNotes.length) {
         setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n)));
-        clearTimeout(timeoutId); // Ensure no lingering timeouts
+        clearTimeout(timeoutId);
         return;
       }
       const note = arpeggioNotes[step];
@@ -93,7 +93,7 @@ function Keyboard({
       if (step < arpeggioNotes.length) {
         timeoutId = setTimeout(playNextNote, delay);
       } else {
-        setTimeout(() => setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n))), delay); // Clear after last note
+        setTimeout(() => setActiveNotes(prev => prev.filter(n => !arpeggioNotes.includes(n))), delay);
       }
     };
 
@@ -136,9 +136,10 @@ function Keyboard({
     <div className={`keyboard ${keyboardMode}`}>
       {layout.map((row, rowIndex) => (
         <div
-          key={rowIndex}
-          className={`row ${keyboardMode === 'whole' && rowIndex === 1 ? 'extra-space-below' : ''}`}
-        >
+  key={rowIndex}
+  className={`row ${keyShape === 'hexagon' ? 'hexagon-row' : keyShape === 'circle' ? 'circle-row' : ''} ${keyboardMode === 'whole' && rowIndex === 1 ? 'extra-space-below' : ''}`}
+>
+          
           {row.map((note, colIndex) => (
             note ? (
               <Key
@@ -148,6 +149,7 @@ function Keyboard({
                 onNoteRelease={handleNoteRelease}
                 isActive={activeNotes.includes(note)}
                 highlightColor={modeColors[mode] || '#d3d3d3'}
+                keyShape={keyShape}
               />
             ) : (
               <div key={`${rowIndex}-${colIndex}`} className="key-placeholder" />

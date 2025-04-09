@@ -293,15 +293,31 @@ export const ArpeggiatorControls = ({
   );
 };
 
-export const KeyboardToggle = ({ keyboardMode, setKeyboardMode }) => (
-  <div className="keyboard-toggle-container">
-    <div className="control-row">
-      <button
-        onClick={() => setKeyboardMode(keyboardMode === 'partial' ? 'whole' : 'partial')}
-        className="keyboard-toggle"
-      >
-        {keyboardMode === 'partial' ? 'Switch to Whole Keyboard' : 'Switch to Partial Keyboard'}
-      </button>
+export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKeyShape }) => {
+  const toggleKeyShape = () => {
+    if (keyShape === 'rectangle') setKeyShape('hexagon');
+    else if (keyShape === 'hexagon') setKeyShape('circle');
+    else setKeyShape('rectangle');
+  };
+
+  return (
+    <div className="keyboard-toggle-container">
+      <div className="control-row">
+        <button
+          onClick={() => setKeyboardMode(keyboardMode === 'partial' ? 'whole' : 'partial')}
+          className="keyboard-toggle"
+        >
+          {keyboardMode === 'partial' ? 'Partial Keyboard' : 'Whole Keyboard'}
+        </button>
+        <button
+          onClick={toggleKeyShape}
+          className="key-shape-toggle"
+        >
+          {keyShape === 'rectangle' ? 'Quasi-Piano Keys' :
+           keyShape === 'hexagon' ? 'Hexagon Keys' :
+           'Accordion Keys'}
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};

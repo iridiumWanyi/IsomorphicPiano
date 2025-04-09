@@ -26,13 +26,15 @@ function App() {
   });
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
   const [keyboardMode, setKeyboardMode] = useState('partial');
+  const [keyShape, setKeyShape] = useState('rectangle');
+  const [keyColorScheme, setKeyColorScheme] = useState('blackWhite'); // Reintroduced
   const [isPriorityAudioLoaded, setIsPriorityAudioLoaded] = useState(false);
 
   useEffect(() => {
     preloadAudioFiles();
   }, []);
 
-  const audioCacheRef = useRef({}); // Now stores Audio objects, not just blobs
+  const audioCacheRef = useRef({});
 
   const preloadAudioFiles = async () => {
     const cache = audioCacheRef.current;
@@ -54,7 +56,7 @@ function App() {
         const audioBlob = await response.blob();
         const audioUrlObj = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrlObj);
-        cache[note] = { audio, blob: audioBlob }; // Store Audio object and blob
+        cache[note] = { audio, blob: audioBlob };
         console.log(`Successfully cached ${note}`);
       } catch (error) {
         console.error(`Error caching ${note}:`, error.message);
@@ -96,7 +98,7 @@ function App() {
     }
     const cached = audioCacheRef.current[note];
     if (cached && cached.audio) {
-      const audio = new Audio(cached.audio.src); // Clone to allow overlap
+      const audio = new Audio(cached.audio.src);
       audio.play().catch(err => console.error(`Error playing ${note}:`, err));
     } else {
       console.warn(`Audio not cached for ${note}`);
@@ -172,10 +174,13 @@ function App() {
             arpeggiator2Direction={arpeggiator2Direction}
             customChords={customChords}
             keyboardMode={keyboardMode}
+            keyShape={keyShape} // Pass keyShape to Keyboard
           />
           <KeyboardToggle
             keyboardMode={keyboardMode}
             setKeyboardMode={setKeyboardMode}
+            keyShape={keyShape}
+            setKeyShape={setKeyShape} // Pass keyShape controls
           />
         </>
       )}

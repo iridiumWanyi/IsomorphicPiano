@@ -1,7 +1,7 @@
 import React from 'react';
 import './Key.css';
 
-function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor }) {
+function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor, keyShape }) {
   const isDark = note.includes('#');
 
   const handleMouseDown = (e) => {
@@ -36,7 +36,7 @@ function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor }) {
 
   return (
     <div
-      className={`key ${isDark ? 'dark' : 'white'} ${isActive ? 'active' : ''}`}
+      className={`key ${isDark ? 'dark' : 'white'} ${isActive ? 'active' : ''} ${keyShape}`}
       style={{ backgroundColor: isActive ? highlightColor : '' }}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
