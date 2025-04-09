@@ -7,7 +7,7 @@ function Keyboard({
   mode, playNote, playChord, 
   arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction,
   arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction,
-  customChords, keyboardMode, keyShape // Added keyShape prop
+  customChords, keyboardMode, keyShape, keyColorScheme // Added keyColorScheme prop
 }) {
   const [activeNotes, setActiveNotes] = useState([]);
   const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
@@ -136,10 +136,9 @@ function Keyboard({
     <div className={`keyboard ${keyboardMode}`}>
       {layout.map((row, rowIndex) => (
         <div
-  key={rowIndex}
-  className={`row ${keyShape === 'hexagon' ? 'hexagon-row' : keyShape === 'circle' ? 'circle-row' : ''} ${keyboardMode === 'whole' && rowIndex === 1 ? 'extra-space-below' : ''}`}
->
-          
+          key={rowIndex}
+          className={`row ${keyShape === 'hexagon' ? 'hexagon-row' : keyShape === 'circle' ? 'circle-row' : ''} ${keyboardMode === 'whole' && rowIndex === 1 ? 'extra-space-below' : ''}`}
+        >
           {row.map((note, colIndex) => (
             note ? (
               <Key
@@ -150,6 +149,7 @@ function Keyboard({
                 isActive={activeNotes.includes(note)}
                 highlightColor={modeColors[mode] || '#d3d3d3'}
                 keyShape={keyShape}
+                keyColorScheme={keyColorScheme} // Pass new prop to Key
               />
             ) : (
               <div key={`${rowIndex}-${colIndex}`} className="key-placeholder" />

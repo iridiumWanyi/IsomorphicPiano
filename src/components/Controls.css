@@ -112,7 +112,9 @@
   background-color: #cfdae2;
 }
 
-.keyboard-toggle {
+.keyboard-toggle,
+.key-shape-toggle,
+.key-color-toggle {
   background-color: #eeeae6;
 }
 
@@ -165,7 +167,7 @@
 
 .help-customChords:hover::after,
 .help-customChords:focus::after {
-  content: "Click the notes you want in the mini keyboard for your chord, with the bottom-left key being the root note";
+  content: "Register your own chord by clicking the notes the mini keyboard, with the bottom-left key being the root note";
   position: absolute;
   top: 100%;
   left: 50%;

@@ -19,10 +19,20 @@
 }
 
 .key.dark {
-  background-color: #555;
+  background-color: #7d7a78;
   color: #fff;
 }
 
 .key.active {
-  transform: scale(0.95); /* Slight press effect */
+  transform: scale(0.95); 
+}
+
+.key.uniformWhite {
+  background-color: #fff !important; /* Override .dark */
+  color: #585655 !important; /* Ensure text visibility */
+}
+
+.key.octavehighlight {
+  background-color: #53504f !important; 
+  color: #fff !important; /* White text for visibility */
 }

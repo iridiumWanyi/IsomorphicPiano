@@ -293,11 +293,17 @@ export const ArpeggiatorControls = ({
   );
 };
 
-export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKeyShape }) => {
+export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKeyShape, keyColorScheme, setKeyColorScheme }) => {
   const toggleKeyShape = () => {
     if (keyShape === 'rectangle') setKeyShape('hexagon');
     else if (keyShape === 'hexagon') setKeyShape('circle');
     else setKeyShape('rectangle');
+  };
+
+  const toggleColorScheme = () => {
+    if (keyColorScheme === 'blackWhite') setKeyColorScheme('uniformWhite');
+    else if (keyColorScheme === 'uniformWhite') setKeyColorScheme('octavehighlight');
+    else setKeyColorScheme('blackWhite');
   };
 
   return (
@@ -315,7 +321,15 @@ export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKey
         >
           {keyShape === 'rectangle' ? 'Quasi-Piano Keys' :
            keyShape === 'hexagon' ? 'Hexagon Keys' :
-           'Accordion Keys'}
+           'Quasi-Accordion Keys'}
+        </button>
+        <button
+          onClick={toggleColorScheme}
+          className="key-color-toggle"
+        >
+          {keyColorScheme === 'blackWhite' ? 'Black/White Coloring' :
+           keyColorScheme === 'uniformWhite' ? 'Uniform Coloring' :
+           'Octave Highlights'}
         </button>
       </div>
     </div>

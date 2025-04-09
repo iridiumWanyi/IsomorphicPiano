@@ -27,7 +27,7 @@ function App() {
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
   const [keyboardMode, setKeyboardMode] = useState('partial');
   const [keyShape, setKeyShape] = useState('rectangle');
-  const [keyColorScheme, setKeyColorScheme] = useState('blackWhite'); // Reintroduced
+  const [keyColorScheme, setKeyColorScheme] = useState('blackWhite');
   const [isPriorityAudioLoaded, setIsPriorityAudioLoaded] = useState(false);
 
   useEffect(() => {
@@ -174,13 +174,16 @@ function App() {
             arpeggiator2Direction={arpeggiator2Direction}
             customChords={customChords}
             keyboardMode={keyboardMode}
-            keyShape={keyShape} // Pass keyShape to Keyboard
+            keyShape={keyShape}
+            keyColorScheme={keyColorScheme}
           />
           <KeyboardToggle
             keyboardMode={keyboardMode}
             setKeyboardMode={setKeyboardMode}
             keyShape={keyShape}
-            setKeyShape={setKeyShape} // Pass keyShape controls
+            setKeyShape={setKeyShape}
+            keyColorScheme={keyColorScheme}
+            setKeyColorScheme={setKeyColorScheme}
           />
         </>
       )}

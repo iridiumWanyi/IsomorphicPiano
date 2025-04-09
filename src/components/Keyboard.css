@@ -155,12 +155,3 @@
   height: 50px;
 }
 
-/* Color scheme overrides */
-.key.uniformWhite {
-  background-color: #fff !important; /* Override .dark */
-  color: #000 !important; /* Ensure text visibility */
-}
-
-.key.rainbow {
-  border: 1px solid #ccc; /* Subtle border for rainbow */
-}
