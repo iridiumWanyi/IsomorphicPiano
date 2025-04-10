@@ -30,12 +30,14 @@ function App() {
   const [keyColorScheme, setKeyColorScheme] = useState('blackWhite');
   const [highlightNotes, setHighlightNotes] = useState(['C']);
   const [isPriorityAudioLoaded, setIsPriorityAudioLoaded] = useState(false);
+  const [arpeggio1AsChord, setArpeggio1AsChord] = useState(false); // Toggle for arpeggiator 1 chord mode
+  const [arpeggio2AsChord, setArpeggio2AsChord] = useState(false); // Toggle for arpeggiator 2 chord mode
+
+  const audioCacheRef = useRef({});
 
   useEffect(() => {
     preloadAudioFiles();
   }, []);
-
-  const audioCacheRef = useRef({});
 
   const preloadAudioFiles = async () => {
     const cache = audioCacheRef.current;
@@ -160,6 +162,10 @@ function App() {
             setArpeggiator2Bpm={setArpeggiator2Bpm}
             arpeggiator2Direction={arpeggiator2Direction}
             setArpeggiator2Direction={setArpeggiator2Direction}
+            arpeggio1AsChord={arpeggio1AsChord}
+            setArpeggio1AsChord={setArpeggio1AsChord}
+            arpeggio2AsChord={arpeggio2AsChord}
+            setArpeggio2AsChord={setArpeggio2AsChord}
           />
           <Keyboard
             mode={mode}
@@ -177,7 +183,9 @@ function App() {
             keyboardMode={keyboardMode}
             keyShape={keyShape}
             keyColorScheme={keyColorScheme}
-            highlightNotes={highlightNotes} // Pass new prop
+            highlightNotes={highlightNotes}
+            arpeggio1AsChord={arpeggio1AsChord}
+            arpeggio2AsChord={arpeggio2AsChord}
           />
           <KeyboardToggle
             keyboardMode={keyboardMode}
@@ -186,8 +194,8 @@ function App() {
             setKeyShape={setKeyShape}
             keyColorScheme={keyColorScheme}
             setKeyColorScheme={setKeyColorScheme}
-            highlightNotes={highlightNotes} // Pass new prop
-            setHighlightNotes={setHighlightNotes} // Pass setter
+            highlightNotes={highlightNotes}
+            setHighlightNotes={setHighlightNotes}
           />
         </>
       )}

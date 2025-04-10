@@ -29,10 +29,11 @@
 
 .key.uniformWhite {
   background-color: #fff !important; /* Override .dark */
+  border: 1px solid #ccc;
   color: #585655 !important; /* Ensure text visibility */
 }
 
-.key.octavehighlight {
+.key.customhighlight {
   background-color: #b3aeac !important; 
   border: 1px solid #ccc;
   color: #fff !important; /* White text for visibility */

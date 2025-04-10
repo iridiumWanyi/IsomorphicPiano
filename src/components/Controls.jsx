@@ -4,7 +4,7 @@ import { chordNotes } from '../constants';
 import './Controls.css';
 
 const row0Modes = [
-  { id: 'single', label: 'Single' },
+  { id: 'single', label: '♪ Single' },
   { id: 'octave', label: 'Octave' },
 ];
 
@@ -171,7 +171,9 @@ export const ArpeggiatorControls = ({
   arpeggiator2On, setArpeggiator2On,
   arpeggiator2Pattern, setArpeggiator2Pattern,
   arpeggiator2Bpm, setArpeggiator2Bpm,
-  arpeggiator2Direction, setArpeggiator2Direction
+  arpeggiator2Direction, setArpeggiator2Direction,
+  arpeggio1AsChord, setArpeggio1AsChord, // New props
+  arpeggio2AsChord, setArpeggio2AsChord  // New props
 }) => {
   const handlePatternChange = (setter) => (e) => {
     const value = e.target.value;
@@ -181,19 +183,18 @@ export const ArpeggiatorControls = ({
   };
 
   const handleTouchToggle = (setter, current) => (e) => {
-    e.preventDefault(); // Prevent default touch behavior
-    e.stopPropagation(); // Stop event from bubbling up
-    setter(!current); // Toggle immediately
-    e.target.dataset.touched = 'true'; // Mark as touched to block onClick
+    e.preventDefault();
+    e.stopPropagation();
+    setter(!current);
+    e.target.dataset.touched = 'true';
   };
 
   const handleClickToggle = (setter, current) => (e) => {
     if (e.target.dataset.touched) {
-      // If touched, reset flag and skip click to avoid double-toggle
       delete e.target.dataset.touched;
       return;
     }
-    setter(!current); // Normal click behavior for non-touch devices
+    setter(!current);
   };
 
   const handleTouchDirection = (setter, current) => (e) => {
@@ -225,7 +226,7 @@ export const ArpeggiatorControls = ({
         <label>
           Pattern:
           <input
-            type="text_long"
+            type="text"
             value={arpeggiator1Pattern}
             onChange={handlePatternChange(setArpeggiator1Pattern)}
             placeholder="e.g., 1,2,3"
@@ -250,6 +251,15 @@ export const ArpeggiatorControls = ({
           />
           <span>{arpeggiator1Bpm}</span>
         </label>
+        <button
+          className={arpeggio1AsChord ? 'active' : ''}
+          onClick={handleClickToggle(setArpeggio1AsChord, arpeggio1AsChord)}
+          onTouchStart={handleTouchToggle(setArpeggio1AsChord, arpeggio1AsChord)}
+          style={{ backgroundColor: arpeggio1AsChord ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
+        >
+          ∞
+        </button>
+        <span className="help-infty">?</span>
       </div>
       <div className="control-row">
         <button
@@ -263,7 +273,7 @@ export const ArpeggiatorControls = ({
         <label>
           Pattern:
           <input
-            type="text_long"
+            type="text"
             value={arpeggiator2Pattern}
             onChange={handlePatternChange(setArpeggiator2Pattern)}
             placeholder="e.g., 1,2,3"
@@ -288,6 +298,15 @@ export const ArpeggiatorControls = ({
           />
           <span>{arpeggiator2Bpm}</span>
         </label>
+        <button
+          className={arpeggio2AsChord ? 'active' : ''}
+          onClick={handleClickToggle(setArpeggio2AsChord, arpeggio2AsChord)}
+          onTouchStart={handleTouchToggle(setArpeggio2AsChord, arpeggio2AsChord)}
+          style={{ backgroundColor: arpeggio2AsChord ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
+        >
+          ∞
+        </button>
+        <span className="text">......</span>
       </div>
     </div>
   );
@@ -302,7 +321,7 @@ export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKey
 
   const toggleColorScheme = () => {
     if (keyColorScheme === 'blackWhite') setKeyColorScheme('uniformWhite');
-    else if (keyColorScheme === 'uniformWhite') setKeyColorScheme('octavehighlight');
+    else if (keyColorScheme === 'uniformWhite') setKeyColorScheme('customhighlight');
     else setKeyColorScheme('blackWhite');
   };
 
@@ -340,7 +359,7 @@ export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKey
            'Custom Highlighted Keys'}
         </button>
       </div>
-      {keyColorScheme === 'octavehighlight' && (
+      {keyColorScheme === 'customhighlight' && (
         <div className="highlight-selector-row">
           <span className="highlight-label">Select Notes:</span>
           <div className="note-list">

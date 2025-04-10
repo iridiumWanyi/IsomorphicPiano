@@ -1,47 +1,71 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Key.css';
 
 function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor, keyShape, keyColorScheme, highlightNotes }) {
   const isDark = note.includes('#');
-  const noteBase = note.match(/^[A-G]#?/)?.[0] || ''; // Extract base note (e.g., 'C' or 'C#' from 'C3' or 'C#4')
+  const noteBase = note.match(/^[A-G]#?/)?.[0] || '';
   const isHighlighted = highlightNotes.includes(noteBase);
   
   const colorClass = keyColorScheme === 'uniformWhite' ? 'uniformWhite' :
-                    keyColorScheme === 'octavehighlight' ? (isHighlighted ? 'octavehighlight' : 'white') :
+                    keyColorScheme === 'customhighlight' ? (isHighlighted ? 'customhighlight' : 'white') :
                     isDark ? 'dark' : 'white';
 
   const style = {
     backgroundColor: isActive ? highlightColor : ''
   };
 
+  const [isPressed, setIsPressed] = useState(false); // Track press state to prevent retriggers
+
   const handleMouseDown = (e) => {
     e.preventDefault();
-    onNotePress(note);
+    console.log(`MouseDown on ${note} at ${Date.now()}`);
+    if (!isPressed) {
+      setIsPressed(true);
+      onNotePress(note);
+    }
   };
 
   const handleMouseUp = () => {
-    onNoteRelease(note);
+    console.log(`MouseUp on ${note} at ${Date.now()}`);
+    if (isPressed) {
+      setIsPressed(false);
+      onNoteRelease(note);
+    }
   };
 
   const handleMouseLeave = () => {
-    if (isActive) {
+    console.log(`MouseLeave on ${note} at ${Date.now()}`);
+    if (isPressed) {
+      setIsPressed(false);
       onNoteRelease(note);
     }
   };
 
   const handleTouchStart = (e) => {
     e.preventDefault();
-    onNotePress(note);
+    console.log(`TouchStart on ${note} at ${Date.now()}`);
+    if (!isPressed) {
+      setIsPressed(true);
+      onNotePress(note);
+    }
   };
 
   const handleTouchEnd = (e) => {
     e.preventDefault();
-    onNoteRelease(note);
+    console.log(`TouchEnd on ${note} at ${Date.now()}`);
+    if (isPressed) {
+      setIsPressed(false);
+      onNoteRelease(note);
+    }
   };
 
   const handleTouchCancel = (e) => {
     e.preventDefault();
-    onNoteRelease(note);
+    console.log(`TouchCancel on ${note} at ${Date.now()}`);
+    if (isPressed) {
+      setIsPressed(false);
+      onNoteRelease(note);
+    }
   };
 
   return (
