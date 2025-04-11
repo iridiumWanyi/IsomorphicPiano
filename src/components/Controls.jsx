@@ -219,7 +219,7 @@ export const ArpeggiatorControls = ({
           className={arpeggiator1On ? 'active' : ''}
           onClick={handleClickToggle(setArpeggiator1On, arpeggiator1On)}
           onTouchStart={handleTouchToggle(setArpeggiator1On, arpeggiator1On)}
-          style={{ backgroundColor: arpeggiator1On ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
+          style={{ backgroundColor: arpeggiator1On ? modeColors['buttonToggleOn'] : modeColors['buttonToggleOff'] }}
         >
           Arpeggio {arpeggiator1On ? 'On' : 'Off'}
         </button>
@@ -255,7 +255,7 @@ export const ArpeggiatorControls = ({
           className={arpeggio1AsChord ? 'active' : ''}
           onClick={handleClickToggle(setArpeggio1AsChord, arpeggio1AsChord)}
           onTouchStart={handleTouchToggle(setArpeggio1AsChord, arpeggio1AsChord)}
-          style={{ backgroundColor: arpeggio1AsChord ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
+          style={{ backgroundColor: arpeggio1AsChord ? '#dab3b3' : modeColors['buttonToggleOff'] }}
         >
           ∞
         </button>

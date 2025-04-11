@@ -1,0 +1,58 @@
+.chord-progression-display {
+  margin-top: 0px;
+  height: 30px;
+  margin-bottom: 16px;
+  padding: 5px;
+  background-color: #fefefe;
+  border-radius: 5px;
+}
+
+.chord-progression-display h3 {
+  margin: 10px 10px 6px 10px;
+  font-size: 1em;
+}
+
+.progression-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chord-item {
+  background-color: #eeeae6;
+  padding: 2px 10px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 0.8em; /* Base size for root note */
+  line-height: 1.4; 
+}
+
+.chord-item .notation-container {
+  position: relative;
+  display: inline-block;
+  width: 1; /* Ensure it doesn't take horizontal space */
+  vertical-align: middle;
+}
+
+.chord-item sup {
+  font-size: 0.5em; 
+  position: absolute;
+  top: -2em; 
+  left: 0; 
+}
+
+.chord-item sub {
+  font-size: 0.5em;
+  transform: scale(0.6); 
+  position: absolute;
+  bottom: -2em; 
+  left: -1.2em; 
+}
+
+.chord-item .arpeggio-comma {
+  font-size: 0.6em; /* Smaller than numbers in subscript */
+  transform: scale(0.8); /* Additional scaling */
+  position: relative;
+  bottom: 0.1em; /* Align with numbers */
+}
+

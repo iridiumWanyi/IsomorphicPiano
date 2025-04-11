@@ -16,3 +16,30 @@ h1 {
 body {
   color: rgb(14, 13, 13);
 }
+
+.progression-controls {
+  margin-top: 0px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.progression-controls button {
+  padding: 0px 10px;
+  font-size: 1em;
+  height: 40px ;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background-color: #eeeae6;
+  transition: background-color 0.2s;
+}
+
+.progression-controls button.active {
+  background-color: #dab3b3;
+}
+
+.progression-controls button:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}

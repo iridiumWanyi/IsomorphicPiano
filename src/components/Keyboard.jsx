@@ -8,7 +8,8 @@ function Keyboard({
   arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction,
   arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction,
   customChords, keyboardMode, keyShape, keyColorScheme, highlightNotes,
-  arpeggio1AsChord, arpeggio2AsChord
+  arpeggio1AsChord, arpeggio2AsChord,
+  isRecording, setChordProgression // New props
 }) {
   const [activeNotes, setActiveNotes] = useState([]);
   const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
@@ -118,6 +119,21 @@ function Keyboard({
       const chordNotes = getChordNotes(note);
       const arpeggiator1OnRef = { current: arpeggiator1On && !arpeggio1AsChord };
       const arpeggiator2OnRef = { current: arpeggiator2On && !arpeggio2AsChord };
+
+      // Record the chord if recording is active and progression < 8
+      if (isRecording) {
+        setChordProgression(prev => {
+          if (prev.length >= 8) return prev;
+          const newChord = {
+            rootNote: note,
+            chordType: mode,
+            arpeggioPattern: arpeggiator1On ? arpeggiator1Pattern : arpeggiator2On ? arpeggiator2Pattern : null,
+            arpeggioDirection: arpeggiator1On ? arpeggiator1Direction : arpeggiator2On ? arpeggiator2Direction : null,
+            arpeggioAsChord: arpeggiator1On ? arpeggio1AsChord : arpeggiator2On ? arpeggio2AsChord : false,
+          };
+          return [...prev, newChord];
+        });
+      }
 
       if (arpeggiator1On || arpeggiator2On) {
         if (arpeggio1AsChord && arpeggiator1On) {
