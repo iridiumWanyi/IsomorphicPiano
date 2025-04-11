@@ -115,7 +115,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
           </div>
         ))}
       </div>
-      <div className="control-row">
+      <div className="control-row-extended">
         <span className="row-label">Extended Chords:</span>
         {row2Modes.map(m => (
           <div key={m.id} className="chord-button-container">
@@ -147,7 +147,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
               onTouchStart={() => setMode(id)}
               style={{ backgroundColor: modeColors[id] }}
             >
-              {id.replace('custom', 'Custom')}
+              {id.replace('custom', 'Chord')}
             </button>
             <MiniKeyboard
               chord={customChords[id] || []}
@@ -221,7 +221,7 @@ export const ArpeggiatorControls = ({
           onTouchStart={handleTouchToggle(setArpeggiator1On, arpeggiator1On)}
           style={{ backgroundColor: arpeggiator1On ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
         >
-          Arpeggiator 1 {arpeggiator1On ? 'On' : 'Off'}
+          Arpeggio {arpeggiator1On ? 'On' : 'Off'}
         </button>
         <label>
           Pattern:
@@ -261,53 +261,7 @@ export const ArpeggiatorControls = ({
         </button>
         <span className="help-infty">?</span>
       </div>
-      <div className="control-row">
-        <button
-          className={arpeggiator2On ? 'active' : ''}
-          onClick={handleClickToggle(setArpeggiator2On, arpeggiator2On)}
-          onTouchStart={handleTouchToggle(setArpeggiator2On, arpeggiator2On)}
-          style={{ backgroundColor: arpeggiator2On ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
-        >
-          Arpeggiator 2 {arpeggiator2On ? 'On' : 'Off'}
-        </button>
-        <label>
-          Pattern:
-          <input
-            type="text"
-            value={arpeggiator2Pattern}
-            onChange={handlePatternChange(setArpeggiator2Pattern)}
-            placeholder="e.g., 1,2,3"
-          />
-          <span className="text">......</span>
-        </label>
-        <button
-          onClick={handleClickDirection(setArpeggiator2Direction, arpeggiator2Direction)}
-          onTouchStart={handleTouchDirection(setArpeggiator2Direction, arpeggiator2Direction)}
-          className={`direction-button ${arpeggiator2Direction}`}
-        >
-          {arpeggiator2Direction === 'up' ? '↑' : '↓'}
-        </button>
-        <label>
-          BPM:
-          <input
-            type="range"
-            min="60"
-            max="480"
-            value={arpeggiator2Bpm}
-            onChange={(e) => setArpeggiator2Bpm(Number(e.target.value))}
-          />
-          <span>{arpeggiator2Bpm}</span>
-        </label>
-        <button
-          className={arpeggio2AsChord ? 'active' : ''}
-          onClick={handleClickToggle(setArpeggio2AsChord, arpeggio2AsChord)}
-          onTouchStart={handleTouchToggle(setArpeggio2AsChord, arpeggio2AsChord)}
-          style={{ backgroundColor: arpeggio2AsChord ? '#dab3b3' : modeColors['arpeggiatorToggle'] }}
-        >
-          ∞
-        </button>
-        <span className="text">......</span>
-      </div>
+      
     </div>
   );
 };

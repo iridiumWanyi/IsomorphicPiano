@@ -21,6 +21,13 @@
   justify-content: center;
 }
 
+.control-row-extended {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
 .custom-chord-row {
   margin-left: 20px;
 }
@@ -28,7 +35,7 @@
 .chord-controls button,
 .arpeggiator-controls button,
 .keyboard-toggle-container button {
-  padding: 10px 15px;
+  padding: 10px 12px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -119,8 +126,7 @@
 }
 
 .help-arpeggiatorPattern,
-.help-infty,
-.help-customChords {
+.help-infty{
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -130,6 +136,20 @@
   border-radius: 50%;
   cursor: help;
   margin-left: 5px;
+  font-size: 14px;
+  position: relative;
+}
+
+.help-customChords {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+  cursor: help;
+  margin-left: -6px;
   font-size: 14px;
   position: relative;
 }
