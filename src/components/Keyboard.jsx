@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Key from './Key';
-import { partialKeyboardLayout, wholeKeyboardLayout, chromaticScale, modeColors } from '../constants';
+import { partialKeyboardLayout, wholeKeyboardLayout, chromaticScale, modeColors, chordIntervals } from '../constants';
 import './Keyboard.css';
 
 function Keyboard({ 
@@ -9,7 +9,7 @@ function Keyboard({
   arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction,
   customChords, keyboardMode, keyShape, keyColorScheme, highlightNotes,
   arpeggio1AsChord, arpeggio2AsChord,
-  isRecording, setChordProgression // New props
+  isRecording, setChordProgression
 }) {
   const [activeNotes, setActiveNotes] = useState([]);
   const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
@@ -17,47 +17,18 @@ function Keyboard({
   const getChordNotes = (baseNote) => {
     const baseIndex = chromaticScale.indexOf(baseNote);
     if (baseIndex === -1) return [baseNote];
-    switch (mode) {
-      case 'octave':
-        return [baseNote, chromaticScale[baseIndex + 12]].filter(n => n);
-      case 'major':
-        return [baseNote, chromaticScale[baseIndex + 4], chromaticScale[baseIndex + 7]].filter(n => n);
-      case 'minor':
-        return [baseNote, chromaticScale[baseIndex + 3], chromaticScale[baseIndex + 7]].filter(n => n);
-      case 'diminished':
-        return [baseNote, chromaticScale[baseIndex + 3], chromaticScale[baseIndex + 6]].filter(n => n);
-      case 'augmented':
-        return [baseNote, chromaticScale[baseIndex + 4], chromaticScale[baseIndex + 8]].filter(n => n);
-      case 'domSeven':
-        return [baseNote, chromaticScale[baseIndex + 4], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10]].filter(n => n);
-      case 'majSeven':
-        return [baseNote, chromaticScale[baseIndex + 4], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 11]].filter(n => n);
-      case 'minSeven':
-        return [baseNote, chromaticScale[baseIndex + 3], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10]].filter(n => n);
-      case 'susFour':
-        return [baseNote, chromaticScale[baseIndex + 5], chromaticScale[baseIndex + 7]].filter(n => n);
-      case 'domNine':
-        return [baseNote, chromaticScale[baseIndex + 4], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10], chromaticScale[baseIndex + 14]].filter(n => n);
-      case 'majNine':
-        return [baseNote, chromaticScale[baseIndex + 4], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 11], chromaticScale[baseIndex + 14]].filter(n => n);
-      case 'minNine':
-        return [baseNote, chromaticScale[baseIndex + 3], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 10], chromaticScale[baseIndex + 14]].filter(n => n);
-      case 'susNine':
-        return [baseNote, chromaticScale[baseIndex + 5], chromaticScale[baseIndex + 7], chromaticScale[baseIndex + 14]].filter(n => n);
-      case 'single':
-        return [baseNote];
-      case 'custom1':
-      case 'custom2':
-      case 'custom3':
-      case 'custom4':
-        const intervals = customChords[mode] || [];
-        return intervals.map(interval => {
-          const targetIndex = baseIndex + interval;
-          return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
-        }).filter(n => n);
-      default:
-        return [baseNote];
+
+    let intervals;
+    if (mode.startsWith('custom') && customChords[mode]) {
+      intervals = customChords[mode];
+    } else {
+      intervals = chordIntervals[mode] || [0];
     }
+
+    return intervals.map(interval => {
+      const targetIndex = baseIndex + interval;
+      return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
+    }).filter(n => n);
   };
 
   const getArpeggioNotes = (baseNote, pattern, direction) => {

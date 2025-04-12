@@ -75,3 +75,24 @@ export const chordNotes = {
   'minNine': [0, 3, 7, 10, 14],
   'susNine': [0, 5, 7, 14],
 };
+
+export const chordIntervals = {
+  'single': [0],
+  'octave': [0, 12],
+  'major': [0, 4, 7],
+  'minor': [0, 3, 7],
+  'diminished': [0, 3, 6],
+  'augmented': [0, 4, 8],
+  'domSeven': [0, 4, 7, 10],
+  'majSeven': [0, 4, 7, 11],
+  'minSeven': [0, 3, 7, 10],
+  'susFour': [0, 5, 7],
+  'domNine': [0, 4, 7, 10, 14],
+  'majNine': [0, 4, 7, 11, 14],
+  'minNine': [0, 3, 7, 10, 14],
+  'susNine': [0, 5, 7, 14],
+  'custom1': [0, 4, 7],
+  'custom2': [0, 3, 7],
+  'custom3': [0, 3, 6, 9],
+  'custom4': [0]
+};

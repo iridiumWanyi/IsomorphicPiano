@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Keyboard from './components/Keyboard';
 import { ChordControls, ArpeggiatorControls, KeyboardToggle } from './components/Controls';
-import ChordProgression from './components/ChordProgression'; // New component
-import { chromaticScale, noteToFileNumber } from './constants';
+import ChordProgression from './components/ChordProgression';
+import { chromaticScale, noteToFileNumber, chordIntervals } from './constants';
 import './App.css';
 
 const noteToChromaticIndex = {};
@@ -13,7 +13,7 @@ chromaticScale.forEach((note, index) => {
 function App() {
   const [mode, setMode] = useState('single');
   const [arpeggiator1On, setArpeggiator1On] = useState(false);
-  const [arpeggiator1Pattern, setArpeggiator1Pattern] = useState('1,2,3,4,5,3,4,5');
+  const [arpeggiator1Pattern, setArpeggiator1Pattern] = useState('1,2,3,4');
   const [arpeggiator1Bpm, setArpeggiator1Bpm] = useState(240);
   const [arpeggiator1Direction, setArpeggiator1Direction] = useState('up');
   const [arpeggiator2On, setArpeggiator2On] = useState(false);
@@ -33,7 +33,6 @@ function App() {
   const [isPriorityAudioLoaded, setIsPriorityAudioLoaded] = useState(false);
   const [arpeggio1AsChord, setArpeggio1AsChord] = useState(false);
   const [arpeggio2AsChord, setArpeggio2AsChord] = useState(false);
-  // New state for recording
   const [isRecording, setIsRecording] = useState(false);
   const [chordProgression, setChordProgression] = useState([]);
   const [isPlayingProgression, setIsPlayingProgression] = useState(false);
@@ -46,7 +45,6 @@ function App() {
   }, []);
 
   const preloadAudioFiles = async () => {
-    // ... (unchanged preload logic)
     const cache = audioCacheRef.current;
     const allNotes = Object.keys(noteToFileNumber);
     const priorityNotes = chromaticScale.slice(
@@ -151,7 +149,7 @@ function App() {
     if (isPlayingProgression || chordProgression.length === 0) return;
     setIsPlayingProgression(true);
 
-    const bpm = arpeggiator1On ? arpeggiator1Bpm : arpeggiator2On ? arpeggiator2Bpm : 240; // Default to 240 if no arpeggiator
+    const bpm = arpeggiator1On ? arpeggiator1Bpm : arpeggiator2On ? arpeggiator2Bpm : 240;
     const duration = (60000 / bpm) * 4; // Assume quarter note per chord
 
     let index = 0;
@@ -194,71 +192,25 @@ function App() {
     playNextChord();
   };
 
-  // Helper to compute arpeggio notes for playback
-  const getArpeggioNotes = ({ rootNote, chordType, arpeggioPattern, arpeggioDirection }) => {
+  const getChordNotes = ({ rootNote, chordType }) => {
     const baseIndex = chromaticScale.indexOf(rootNote);
-    if (baseIndex === -1) return [];
+    if (baseIndex === -1) return [rootNote];
 
-    // Get chord notes based on chordType
-    let chordNotes = [];
-    switch (chordType) {
-      case 'major':
-        chordNotes = [0, 4, 7];
-        break;
-      case 'minor':
-        chordNotes = [0, 3, 7];
-        break;
-      case 'diminished':
-        chordNotes = [0, 3, 6];
-        break;
-      case 'augmented':
-        chordNotes = [0, 4, 8];
-        break;
-      case 'domSeven':
-        chordNotes = [0, 4, 7, 10];
-        break;
-      case 'majSeven':
-        chordNotes = [0, 4, 7, 11];
-        break;
-      case 'minSeven':
-        chordNotes = [0, 3, 7, 10];
-        break;
-      case 'susFour':
-        chordNotes = [0, 5, 7];
-        break;
-      case 'domNine':
-        chordNotes = [0, 4, 7, 10, 14];
-        break;
-      case 'majNine':
-        chordNotes = [0, 4, 7, 11, 14];
-        break;
-      case 'minNine':
-        chordNotes = [0, 3, 7, 10, 14];
-        break;
-      case 'susNine':
-        chordNotes = [0, 5, 7, 14];
-        break;
-      case 'octave':
-        chordNotes = [0, 12];
-        break;
-      case 'single':
-        chordNotes = [0];
-        break;
-      case 'custom1':
-      case 'custom2':
-      case 'custom3':
-        chordNotes = customChords[chordType] || [0];
-        break;
-      default:
-        chordNotes = [0];
+    let intervals = chordIntervals[chordType] || [0];
+    if (chordType.startsWith('custom') && customChords[chordType]) {
+      intervals = customChords[chordType];
     }
 
-    chordNotes = chordNotes.map(interval => {
+    return intervals.map(interval => {
       const targetIndex = baseIndex + interval;
       return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
     }).filter(n => n);
+  };
 
-    // Apply arpeggio pattern
+  const getArpeggioNotes = ({ rootNote, chordType, arpeggioPattern, arpeggioDirection }) => {
+    const chordNotes = getChordNotes({ rootNote, chordType });
+    if (chordNotes.length === 0) return [];
+
     const patternArray = arpeggioPattern.split(',').filter(x => x !== '').map(Number);
     const maxPatternIndex = Math.max(...patternArray);
     const extendedNotes = Array(maxPatternIndex).fill(null).map((_, i) => {
@@ -272,70 +224,6 @@ function App() {
     let arpeggioNotes = patternArray.map(p => extendedNotes[p - 1]).filter(n => n);
     if (arpeggioDirection === 'down') arpeggioNotes.reverse();
     return arpeggioNotes;
-  };
-
-  // Helper to compute chord notes for playback
-  const getChordNotes = ({ rootNote, chordType }) => {
-    const baseIndex = chromaticScale.indexOf(rootNote);
-    if (baseIndex === -1) return [rootNote];
-
-    let intervals = [];
-    switch (chordType) {
-      case 'major':
-        intervals = [0, 4, 7];
-        break;
-      case 'minor':
-        intervals = [0, 3, 7];
-        break;
-      case 'diminished':
-        intervals = [0, 3, 6];
-        break;
-      case 'augmented':
-        intervals = [0, 4, 8];
-        break;
-      case 'domSeven':
-        intervals = [0, 4, 7, 10];
-        break;
-      case 'majSeven':
-        intervals = [0, 4, 7, 11];
-        break;
-      case 'minSeven':
-        intervals = [0, 3, 7, 10];
-        break;
-      case 'susFour':
-        intervals = [0, 5, 7];
-        break;
-      case 'domNine':
-        intervals = [0, 4, 7, 10, 14];
-        break;
-      case 'majNine':
-        intervals = [0, 4, 7, 11, 14];
-        break;
-      case 'minNine':
-        intervals = [0, 3, 7, 10, 14];
-        break;
-      case 'susNine':
-        intervals = [0, 5, 7, 14];
-        break;
-      case 'octave':
-        intervals = [0, 12];
-        break;
-      case 'single':
-        intervals = [0];
-        break;
-      case 'custom1':
-      case 'custom2':
-      case 'custom3':
-        intervals = customChords[chordType] || [0];
-        break;
-      default:
-        intervals = [0];
-    }
-
-    return intervals.map(interval => {
-      const targetIndex = baseIndex + interval;
-      return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
-    }).filter(n => n);
   };
 
   return (

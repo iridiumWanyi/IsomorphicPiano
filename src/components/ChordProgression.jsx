@@ -50,7 +50,7 @@ function ChordProgression({ progression }) {
           <span key={index}>
             {num}
             {index < chord.arpeggioPattern.split(',').length - 1 && (
-              <span className="arpeggio-comma">,</span>
+              <span className="arpeggio-comma"></span>
             )}
           </span>
         ))
