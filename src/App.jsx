@@ -35,7 +35,7 @@ function App() {
   const [arpeggio2AsChord, setArpeggio2AsChord] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [chordProgression, setChordProgression] = useState([]);
-  const [isPlayingProgression, setIsPlayingProgression] = useState(false);
+  const [progressionVolume, setProgressionVolume] = useState(1); // New state for volume
 
   const audioCacheRef = useRef({});
   const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)());
@@ -99,7 +99,7 @@ function App() {
     setIsAudioLoaded(true);
   };
 
-  const playNote = (note) => {
+  const playNote = (note, volume = 1) => {
     if (!isPriorityAudioLoaded) {
       console.log(`Playback disabled until F2-F5 loaded, attempted: ${note}`);
       return;
@@ -107,17 +107,22 @@ function App() {
     const cached = audioCacheRef.current[note];
     if (cached && cached.audio) {
       const audio = new Audio(cached.audio.src);
+      audio.volume = Math.max(0, Math.min(1, volume)); // Clamp volume between 0 and 1
       audio.play().catch(err => console.error(`Error playing ${note}:`, err));
     } else {
       console.warn(`Audio not cached for ${note}`);
     }
   };
 
-  const playChord = (chordNotes) => {
+  const playChord = (chordNotes, volume = 1) => {
     if (!isPriorityAudioLoaded) {
       console.log(`Playback disabled until F2-F5 loaded, attempted: ${chordNotes}`);
       return;
     }
+
+    const gainNode = audioContextRef.current.createGain();
+    gainNode.gain.value = Math.max(0, Math.min(1, volume)); // Clamp volume
+    gainNode.connect(audioContextRef.current.destination);
 
     chordNotes.forEach((note) => {
       const cached = audioCacheRef.current[note];
@@ -126,7 +131,7 @@ function App() {
           audioContextRef.current.decodeAudioData(arrayBuffer, (buffer) => {
             const source = audioContextRef.current.createBufferSource();
             source.buffer = buffer;
-            source.connect(audioContextRef.current.destination);
+            source.connect(gainNode); // Connect to gain node
             source.start(audioContextRef.current.currentTime);
           }).catch(err => console.error(`Error decoding ${note}:`, err));
         }).catch(err => console.error(`Error converting blob for ${note}:`, err));
@@ -146,20 +151,18 @@ function App() {
   };
 
   const playProgression = () => {
-    if (isPlayingProgression || chordProgression.length === 0) return;
-    setIsPlayingProgression(true);
+    if (chordProgression.length === 0) return;
 
     const bpm = arpeggiator1On ? arpeggiator1Bpm : arpeggiator2On ? arpeggiator2Bpm : 240;
     const duration = (60000 / bpm) * 4; // Assume quarter note per chord
 
     let index = 0;
     const playNextChord = () => {
-      if (index >= chordProgression.length) {
-        setIsPlayingProgression(false);
+      if (index >= chordProgression.length * 8) {
         return;
       }
 
-      const chord = chordProgression[index];
+      const chord = chordProgression[index % chordProgression.length];
       if (chord.arpeggioPattern && !chord.arpeggioAsChord) {
         // Play as arpeggio
         const arpeggioNotes = getArpeggioNotes(chord);
@@ -167,7 +170,7 @@ function App() {
         let step = 0;
         const playArpeggioNote = () => {
           if (step >= arpeggioNotes.length) return;
-          playNote(arpeggioNotes[step]);
+          playNote(arpeggioNotes[step], progressionVolume); // Apply volume
           step++;
           if (step < arpeggioNotes.length) {
             setTimeout(playArpeggioNote, noteDuration);
@@ -181,7 +184,7 @@ function App() {
       } else {
         // Play as chord
         const chordNotes = getChordNotes(chord);
-        playChord(chordNotes);
+        playChord(chordNotes, progressionVolume); // Apply volume
         setTimeout(() => {
           index++;
           playNextChord();
@@ -264,17 +267,28 @@ function App() {
             <button
               className={isRecording ? 'active' : ''}
               onClick={toggleRecording}
-              disabled={isPlayingProgression}
+              disabled={false}
             >
               {isRecording ? 'Stop Recording' : 'Record Chord Progression'}
             </button>
             <ChordProgression progression={chordProgression} />
             <button
               onClick={playProgression}
-              disabled={isRecording || isPlayingProgression || chordProgression.length === 0}
+              disabled={isRecording || chordProgression.length === 0}
             >
               Play
             </button>
+            <div className="volume-control">
+              <label>Playback Volume</label>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={progressionVolume}
+                onChange={(e) => setProgressionVolume(parseFloat(e.target.value))}
+              />
+            </div>
           </div>
           
           <Keyboard
@@ -298,6 +312,7 @@ function App() {
             arpeggio2AsChord={arpeggio2AsChord}
             isRecording={isRecording}
             setChordProgression={setChordProgression}
+            audioContext={audioContextRef.current}
           />
           <KeyboardToggle
             keyboardMode={keyboardMode}

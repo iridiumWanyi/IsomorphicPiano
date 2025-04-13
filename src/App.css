@@ -28,7 +28,7 @@ body {
 .progression-controls button {
   padding: 0px 12px;
   font-size: 1em;
-  height: 36px ;
+  height: 38px ;
   cursor: pointer;
   border: none;
   border-radius: 5px;
@@ -43,4 +43,41 @@ body {
 .progression-controls button:disabled {
   background-color: #e0e0e0;
   cursor: not-allowed;
+}
+
+.volume-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+  margin-bottom: 12px;
+}
+.volume-control label {
+  font-size: 14px;
+}
+.volume-control input {
+  width: 100px;
+}
+
+.volume-control input[type="range"] {
+  width: 60px;
+  margin-left: 5px;
+  -webkit-appearance: none; 
+  background: transparent; 
+}
+
+.volume-control input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: #d3cdc7; 
+  border-radius: 4px;
+}
+
+.volume-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #6e6c6a;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -4px;
 }

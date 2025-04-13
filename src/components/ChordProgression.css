@@ -3,7 +3,8 @@
   height: 28px;
   margin-bottom: 16px;
   padding: 5px;
-  background-color: #fefefe;
+  background-color: #f7f5f4;
+  border: .8px solid #cecccb;;
   border-radius: 5px;
   font-size: 10px;
 }
