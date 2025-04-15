@@ -99,16 +99,49 @@ function App() {
     setIsAudioLoaded(true);
   };
 
-  const playNote = (note, volume = 1) => {
+  const playNote = (note, volume = 1, isSustainPedalOn = false) => {
     if (!isPriorityAudioLoaded) {
       console.log(`Playback disabled until F2-F5 loaded, attempted: ${note}`);
       return;
     }
+  
+    const audioContext = audioContextRef.current;
+    const gainNode = audioContext.createGain();
+    gainNode.gain.value = Math.max(0, Math.min(1, volume)); // 初始音量
+    gainNode.connect(audioContext.destination);
+  
     const cached = audioCacheRef.current[note];
-    if (cached && cached.audio) {
-      const audio = new Audio(cached.audio.src);
-      audio.volume = Math.max(0, Math.min(1, volume)); // Clamp volume between 0 and 1
-      audio.play().catch(err => console.error(`Error playing ${note}:`, err));
+    if (cached && cached.blob) {
+      cached.blob.arrayBuffer()
+        .then((arrayBuffer) => {
+          audioContext.decodeAudioData(arrayBuffer, (buffer) => {
+            const source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(gainNode);
+  
+            const startTime = audioContext.currentTime;
+
+            if (isSustainPedalOn) {
+              // 踏板踩下：较长的衰减时间，模拟延音
+              gainNode.gain.setValueAtTime(volume, startTime);
+              gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 5.0); // 5秒衰减
+            } else {
+              // 踏板未踩下：快速衰减，模拟阻尼
+              gainNode.gain.setValueAtTime(volume, startTime);
+              gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 3.0); // 3秒衰减
+            }
+  
+            // 播放音符
+            source.start(startTime);
+  
+            // 当音频自然结束时清理
+            source.onended = () => {
+              source.disconnect();
+              gainNode.disconnect();
+            };
+          }).catch(err => console.error(`Error decoding ${note}:`, err));
+        })
+        .catch(err => console.error(`Error converting blob for ${note}:`, err));
     } else {
       console.warn(`Audio not cached for ${note}`);
     }
