@@ -150,51 +150,62 @@ function App() {
     }
   };
 
+  const [isPlaying, setIsPlaying] = useState(false);
+  const timeoutIds = useRef([]);
+
   const playProgression = () => {
     if (chordProgression.length === 0) return;
-
+  
     const bpm = arpeggiator1On ? arpeggiator1Bpm : arpeggiator2On ? arpeggiator2Bpm : 240;
-    const duration = (60000 / bpm) * 4; // Assume quarter note per chord
-
+    const duration = (60000 / bpm) * 4;
+  
     let index = 0;
     const playNextChord = () => {
       if (index >= chordProgression.length * 8) {
         return;
       }
-
+  
       const chord = chordProgression[index % chordProgression.length];
       if (chord.arpeggioPattern && !chord.arpeggioAsChord) {
-        // Play as arpeggio
         const arpeggioNotes = getArpeggioNotes(chord);
         const noteDuration = 60000 / bpm;
         let step = 0;
         const playArpeggioNote = () => {
           if (step >= arpeggioNotes.length) return;
-          playNote(arpeggioNotes[step], progressionVolume); // Apply volume
+          playNote(arpeggioNotes[step], progressionVolume);
           step++;
           if (step < arpeggioNotes.length) {
-            setTimeout(playArpeggioNote, noteDuration);
+            const timeoutId = setTimeout(playArpeggioNote, noteDuration);
+            timeoutIds.current.push(timeoutId); // 存储到 useRef
           }
         };
         playArpeggioNote();
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           index++;
           playNextChord();
         }, arpeggioNotes.length * noteDuration);
+        timeoutIds.current.push(timeoutId);
       } else {
-        // Play as chord
         const chordNotes = getChordNotes(chord);
-        playChord(chordNotes, progressionVolume); // Apply volume
-        setTimeout(() => {
+        playChord(chordNotes, progressionVolume);
+        const timeoutId = setTimeout(() => {
           index++;
           playNextChord();
         }, duration);
+        timeoutIds.current.push(timeoutId);
       }
     };
-
-    playNextChord();
+  
+    if (isPlaying) {
+      timeoutIds.current.forEach((id) => clearTimeout(id));
+      timeoutIds.current = []; // 清空数组
+      setIsPlaying(false);
+    } else {
+      setIsPlaying(true);
+      playNextChord();
+    }
   };
-
+  
   const getChordNotes = ({ rootNote, chordType }) => {
     const baseIndex = chromaticScale.indexOf(rootNote);
     if (baseIndex === -1) return [rootNote];
@@ -276,7 +287,7 @@ function App() {
               onClick={playProgression}
               disabled={isRecording || chordProgression.length === 0}
             >
-              Play
+              {isPlaying ? 'Stop' : 'Play'}
             </button>
             <div className="volume-control">
               <label>Playback Volume</label>
