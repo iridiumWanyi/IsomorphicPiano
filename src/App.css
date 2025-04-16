@@ -62,8 +62,8 @@ body {
 }
 
 .volume-control input[type="range"] {
-  width: 75px;
-  margin-left: 5px;
+  width: 80px;
+  margin-left: -2px;
   -webkit-appearance: none; 
   background: transparent; 
 }

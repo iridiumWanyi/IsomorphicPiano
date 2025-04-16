@@ -197,12 +197,12 @@ function App() {
   const playProgression = () => {
     if (chordProgression.length === 0) return;
 
-    const bpm = arpeggiator1On ? arpeggiator1Bpm : arpeggiator2On ? arpeggiator2Bpm : 180;
+    const bpm = arpeggiator1Bpm;
     const duration = (60000 / bpm) * 4;
 
     let index = 0;
     const playNextChord = () => {
-      if (index >= chordProgression.length * 8) {
+      if (index >= chordProgression.length * 5) {
         return;
       }
 
