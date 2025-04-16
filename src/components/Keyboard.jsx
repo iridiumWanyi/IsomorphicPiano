@@ -8,7 +8,7 @@ function Keyboard({
   arpeggiator1On, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction,
   arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction,
   customChords, keyboardMode, keyShape, keyColorScheme, highlightNotes,
-  arpeggio1AsChord, arpeggio2AsChord,
+  BlockChord1, BlockChord2,
   isRecording, setChordProgression
 }) {
   const [activeNotes, setActiveNotes] = useState([]);
@@ -53,43 +53,38 @@ function Keyboard({
   const playArpeggio = (baseNote, arpeggiatorOnRef, pattern, bpm, direction) => {
     const arpeggioNotes = getArpeggioNotes(baseNote, pattern, direction);
     if (arpeggioNotes.length === 0 || !arpeggiatorOnRef.current) return;
-
+    
     const delay = 60000 / bpm;
-    let step = 0;
-    let timeoutId = null;
-
-    const playNextNote = () => {
-      if (!arpeggiatorOnRef.current || step >= arpeggioNotes.length) {
-        clearTimeout(timeoutId);
-        return;
-      }
-      const note = arpeggioNotes[step];
-      setActiveNotes([note]);
-      playNote(note);
-      step++;
-      if (step < arpeggioNotes.length) {
-        timeoutId = setTimeout(playNextNote, delay);
-      } else {
-        setActiveNotes([]);
-      }
-    };
-
-    setActiveNotes([arpeggioNotes[0]]);
-    playNote(arpeggioNotes[0]);
-    step = 1;
-    if (step < arpeggioNotes.length) {
-      timeoutId = setTimeout(playNextNote, delay);
-    } else {
-      setActiveNotes([]);
+    
+    arpeggioNotes.forEach((note, index) => {
+    // Schedule note playback and highlight
+    setTimeout(() => {
+    if (arpeggiatorOnRef.current) {
+    playNote(note);
+    setActiveNotes(prev => [...prev, note]); // Highlight note
     }
-  };
+    }, index * delay);
+    
+    // Clear highlight after note duration
+    setTimeout(() => {
+    setActiveNotes(prev => prev.filter(n => n !== note));
+    }, (index + 1) * delay);
+    });
+    
+    // Clear all highlights after pattern completes
+    setTimeout(() => {
+    if (arpeggiatorOnRef.current) {
+    setActiveNotes([]);
+    }
+    }, arpeggioNotes.length * delay);
+    };
 
   const handleNotePress = (note) => {
     if (!activeNotes.includes(note)) {
       console.log(`handleNotePress called for ${note} at ${Date.now()}`);
       const chordNotes = getChordNotes(note);
-      const arpeggiator1OnRef = { current: arpeggiator1On && !arpeggio1AsChord };
-      const arpeggiator2OnRef = { current: arpeggiator2On && !arpeggio2AsChord };
+      const arpeggiator1OnRef = { current: arpeggiator1On && !BlockChord1 };
+      const arpeggiator2OnRef = { current: arpeggiator2On && !BlockChord2 };
 
       // Record the chord if recording is active and progression < 8
       if (isRecording) {
@@ -100,14 +95,14 @@ function Keyboard({
             chordType: mode,
             arpeggioPattern: arpeggiator1On ? arpeggiator1Pattern : arpeggiator2On ? arpeggiator2Pattern : null,
             arpeggioDirection: arpeggiator1On ? arpeggiator1Direction : arpeggiator2On ? arpeggiator2Direction : null,
-            arpeggioAsChord: arpeggiator1On ? arpeggio1AsChord : arpeggiator2On ? arpeggio2AsChord : false,
+            arpeggioAsChord: arpeggiator1On ? BlockChord1 : arpeggiator2On ? BlockChord2 : false,
           };
           return [...prev, newChord];
         });
       }
 
       if (arpeggiator1On || arpeggiator2On) {
-        if (arpeggio1AsChord && arpeggiator1On) {
+        if (BlockChord1 && arpeggiator1On) {
           const arpeggioNotes = getArpeggioNotes(note, arpeggiator1Pattern, arpeggiator1Direction);
           setActiveNotes(arpeggioNotes);
           playChord(arpeggioNotes);
@@ -115,7 +110,7 @@ function Keyboard({
           playArpeggio(note, arpeggiator1OnRef, arpeggiator1Pattern, arpeggiator1Bpm, arpeggiator1Direction);
         }
 
-        if (arpeggio2AsChord && arpeggiator2On) {
+        if (BlockChord2 && arpeggiator2On) {
           const arpeggioNotes = getArpeggioNotes(note, arpeggiator2Pattern, arpeggiator2Direction);
           setActiveNotes(arpeggioNotes);
           playChord(arpeggioNotes);

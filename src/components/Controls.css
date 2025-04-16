@@ -6,15 +6,11 @@
   margin-bottom: 20px;
 }
 
-.keyboard-toggle-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-}
 
-.control-row {
+
+.control-row,
+.control-row-custom,
+.control-row-extended {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -22,20 +18,15 @@
 }
 
 .control-row-extended {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-}
-
-.custom-chord-row {
-  margin-left: 20px;
+gap: 9px;
 }
 
 .chord-controls button,
+.control-row-extended button,
+.control-row-custom button,
 .arpeggiator-controls button,
 .keyboard-toggle-container button {
-  padding: 10px 12px;
+  padding: 8px 12px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -43,31 +34,32 @@
   color: #333;
 }
 
+.control-row-extended button{
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.control-row-custom button{
+  padding: 8px 10px;
+  font-size: 12px;
+}
 
 .chord-controls button.active,
 .keyboard-toggle-container button.active {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
-.chord-controls button:hover,
-.arpeggiator-controls button:hover,
-.keyboard-toggle-container button:hover {
-  opacity: 0.9;
-}
-
-.arpeggiator-controls label,
-.keyboard-toggle-container label {
-  display: flex;
-  align-items: center;
-  gap: px;
-}
 
 .arpeggiator-controls input[type="text"] {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 100px;
+  width: 80px;
   margin-left: 5px;
+}
+
+.arpeggiator-controls label {
+  font-size: 14px;
 }
 
 .arpeggiator-controls input[type="range"] {
@@ -100,15 +92,23 @@
   font-size: 12px;
 }
 
-.direction-button {
-  padding: 2px 6px;
+.direction-button,
+.BlockChord1,
+.random-pattern-button {
+  padding: 2px 12px;
   font-size: 16px;
-  width: 12px;
   height: 30px;
+  width: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ddd;
+  background-color: #eeeae6;
+}
+
+.BlockChord1{
+background-color: #efe7c7;
+margin-right: -8px;
+font-size: 12px;
 }
 
 .direction-button.up {
@@ -119,6 +119,14 @@
   background-color: #cfdae2;
 }
 
+.keyboard-toggle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
 .keyboard-toggle,
 .key-shape-toggle,
 .key-color-toggle {
@@ -126,7 +134,9 @@
 }
 
 .help-arpeggiatorPattern,
-.help-infty{
+.help-infty,
+.help-customChords,
+.help-chordProgression{
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -135,28 +145,31 @@
   background-color: #ccc;
   border-radius: 50%;
   cursor: help;
-  margin-left: 5px;
-  font-size: 14px;
   position: relative;
+font-size: 12px;
 }
 
 .help-customChords {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: 20px;
-  height: 20px;
-  background-color: #ccc;
-  border-radius: 50%;
-  cursor: help;
-  margin-left: -6px;
-  font-size: 12px;
-  position: relative;
+  margin-left: -4px;
 }
 
+.help-infty {
+  margin-left: 64px;
+}
+
+.help-chordProgression {
+  margin-top: 8px;
+}
+
+.help-chordProgression:hover::after,
+.help-chordProgression:focus::after,
 .help-arpeggiatorPattern:hover::after,
-.help-arpeggiatorPattern:focus::after {
-  content: "Enter a sequence of numbers to specify the order in which chord notes should be played. Numbers exceeding the notes count in the chord will trigger the corresponding notes in higher octaves.";
+.help-arpeggiatorPattern:focus::after,
+.help-customChords:hover::after,
+.help-customChords:focus::after,
+.help-infty:hover::after,
+.help-infty:focus::after {
+  content: "Note that this is not a realtime recording, but records the chords type and orders you choose. You can also toggle the arpeggiator while recording.";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -171,6 +184,12 @@
   white-space: normal;
   text-align: center;
   z-index: 10;
+}
+
+.help-arpeggiatorPattern:hover::after,
+.help-arpeggiatorPattern:focus::after {
+  content: "Specify the order in which chord notes should be played. Numbers exceeding the chord notes count triggers corresponding notes in higher octaves.";
+  position: absolute;
 }
 
 
@@ -178,38 +197,12 @@
 .help-customChords:focus::after {
   content: "Register your own chord by clicking the notes the mini keyboard, with the bottom-left key being the root note";
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 5px;
-  padding: 10px;
-  background-color: #333;
-  color: #fff;
-  border-radius: 5px;
-  font-size: 14px;
-  width: 200px;
-  white-space: normal;
-  text-align: center;
-  z-index: 10;
 }
 
 .help-infty:hover::after,
 .help-infty:focus::after {
   content: "Toggle this button to play the notes specified for the arpeggiator as a chord. Using this function, you can create transposed chords based on existing chords.";
   position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-top: 5px;
-  padding: 10px;
-  background-color: #333;
-  color: #fff;
-  border-radius: 5px;
-  font-size: 14px;
-  width: 300px;
-  white-space: normal;
-  text-align: center;
-  z-index: 10;
 }
 
 .custom-chord-container {
@@ -221,7 +214,8 @@
 .mini-keyboard {
   display: flex;
   flex-direction: column-reverse;
-  margin-left: 5px;
+  margin-left: 3px;
+  margin-right: -12px;
 }
 
 .mini-keyboard .mini-row.top-row {

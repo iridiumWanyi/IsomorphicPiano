@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Keyboard from './components/Keyboard';
-import { ChordControls, ArpeggiatorControls, KeyboardToggle } from './components/Controls';
+import { ChordControls } from './components/ChordControls';
+import { KeyboardToggle } from './components/KeyboardControls';
+import { ArpeggiatorControls } from './components/ArpeggiatorControls';
 import ChordProgression from './components/ChordProgression';
 import { chromaticScale, noteToFileNumber, chordIntervals } from './constants';
 import './App.css';
@@ -13,7 +15,7 @@ chromaticScale.forEach((note, index) => {
 function App() {
   const [mode, setMode] = useState('single');
   const [arpeggiator1On, setArpeggiator1On] = useState(false);
-  const [arpeggiator1Pattern, setArpeggiator1Pattern] = useState('1,2,3,4');
+  const [arpeggiator1Pattern, setArpeggiator1Pattern] = useState('1,3,4,5');
   const [arpeggiator1Bpm, setArpeggiator1Bpm] = useState(240);
   const [arpeggiator1Direction, setArpeggiator1Direction] = useState('up');
   const [arpeggiator2On, setArpeggiator2On] = useState(false);
@@ -31,14 +33,15 @@ function App() {
   const [keyColorScheme, setKeyColorScheme] = useState('blackWhite');
   const [highlightNotes, setHighlightNotes] = useState(['C']);
   const [isPriorityAudioLoaded, setIsPriorityAudioLoaded] = useState(false);
-  const [arpeggio1AsChord, setArpeggio1AsChord] = useState(false);
-  const [arpeggio2AsChord, setArpeggio2AsChord] = useState(false);
+  const [BlockChord1, setBlockChord1] = useState(false);
+  const [BlockChord2, setBlockChord2] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [chordProgression, setChordProgression] = useState([]);
-  const [progressionVolume, setProgressionVolume] = useState(1); // New state for volume
+  const [progressionVolume, setProgressionVolume] = useState(.6);
+  const [isButtonStop, setIsButtonStop] = useState(false); // New state for button text
 
   const audioCacheRef = useRef({});
-  const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)());
+  const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)())
 
   useEffect(() => {
     preloadAudioFiles();
@@ -154,7 +157,7 @@ function App() {
     }
 
     const gainNode = audioContextRef.current.createGain();
-    gainNode.gain.value = Math.max(0, Math.min(1, volume)); // Clamp volume
+    gainNode.gain.value = Math.max(0, Math.min(1, volume));
     gainNode.connect(audioContextRef.current.destination);
 
     chordNotes.forEach((note) => {
@@ -164,7 +167,7 @@ function App() {
           audioContextRef.current.decodeAudioData(arrayBuffer, (buffer) => {
             const source = audioContextRef.current.createBufferSource();
             source.buffer = buffer;
-            source.connect(gainNode); // Connect to gain node
+            source.connect(gainNode);
             source.start(audioContextRef.current.currentTime);
           }).catch(err => console.error(`Error decoding ${note}:`, err));
         }).catch(err => console.error(`Error converting blob for ${note}:`, err));
@@ -179,7 +182,7 @@ function App() {
       setIsRecording(false);
     } else {
       setIsRecording(true);
-      setChordProgression([]); // Clear previous progression
+      setChordProgression([]);
     }
   };
 
@@ -238,7 +241,12 @@ function App() {
       playNextChord();
     }
   };
-  
+
+  const handlePlayButtonClick = () => {
+    setIsButtonStop(!isButtonStop);
+    playProgression();
+  };
+
   const getChordNotes = ({ rootNote, chordType }) => {
     const baseIndex = chromaticScale.indexOf(rootNote);
     if (baseIndex === -1) return [rootNote];
@@ -302,10 +310,10 @@ function App() {
             setArpeggiator2Bpm={setArpeggiator2Bpm}
             arpeggiator2Direction={arpeggiator2Direction}
             setArpeggiator2Direction={setArpeggiator2Direction}
-            arpeggio1AsChord={arpeggio1AsChord}
-            setArpeggio1AsChord={setArpeggio1AsChord}
-            arpeggio2AsChord={arpeggio2AsChord}
-            setArpeggio2AsChord={setArpeggio2AsChord}
+            BlockChord1={BlockChord1}
+            setBlockChord1={setBlockChord1}
+            BlockChord2={BlockChord2}
+            setBlockChord2={setBlockChord2}
           />
           <div className="progression-controls">
             <button
@@ -317,13 +325,14 @@ function App() {
             </button>
             <ChordProgression progression={chordProgression} />
             <button
-              onClick={playProgression}
+              onClick={handlePlayButtonClick}
               disabled={isRecording || chordProgression.length === 0}
             >
-              {isPlaying ? 'Stop' : 'Play'}
+              {isButtonStop ? 'Stop' : 'Play'}
             </button>
+            <span className="help-chordProgression">?</span>
             <div className="volume-control">
-              <label>Playback Volume</label>
+              <label>Playback Volume:</label>
               <input
                 type="range"
                 min="0"
@@ -352,8 +361,8 @@ function App() {
             keyShape={keyShape}
             keyColorScheme={keyColorScheme}
             highlightNotes={highlightNotes}
-            arpeggio1AsChord={arpeggio1AsChord}
-            arpeggio2AsChord={arpeggio2AsChord}
+            BlockChord1={BlockChord1}
+            BlockChord2={BlockChord2}
             isRecording={isRecording}
             setChordProgression={setChordProgression}
             audioContext={audioContextRef.current}

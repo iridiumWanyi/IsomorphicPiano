@@ -7,11 +7,11 @@ function ChordProgression({ progression }) {
       case 'major':
         return 'Δ';
       case 'minor':
-        return 'm';
+        return '-';
       case 'diminished':
-        return 'dim';
+        return 'o';
       case 'augmented':
-        return 'aug';
+        return '+';
       case 'domSeven':
         return '7';
       case 'majSeven':
