@@ -16,7 +16,7 @@ export const ArpeggiatorControls = ({
 }) => {
   const handlePatternChange = (setter) => (e) => {
     const value = e.target.value;
-    if (/^(\d+,)*\d*$/.test(value) || value === '') {
+    if (/^(-?\d+,)*-?\d*$/.test(value) || value === '') {
       setter(value);
     }
   };
@@ -62,6 +62,8 @@ export const ArpeggiatorControls = ({
     '1,3,4,5,6',
     '1,3,4,5,6,5,4,3',
     '1,2,3,4,5,3,4,5',
+    '1,-1,1,2',
+    '1,-3,-2,-1',
   ];
 
   const [patternIndex, setPatternIndex] = React.useState(0);

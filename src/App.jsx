@@ -38,10 +38,10 @@ function App() {
   const [isRecording, setIsRecording] = useState(false);
   const [chordProgression, setChordProgression] = useState([]);
   const [progressionVolume, setProgressionVolume] = useState(.6);
-  const [isButtonStop, setIsButtonStop] = useState(false); // New state for button text
+  const [isButtonStop, setIsButtonStop] = useState(false);
 
   const audioCacheRef = useRef({});
-  const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)())
+  const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)());
 
   useEffect(() => {
     preloadAudioFiles();
@@ -107,46 +107,51 @@ function App() {
       console.log(`Playback disabled until F2-F5 loaded, attempted: ${note}`);
       return;
     }
-  
+
+    console.log(`Attempting to play note: ${note} (index: ${noteToChromaticIndex[note]}, file: ${noteToFileNumber[note]})`);
+
     const audioContext = audioContextRef.current;
     const gainNode = audioContext.createGain();
-    gainNode.gain.value = Math.max(0, Math.min(1, volume)); // 初始音量
+    gainNode.gain.value = Math.max(0, Math.min(1, volume));
     gainNode.connect(audioContext.destination);
-  
+
     const cached = audioCacheRef.current[note];
     if (cached && cached.blob) {
+      console.log(`Audio cached for ${note}, proceeding to decode`);
       cached.blob.arrayBuffer()
         .then((arrayBuffer) => {
           audioContext.decodeAudioData(arrayBuffer, (buffer) => {
             const source = audioContext.createBufferSource();
             source.buffer = buffer;
             source.connect(gainNode);
-  
+
             const startTime = audioContext.currentTime;
 
             if (isSustainPedalOn) {
-              // 踏板踩下：较长的衰减时间，模拟延音
               gainNode.gain.setValueAtTime(volume, startTime);
-              gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 5.0); // 5秒衰减
+              gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 5.0);
             } else {
-              // 踏板未踩下：快速衰减，模拟阻尼
               gainNode.gain.setValueAtTime(volume, startTime);
-              gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 3.0); // 3秒衰减
+              gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 3.0);
             }
-  
-            // 播放音符
+
             source.start(startTime);
-  
-            // 当音频自然结束时清理
+            console.log(`Playing ${note} at ${startTime}`);
+
             source.onended = () => {
               source.disconnect();
               gainNode.disconnect();
+              console.log(`Playback ended for ${note}`);
             };
-          }).catch(err => console.error(`Error decoding ${note}:`, err));
+          }).catch(err => {
+            console.error(`Error decoding audio for ${note}:`, err);
+          });
         })
-        .catch(err => console.error(`Error converting blob for ${note}:`, err));
+        .catch(err => {
+          console.error(`Error converting blob to arrayBuffer for ${note}:`, err);
+        });
     } else {
-      console.warn(`Audio not cached for ${note}`);
+      console.warn(`No audio cached for ${note} (index: ${noteToChromaticIndex[note]})`);
     }
   };
 
@@ -191,18 +196,18 @@ function App() {
 
   const playProgression = () => {
     if (chordProgression.length === 0) return;
-  
-    const bpm = arpeggiator1On ? arpeggiator1Bpm : arpeggiator2On ? arpeggiator2Bpm : 240;
+
+    const bpm = arpeggiator1On ? arpeggiator1Bpm : arpeggiator2On ? arpeggiator2Bpm : 180;
     const duration = (60000 / bpm) * 4;
-  
+
     let index = 0;
     const playNextChord = () => {
       if (index >= chordProgression.length * 8) {
         return;
       }
-  
+
       const chord = chordProgression[index % chordProgression.length];
-      if (chord.arpeggioPattern && !chord.arpeggioAsChord) {
+      if (chord.arpeggioPattern && !chord.BlockChord) {
         const arpeggioNotes = getArpeggioNotes(chord);
         const noteDuration = 60000 / bpm;
         let step = 0;
@@ -212,7 +217,7 @@ function App() {
           step++;
           if (step < arpeggioNotes.length) {
             const timeoutId = setTimeout(playArpeggioNote, noteDuration);
-            timeoutIds.current.push(timeoutId); // 存储到 useRef
+            timeoutIds.current.push(timeoutId);
           }
         };
         playArpeggioNote();
@@ -231,10 +236,10 @@ function App() {
         timeoutIds.current.push(timeoutId);
       }
     };
-  
+
     if (isPlaying) {
       timeoutIds.current.forEach((id) => clearTimeout(id));
-      timeoutIds.current = []; // 清空数组
+      timeoutIds.current = [];
       setIsPlaying(false);
     } else {
       setIsPlaying(true);

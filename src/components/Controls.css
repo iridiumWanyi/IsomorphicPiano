@@ -1,11 +1,17 @@
-.chord-controls,
-.arpeggiator-controls{
+.chord-controls{
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
 }
 
+.arpeggiator-controls{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 10px;
+  margin-top: -10px;
+}
 
 
 .control-row,
@@ -107,7 +113,7 @@ gap: 9px;
 
 .BlockChord1{
 background-color: #efe7c7;
-margin-right: -8px;
+margin-right: -10px;
 font-size: 12px;
 }
 
@@ -142,7 +148,7 @@ font-size: 12px;
   align-items: center;
   width: 20px;
   height: 20px;
-  background-color: #ccc;
+  background-color: #d3cdc7;
   border-radius: 50%;
   cursor: help;
   position: relative;
@@ -169,7 +175,7 @@ font-size: 12px;
 .help-customChords:focus::after,
 .help-infty:hover::after,
 .help-infty:focus::after {
-  content: "Note that this is not a realtime recording, but records the chords type and orders you choose. You can also toggle the arpeggiator while recording.";
+  content: "This is not realtime recording. The recorded chord progression will be played according to the current BPM.";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -201,7 +207,7 @@ font-size: 12px;
 
 .help-infty:hover::after,
 .help-infty:focus::after {
-  content: "Toggle this button to play the notes specified for the arpeggiator as a chord. Using this function, you can create transposed chords based on existing chords.";
+  content: "Create transposed block-chords according to the notes specified in the arpeggiator.";
   position: absolute;
 }
 

@@ -36,18 +36,27 @@ function Keyboard({
     if (baseChordNotes.length === 0) return [];
 
     const patternArray = pattern.split(',').filter(x => x !== '').map(Number);
-    const maxPatternIndex = Math.max(...patternArray);
-    const extendedNotes = Array(maxPatternIndex).fill(null).map((_, i) => {
-      const noteIndex = i % baseChordNotes.length;
-      const octaveShift = Math.floor(i / baseChordNotes.length);
-      const baseNoteIndex = chromaticScale.indexOf(baseChordNotes[noteIndex]);
-      const targetIndex = baseNoteIndex + (octaveShift * 12);
-      return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
-    });
+    const chordLength = baseChordNotes.length;
 
-    let arpeggioNotes = patternArray.map(p => extendedNotes[p - 1]).filter(n => n);
-    if (direction === 'down') arpeggioNotes.reverse();
-    return arpeggioNotes;
+    const arpeggioNotes = patternArray.map(index => {
+      if (index === 0) return null;
+
+      const isNegative = index < 0;
+      const absIndex = Math.abs(index);
+      const notePosition = (absIndex - 1) % chordLength;
+      const octaveShift = Math.floor((absIndex - 1) / chordLength);
+      
+      // Select the note from the chord
+      const chordNoteIndex = isNegative ? (chordLength - 1 - notePosition) : notePosition;
+      const baseNoteIndex = chromaticScale.indexOf(baseChordNotes[chordNoteIndex]);
+      
+      // Apply octave shift: negative indices shift down one octave plus additional shifts
+      const targetIndex = baseNoteIndex + (isNegative ? -(octaveShift + 1) * 12 : octaveShift * 12);
+      
+      return targetIndex >= 0 && targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
+    }).filter(n => n);
+
+    return direction === 'down' ? arpeggioNotes.reverse() : arpeggioNotes;
   };
 
   const playArpeggio = (baseNote, arpeggiatorOnRef, pattern, bpm, direction) => {
@@ -57,27 +66,24 @@ function Keyboard({
     const delay = 60000 / bpm;
     
     arpeggioNotes.forEach((note, index) => {
-    // Schedule note playback and highlight
-    setTimeout(() => {
-    if (arpeggiatorOnRef.current) {
-    playNote(note);
-    setActiveNotes(prev => [...prev, note]); // Highlight note
-    }
-    }, index * delay);
-    
-    // Clear highlight after note duration
-    setTimeout(() => {
-    setActiveNotes(prev => prev.filter(n => n !== note));
-    }, (index + 1) * delay);
+      setTimeout(() => {
+        if (arpeggiatorOnRef.current) {
+          playNote(note);
+          setActiveNotes(prev => [...prev, note]);
+        }
+      }, index * delay);
+      
+      setTimeout(() => {
+        setActiveNotes(prev => prev.filter(n => n !== note));
+      }, (index + 1) * delay);
     });
     
-    // Clear all highlights after pattern completes
     setTimeout(() => {
-    if (arpeggiatorOnRef.current) {
-    setActiveNotes([]);
-    }
+      if (arpeggiatorOnRef.current) {
+        setActiveNotes([]);
+      }
     }, arpeggioNotes.length * delay);
-    };
+  };
 
   const handleNotePress = (note) => {
     if (!activeNotes.includes(note)) {
@@ -86,7 +92,6 @@ function Keyboard({
       const arpeggiator1OnRef = { current: arpeggiator1On && !BlockChord1 };
       const arpeggiator2OnRef = { current: arpeggiator2On && !BlockChord2 };
 
-      // Record the chord if recording is active and progression < 8
       if (isRecording) {
         setChordProgression(prev => {
           if (prev.length >= 8) return prev;
@@ -95,7 +100,7 @@ function Keyboard({
             chordType: mode,
             arpeggioPattern: arpeggiator1On ? arpeggiator1Pattern : arpeggiator2On ? arpeggiator2Pattern : null,
             arpeggioDirection: arpeggiator1On ? arpeggiator1Direction : arpeggiator2On ? arpeggiator2Direction : null,
-            arpeggioAsChord: arpeggiator1On ? BlockChord1 : arpeggiator2On ? BlockChord2 : false,
+            BlockChord: arpeggiator1On ? BlockChord1 : arpeggiator2On ? BlockChord2 : false,
           };
           return [...prev, newChord];
         });

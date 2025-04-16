@@ -42,7 +42,8 @@ body {
 }
 
 .progression-controls button:disabled {
-  background-color: #e0e0e0;
+  background-color: #cccac8;
+  color:#919191;
   cursor: not-allowed;
 }
 

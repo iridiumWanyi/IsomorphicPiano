@@ -45,7 +45,7 @@ export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKey
         >
           {keyColorScheme === 'blackWhite' ? 'Black/White Coloring' :
            keyColorScheme === 'uniformWhite' ? 'Uniform Coloring' :
-           'Custom Highlighted Keys'}
+           'Custom Black Keys'}
         </button>
       </div>
       {keyColorScheme === 'customhighlight' && (

@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import './Key.css';
 
 function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor, keyShape, keyColorScheme, highlightNotes }) {
-  const isDark = note.includes('#');
+  const isBlack = note.includes('#');
   const noteBase = note.match(/^[A-G]#?/)?.[0] || '';
   const isHighlighted = highlightNotes.includes(noteBase);
   
   const colorClass = keyColorScheme === 'uniformWhite' ? 'uniformWhite' :
                     keyColorScheme === 'customhighlight' ? (isHighlighted ? 'customhighlight' : 'white') :
-                    isDark ? 'dark' : 'white';
+                    isBlack ? 'Black' : 'white';
 
   const style = {
     backgroundColor: isActive ? highlightColor : ''

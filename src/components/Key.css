@@ -18,8 +18,8 @@
   border: 1px solid #ccc;
 }
 
-.key.dark {
-  background-color: #7d7a78;
+.key.Black {
+  background-color: #313030;
   color: #fff;
 }
 
@@ -28,13 +28,13 @@
 }
 
 .key.uniformWhite {
-  background-color: #fff !important; /* Override .dark */
+  background-color: #fff !important; /* Override .Black */
   border: 1px solid #ccc;
   color: #585655 !important; /* Ensure text visibility */
 }
 
 .key.customhighlight {
-  background-color: #b3aeac !important; 
+  background-color: #313030 !important; 
   border: 1px solid #ccc;
   color: #fff !important; /* White text for visibility */
 }
