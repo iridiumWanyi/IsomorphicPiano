@@ -16,21 +16,21 @@ const row1Modes = [
 ];
 
 const row2Modes = [
-  { id: 'domSeven', label: 'Dom7' },
   { id: 'majSeven', label: 'Maj7' },
   { id: 'minSeven', label: 'Min7' },
+  { id: 'domSeven', label: 'Dom7' },
   { id: 'susFour', label: 'Sus4' },
-  { id: 'domNine', label: 'Dom9' },
   { id: 'majNine', label: 'Maj9' },
   { id: 'minNine', label: 'Min9' },
+  { id: 'domNine', label: 'Dom9' },
   { id: 'susNine', label: 'Sus9' },
 ];
 
 const customChordIds = ['custom1', 'custom2', 'custom3'];
 
-const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
-  const row1 = [1, 3, 5, 7, 9, 11];
-  const row2 = [0, 2, 4, 6, 8, 10];
+const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor, miniExtend }) => {
+  const row1 = miniExtend ? [1, 3, 5, 7, 9, 11, 13, 15] : [1, 3, 5, 7, 9, 11];
+  const row2 = miniExtend ? [0, 2, 4, 6, 8, 10, 12, 14] : [0, 2, 4, 6, 8, 10];
 
   const handleKeyClick = (index) => {
     if (id && setMode) {
@@ -39,10 +39,12 @@ const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor }) => {
     }
   };
 
-  const adjustedChord = chord && chord.length > 0 ? chord : id ? [0] : [];
+  const adjustedChord = chord && chord.length > 0 
+    ? chord.map(index =>  index) 
+    : id ? [0] : [];
 
   return (
-    <div className={`mini-keyboard ${id ? '' : 'static'}`}>
+    <div className={`mini-keyboard ${id ? '' : 'static'} ${miniExtend ? 'extended' : ''}`}>
       <div className="mini-row bottom-row">
         {row2.map((index) => (
           <div
@@ -110,6 +112,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
                 chord={chordNotes[m.id] || []}
                 onNoteToggle={() => {}}
                 highlightColor={modeColors[m.id]}
+                miniExtend={m.id.includes('Nine')}
               />
             </div>
           </div>
@@ -132,6 +135,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
                 chord={chordNotes[m.id] || []}
                 onNoteToggle={() => {}}
                 highlightColor={modeColors[m.id]}
+                miniExtend={m.id.includes('Nine')}
               />
             </div>
           </div>
@@ -154,6 +158,7 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
               onNoteToggle={(note) => handleNoteToggle(id, note)}
               id={id}
               setMode={setMode}
+              miniExtend={false}
             />
           </div>
         ))}

@@ -52,7 +52,7 @@ gap: 9px;
 
 .chord-controls button.active,
 .keyboard-toggle-container button.active {
-  transform: scale(1.2);
+  transform: scale(1.1);
 }
 
 
@@ -194,7 +194,7 @@ font-size: 12px;
 
 .help-arpeggiatorPattern:hover::after,
 .help-arpeggiatorPattern:focus::after {
-  content: "Specify the order in which chord notes should be played. Numbers exceeding the chord notes count triggers corresponding notes in higher octaves.";
+  content: "Specify the order in which chord notes should be played. Numbers exceeding the chord notes count triggers corresponding notes in higher octaves";
   position: absolute;
 }
 
@@ -277,6 +277,11 @@ font-size: 12px;
 
 .mini-keyboard.static .mini-key {
   cursor: default;
+}
+
+/* Controls.css - New rule only */
+.mini-keyboard.extended {
+  width: 95px; /* Fits 7 keys (7 * 12px + 6 * 1px) */
 }
 
 .highlight-selector-row {

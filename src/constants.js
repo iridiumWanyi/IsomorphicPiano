@@ -47,17 +47,20 @@ export const modeColors = {
   "single": "#eeeae6",
   "octave": "#ebe3cd",
   "major": "#ebd3d3",
-  "minor": "#d6e2c6",
+  "minor": "#d3e1b9",
   "diminished": "#cedfdf",
   "augmented": "#d7cfdd",
-  "domSeven": "#c9d5d3",
-  "majSeven": "#e4d7d2",
-  "minSeven": "#c0ccd5",
-  "susFour": "#d6d1cb",
+
+  "majSeven": "#ddcac6",
+  "minSeven": "#c8c7d1",
+  "domSeven": "#c1ccba",
+  "susFour": '#c9d4cb',  
+  "majNine": "#d3c6c3",
+  "minNine": "#d0cacc",
   "domNine": "#c6ccba",
-  "majNine": "#d4c9ba",
-  "minNine": "#c0ccc9",
-  "susNine": "#ded2d8",
+  "susNine": "#c0ccc9",
+
+
   "buttonToggleOff": "#eeeae6",
   "buttonToggleOn": "#dab3b3",
   "custom1": "#eeeae6",
@@ -101,5 +104,4 @@ export const chordIntervals = {
   'custom1': [0, 4, 7],
   'custom2': [0, 3, 7],
   'custom3': [0, 3, 6, 9],
-  'custom4': [0]
 };
