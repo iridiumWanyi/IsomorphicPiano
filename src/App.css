@@ -25,6 +25,7 @@ body {
   font-size: 14px;
 }
 
+
 .progression-controls button {
   padding: 0px 12px;
   font-size: 12px;
@@ -47,22 +48,30 @@ body {
   cursor: not-allowed;
 }
 
+.repeat-control,
 .volume-control {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  margin-left: 10px;
   margin-bottom: 14px;
 }
-.volume-control label {
-  font-size: 14px;
-}
-.volume-control input {
-  width: 100px;
+
+
+.repeat-control input[type="number"] {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 28px;
+  width: 22px;
 }
 
+.repeat-control,
+.volume-control label {
+  font-size: 12px;
+}
+
+
 .volume-control input[type="range"] {
-  width: 80px;
+  width: 75px;
   margin-left: -2px;
   -webkit-appearance: none; 
   background: transparent; 

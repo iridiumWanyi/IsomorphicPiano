@@ -39,6 +39,7 @@ function App() {
   const [chordProgression, setChordProgression] = useState([]);
   const [progressionVolume, setProgressionVolume] = useState(.6);
   const [isButtonStop, setIsButtonStop] = useState(false);
+  const [repeatCount, setRepeatCount] = useState(4); // New state for repeat count
 
   const audioCacheRef = useRef({});
   const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)());
@@ -91,6 +92,9 @@ function App() {
         const audio = new Audio(audioUrlObj);
         cache[note] = { audio, blob: audioBlob };
         console.log(`Successfully cached ${note}`);
+        const allLoaded = allNotes.every(note => cache[note] !== null && cache[note] !== undefined);
+        setIsAudioLoaded(allLoaded);
+        console.log('All notes completed, total cached:', Object.keys(cache).length, 'all loaded:', allLoaded);
       } catch (error) {
         console.error(`Error caching ${note}:`, error.message);
         cache[note] = null;
@@ -104,7 +108,7 @@ function App() {
 
   const playNote = (note, volume = 1, isSustainPedalOn = false) => {
     if (!isPriorityAudioLoaded) {
-      console.log(`Playback disabled until F2-F5 loaded, attempted: ${note}`);
+      console.log(`Playback disabled until audio files loaded, attempted: ${note}`);
       return;
     }
 
@@ -157,7 +161,7 @@ function App() {
 
   const playChord = (chordNotes, volume = 1) => {
     if (!isPriorityAudioLoaded) {
-      console.log(`Playback disabled until F2-F5 loaded, attempted: ${chordNotes}`);
+      console.log(`Playback disabled until audio files loaded, attempted: ${chordNotes}`);
       return;
     }
 
@@ -199,10 +203,15 @@ function App() {
 
     const bpm = arpeggiator1Bpm;
     const duration = (60000 / bpm) * 4;
+    const countdownInterval = duration; // Interval for countdown notes
 
     let index = 0;
     const playNextChord = () => {
-      if (index >= chordProgression.length * 5) {
+      if (index >= chordProgression.length * repeatCount) {
+        timeoutIds.current.forEach((id) => clearTimeout(id));
+        timeoutIds.current = [];
+        setIsPlaying(false);
+        setIsButtonStop(false); // Reset to "Play" when finished
         return;
       }
 
@@ -241,9 +250,22 @@ function App() {
       timeoutIds.current.forEach((id) => clearTimeout(id));
       timeoutIds.current = [];
       setIsPlaying(false);
+      setIsButtonStop(false);
     } else {
       setIsPlaying(true);
-      playNextChord();
+      setIsButtonStop(true);
+      // Play 4 countdown notes (C4) before starting progression
+      for (let i = 0; i < 4; i++) {
+        const timeoutId = setTimeout(() => {
+          playNote('C4', progressionVolume);
+        }, i * countdownInterval);
+        timeoutIds.current.push(timeoutId);
+      }
+      // Start progression after 4 countdown notes plus one more interval
+      const timeoutId = setTimeout(() => {
+        playNextChord();
+      }, 4 * countdownInterval);
+      timeoutIds.current.push(timeoutId);
     }
   };
 
@@ -289,8 +311,17 @@ function App() {
   return (
     <div className="app">
       <h1>Isomorphic Piano Simulator</h1>
-      {!isPriorityAudioLoaded && <p>Loading audio files, please wait...</p>}
-      {isPriorityAudioLoaded && (
+      {!isPriorityAudioLoaded && (
+        <div className="loading-container">
+          <p>Loading priority audio (F2-F5)...</p>
+        </div>
+      )}
+      {isPriorityAudioLoaded && !isAudioLoaded && (
+        <div className="loading-container">
+          <p>Loading remaining audio files...</p>
+        </div>
+      )}
+      {isPriorityAudioLoaded && isAudioLoaded && (
         <>
           <ChordControls
             mode={mode}
@@ -333,11 +364,21 @@ function App() {
               onClick={handlePlayButtonClick}
               disabled={isRecording || chordProgression.length === 0}
             >
-              {isButtonStop ? 'Stop' : 'Play'}
+              {isButtonStop ? '⏹' : '⏵'}
             </button>
             <span className="help-chordProgression">?</span>
+            <div className="repeat-control">
+              <label>Repeat<br /> Count:</label>
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={repeatCount}
+                onChange={(e) => setRepeatCount(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
+              />
+            </div>
             <div className="volume-control">
-              <label>Playback Volume:</label>
+              <label>Playback<br /> Volume:</label>
               <input
                 type="range"
                 min="0"
@@ -347,8 +388,8 @@ function App() {
                 onChange={(e) => setProgressionVolume(parseFloat(e.target.value))}
               />
             </div>
+
           </div>
-          
           <Keyboard
             mode={mode}
             playNote={playNote}

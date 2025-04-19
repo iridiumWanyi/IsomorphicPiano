@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+  margin-top: -10px;
 }
 
 .arpeggiator-controls{
@@ -60,12 +61,12 @@ gap: 9px;
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 80px;
+  width: 90px;
   margin-left: 5px;
 }
 
 .arpeggiator-controls label {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .arpeggiator-controls input[type="range"] {
@@ -130,7 +131,7 @@ font-size: 12px;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
-  margin-top: 20px;
+  margin-top: 12px;
 }
 
 .keyboard-toggle,
@@ -289,7 +290,7 @@ font-size: 12px;
   align-items: center;
   gap: 6px;
   justify-content: center;
-  margin-top: 10px; 
+  margin-top: -6px; 
 }
 
 .highlight-label {
