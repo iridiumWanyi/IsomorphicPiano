@@ -203,7 +203,7 @@ function App() {
 
     const bpm = arpeggiator1Bpm;
     const duration = (60000 / bpm) * 4;
-    const countdownInterval = duration; // Interval for countdown notes
+    const countdownInterval = (60000 / bpm) * 2; // Interval for countdown notes
 
     let index = 0;
     const playNextChord = () => {
@@ -257,7 +257,7 @@ function App() {
       // Play 4 countdown notes (C4) before starting progression
       for (let i = 0; i < 4; i++) {
         const timeoutId = setTimeout(() => {
-          playNote('C4', progressionVolume);
+          playNote('E4', progressionVolume);
         }, i * countdownInterval);
         timeoutIds.current.push(timeoutId);
       }
@@ -363,9 +363,11 @@ function App() {
             <button
               onClick={handlePlayButtonClick}
               disabled={isRecording || chordProgression.length === 0}
+              className={`play-button ${isButtonStop}`}
             >
-              {isButtonStop ? '⏹' : '⏵'}
-            </button>
+              {isButtonStop ? '■' : '▶'}
+            </button>            
+
             <span className="help-chordProgression">?</span>
             <div className="repeat-control">
               <label>Repeat<br /> Count:</label>

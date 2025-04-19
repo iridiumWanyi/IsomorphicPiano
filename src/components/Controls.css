@@ -66,11 +66,11 @@ gap: 9px;
 }
 
 .arpeggiator-controls label {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .arpeggiator-controls input[type="range"] {
-  width: 100px;
+  width: 90px;
   margin-left: 5px;
   -webkit-appearance: none; 
   background: transparent; 
@@ -153,7 +153,7 @@ font-size: 12px;
   border-radius: 50%;
   cursor: help;
   position: relative;
-font-size: 12px;
+  font-size: 12px;
 }
 
 .help-customChords {
@@ -165,7 +165,7 @@ font-size: 12px;
 }
 
 .help-chordProgression {
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
 .help-chordProgression:hover::after,

@@ -29,7 +29,7 @@ body {
 .progression-controls button {
   padding: 0px 12px;
   font-size: 12px;
-  height: 32px ;
+  height: 30px ;
   cursor: pointer;
   border: none;
   border-radius: 5px;
@@ -48,6 +48,12 @@ body {
   cursor: not-allowed;
 }
 
+.progression-controls button.play-button {
+  font-size: 14px;
+  padding: 0 10px; /* Optional: Adjust for smaller symbol */
+  height: 30px; /* Optional: Match smaller font */
+}
+
 .repeat-control,
 .volume-control {
   display: inline-flex;
@@ -56,12 +62,11 @@ body {
   margin-bottom: 14px;
 }
 
-
 .repeat-control input[type="number"] {
   border: 1px solid #ccc;
   border-radius: 5px;
-  height: 28px;
-  width: 22px;
+  height: 24px;
+  width: 18px;
 }
 
 .repeat-control,
@@ -71,7 +76,7 @@ body {
 
 
 .volume-control input[type="range"] {
-  width: 75px;
+  width: 79px;
   margin-left: -2px;
   -webkit-appearance: none; 
   background: transparent; 

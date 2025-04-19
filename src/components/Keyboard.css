@@ -61,9 +61,6 @@
   color: #fff;
 }
 
-.key.active {
-  /* Highlight applied via inline style */
-}
 
 /* Hexagon key styling */
 .key.hexagon {
@@ -98,6 +95,7 @@
 .keyboard .row.hexagon-row:nth-child(4){
   margin-left: -50px; /* Same offset as hexagons for consistency */
   top: -59px; /* Align with other circle rows */
+  margin-bottom: -50px
 }
 
 

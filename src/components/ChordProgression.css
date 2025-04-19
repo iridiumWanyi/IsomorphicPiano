@@ -1,6 +1,6 @@
 .chord-progression-display {
   margin-top: 0px;
-  height: 22px;
+  height: 20px;
   margin-bottom: 16px;
   padding: 5px;
   background-color: #f7f5f4;
@@ -17,7 +17,7 @@
 
 .chord-item {
   background-color: #eeeae6;
-  padding: 0px 8px 2px 5px;
+  padding: 0px 8px 1px 2px;
   border-radius: 3px;
   font-family: monospace;
   font-size: 10px; /* Base size for root note */
