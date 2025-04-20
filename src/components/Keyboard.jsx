@@ -10,7 +10,9 @@ function Keyboard({
   customChords, keyboardMode, keyShape, keyColorScheme, highlightNotes,
   BlockChord1, BlockChord2,
   isRecording, setChordProgression,
-  lowestKey, highestKey
+  lowestKey, highestKey,
+  setRangeError,
+  inversionState
 }) {
   const [activeNotes, setActiveNotes] = useState([]);
 
@@ -20,7 +22,7 @@ function Keyboard({
 
     // Validation: Handle invalid inputs or low > high
     if (lowIndex === -1 || highIndex === -1 || lowIndex > highIndex) {
-      // Fallback to C3-C#5 with two-step spacing
+      setRangeError('');
       return [
         ["C#3", "E3", "G3", "A3", "C#4", "F4", "A4"],
         ["C3", "D3", "F#3", "G#3", "C4", "E4", "G4", "C5"],
@@ -52,18 +54,14 @@ function Keyboard({
     };
 
     if (isEven) {
-      // Rows 2/4: lowestKey to highestKey, every second note
       row2and4 = generateRow(lowIndex, highIndex);
-      // Rows 1/3: lowestKey+1 to highestKey+1, every second note
       row1and3 = generateRow(lowIndex + 1, highIndex + 1);
     } else {
-      // Rows 1/3: lowestKey+1 to highestKey, every second note
       row1and3 = generateRow(lowIndex + 1, highIndex);
-      // Rows 2/4: lowestKey to highestKey-1, every second note
       row2and4 = generateRow(lowIndex, highIndex - 1);
     }
 
-    // Handle very small ranges
+    // Handle small ranges
     if (row2and4.length === 0) {
       row2and4 = [lowestKey];
     }
@@ -71,8 +69,14 @@ function Keyboard({
       row1and3 = highIndex + 1 < chromaticScale.length ? [chromaticScale[lowIndex + 1]] : [lowestKey];
     }
 
-    // Cap rows at 20 keys to prevent overflow
     const maxKeysPerRow = 20;
+    const row2and4FullLength = Math.ceil((highIndex - lowIndex + (isEven ? 1 : 0)) / 2);
+    const row1and3FullLength = Math.ceil((highIndex - (lowIndex + 1) + (isEven ? 1 : 0)) / 2);
+    if (row2and4FullLength > maxKeysPerRow || row1and3FullLength > maxKeysPerRow) {
+      setRangeError(`Range from ${lowestKey} to ${highestKey} is too large (exceeds ${maxKeysPerRow} keys per row). Please select a smaller range.`);
+    } else {
+      setRangeError('');
+    }
     row1and3 = row1and3.slice(0, maxKeysPerRow);
     row2and4 = row2and4.slice(0, maxKeysPerRow);
 
@@ -90,6 +94,18 @@ function Keyboard({
       intervals = customChords[mode];
     } else {
       intervals = chordIntervals[mode] || [0];
+    }
+
+    // Apply inversion if inversionState > 1
+    if (inversionState > 1 && intervals.length > 1) {
+      const chordLength = intervals.length;
+      const inversionIndex = (inversionState - 1) % chordLength; // 0-based index of new root
+      const rootInterval = intervals[inversionIndex];
+      intervals = intervals.map(interval => {
+        let newInterval = interval - rootInterval;
+        if (newInterval < 0) newInterval += 12;
+        return newInterval;
+      }).sort((a, b) => a - b); // Sort for consistency
     }
 
     return intervals.map(interval => {
@@ -166,6 +182,7 @@ function Keyboard({
             arpeggioPattern: arpeggiator1On ? arpeggiator1Pattern : arpeggiator2On ? arpeggiator2Pattern : null,
             arpeggioDirection: arpeggiator1On ? arpeggiator1Direction : arpeggiator2On ? arpeggiator2Direction : null,
             BlockChord: arpeggiator1On ? BlockChord1 : arpeggiator2On ? BlockChord2 : false,
+            inversionState: inversionState, // Record the current inversion state
           };
           return [...prev, newChord];
         });

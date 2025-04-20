@@ -11,8 +11,8 @@ const row0Modes = [
 const row1Modes = [
   { id: 'major', label: 'Δ Major' },
   { id: 'minor', label: '- Minor' },
-  { id: 'diminished', label: 'o Diminished' },
-  { id: 'augmented', label: '+ Augmented' },
+  { id: 'diminished', label: 'o Dim' },
+  { id: 'augmented', label: '+ Aug' },
 ];
 
 const row2Modes = [
@@ -40,7 +40,7 @@ const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor, miniEx
   };
 
   const adjustedChord = chord && chord.length > 0 
-    ? chord.map(index =>  index) 
+    ? chord.map(index => index) 
     : id ? [0] : [];
 
   return (
@@ -69,7 +69,14 @@ const MiniKeyboard = ({ chord, onNoteToggle, id, setMode, highlightColor, miniEx
   );
 };
 
-export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) => {
+export const ChordControls = ({ 
+  mode, 
+  setMode, 
+  customChords, 
+  setCustomChords, 
+  inversionState, 
+  setInversionState 
+}) => {
   const handleNoteToggle = (id, note) => {
     setCustomChords(prev => {
       const currentChord = prev[id] && prev[id].length > 0 ? prev[id] : [0];
@@ -79,6 +86,10 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
       }
       return { ...prev, [id]: [...currentChord, note].sort((a, b) => a - b) };
     });
+  };
+
+  const handleInversionToggle = () => {
+    setInversionState(prev => (prev % 4) + 1); // Cycle 1 -> 2 -> 3 -> 4 -> 1
   };
 
   return (
@@ -117,6 +128,15 @@ export const ChordControls = ({ mode, setMode, customChords, setCustomChords }) 
             </div>
           </div>
         ))}
+        <div className="chord-button-container">
+        <span className="row-label">Inversion: </span>
+          <button
+            className="inversion-button"
+            onClick={handleInversionToggle}
+          >
+            {inversionState}
+          </button>
+        </div>
       </div>
       <div className="control-row-extended">
         <span className="row-label">Extended Chords:</span>

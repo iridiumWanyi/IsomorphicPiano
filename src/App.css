@@ -76,7 +76,7 @@ body {
 
 
 .volume-control input[type="range"] {
-  width: 79px;
+  width: 87.5px;
   margin-left: -2px;
   -webkit-appearance: none; 
   background: transparent; 

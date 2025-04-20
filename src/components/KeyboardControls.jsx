@@ -64,12 +64,6 @@ export const KeyboardToggle = ({
     <div className="keyboard-toggle-container">
       <div className="control-row">
         <button
-          onClick={() => setKeyboardMode(keyboardMode === 'partial' ? 'whole' : 'partial')}
-          className="keyboard-toggle"
-        >
-          {keyboardMode === 'partial' ? 'Partial Keyboard' : 'Whole Keyboard'}
-        </button>
-        <button
           onClick={toggleKeyShape}
           className="key-shape-toggle"
         >
@@ -85,24 +79,13 @@ export const KeyboardToggle = ({
            keyColorScheme === 'uniform' ? 'Uniform Coloring' :
            'Custom Black Keys'}
         </button>
-      </div>
-      {keyColorScheme === 'customhighlight' && (
-            <div className="highlight-selector-row">
-              <span className="highlight-label">Select Notes:</span>
-              <div className="note-list">
-                {noteList.map(note => (
-                  <button
-                    key={note}
-                    className={`note-button ${highlightNotes.includes(note) ? 'active' : ''}`}
-                    onClick={() => handleHighlightToggle(note)}
-                  >
-                    {note}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-      {(keyboardMode === 'partial' || keyColorScheme === 'customhighlight') && (
+        <button
+          onClick={() => setKeyboardMode(keyboardMode === 'partial' ? 'whole' : 'partial')}
+          className="keyboard-toggle"
+        >
+          {keyboardMode === 'partial' ? 'Partial Keyboard' : 'Whole Keyboard'}
+        </button>
+        {(keyboardMode === 'partial' || keyColorScheme === 'customhighlight') && (
         <div className="controls-row">
           {keyboardMode === 'partial' && (
             <div className="key-range-selector">
@@ -136,6 +119,24 @@ export const KeyboardToggle = ({
 
         </div>
       )}
+      </div>
+      {keyColorScheme === 'customhighlight' && (
+            <div className="highlight-selector-row">
+              <span className="highlight-label">Select Notes:</span>
+              <div className="note-list">
+                {noteList.map(note => (
+                  <button
+                    key={note}
+                    className={`note-button ${highlightNotes.includes(note) ? 'active' : ''}`}
+                    onClick={() => handleHighlightToggle(note)}
+                  >
+                    {note}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
     </div>
   );
 };

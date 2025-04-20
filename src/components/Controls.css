@@ -24,16 +24,13 @@
   justify-content: center;
 }
 
-.control-row-extended {
-gap: 9px;
-}
 
 .chord-controls button,
 .control-row-extended button,
 .control-row-custom button,
 .arpeggiator-controls button,
 .keyboard-toggle-container button {
-  padding: 8px 12px;
+  padding: 8px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -41,13 +38,17 @@ gap: 9px;
   color: #333;
 }
 
+.inversion-button {
+  background-color: #eeeae6;
+  margin-left: -2px;
+  }
+
 .control-row-extended button{
   padding: 6px 10px;
   font-size: 12px;
 }
 
 .control-row-custom button{
-  padding: 8px 10px;
   font-size: 12px;
 }
 
@@ -70,7 +71,7 @@ gap: 9px;
 }
 
 .arpeggiator-controls input[type="range"] {
-  width: 90px;
+  width: 102px;
   margin-left: 5px;
   -webkit-appearance: none; 
   background: transparent; 
@@ -111,6 +112,7 @@ gap: 9px;
   align-items: center;
   background-color: #eeeae6;
 }
+
 
 .BlockChord1{
 margin-right: -10px;
@@ -157,10 +159,6 @@ font-size: 12px;
 
 .help-customChords {
   margin-left: -4px;
-}
-
-.help-infty {
-  margin-left: 64px;
 }
 
 .help-chordProgression {
@@ -221,7 +219,7 @@ font-size: 12px;
   display: flex;
   flex-direction: column-reverse;
   margin-left: 3px;
-  margin-right: -12px;
+  margin-right: -9.4px;
 }
 
 .mini-keyboard .mini-row.top-row {

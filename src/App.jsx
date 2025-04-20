@@ -3,7 +3,7 @@ import Keyboard from './components/Keyboard';
 import { ChordControls } from './components/ChordControls';
 import { KeyboardToggle } from './components/KeyboardControls';
 import { ArpeggiatorControls } from './components/ArpeggiatorControls';
-import  ChordProgression from './components/ChordProgression';
+import ChordProgression from './components/ChordProgression';
 import { chromaticScale, noteToFileNumber, chordIntervals } from './constants';
 import './App.css';
 
@@ -37,11 +37,13 @@ function App() {
   const [BlockChord2, setBlockChord2] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [chordProgression, setChordProgression] = useState([]);
-  const [progressionVolume, setProgressionVolume] = useState(.6);
+  const [progressionVolume, setProgressionVolume] = useState(0.6);
   const [isButtonStop, setIsButtonStop] = useState(false);
-  const [repeatCount, setRepeatCount] = useState(4); // Chord progression repetition count
+  const [repeatCount, setRepeatCount] = useState(4);
   const [lowestKey, setLowestKey] = useState('C3');
   const [highestKey, setHighestKey] = useState('C5');
+  const [rangeError, setRangeError] = useState('');
+  const [inversionState, setInversionState] = useState(1);
 
   const audioCacheRef = useRef({});
   const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)());
@@ -292,7 +294,7 @@ function App() {
     playProgression();
   };
 
-  const getChordNotes = ({ rootNote, chordType }) => {
+  const getChordNotes = ({ rootNote, chordType, inversionState: chordInversionState }) => {
     const baseIndex = chromaticScale.indexOf(rootNote);
     if (baseIndex === -1) return [rootNote];
 
@@ -301,14 +303,27 @@ function App() {
       intervals = customChords[chordType];
     }
 
+    // Apply inversion if chordInversionState > 1 (use recorded state, default to 1)
+    const effectiveInversionState = chordInversionState || 1;
+    if (effectiveInversionState > 1 && intervals.length > 1) {
+      const chordLength = intervals.length;
+      const inversionIndex = (effectiveInversionState - 1) % chordLength;
+      const rootInterval = intervals[inversionIndex];
+      intervals = intervals.map(interval => {
+        let newInterval = interval - rootInterval;
+        if (newInterval < 0) newInterval += 12;
+        return newInterval;
+      }).sort((a, b) => a - b);
+    }
+
     return intervals.map(interval => {
       const targetIndex = baseIndex + interval;
       return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
     }).filter(n => n);
   };
 
-  const getArpeggioNotes = ({ rootNote, chordType, arpeggioPattern, arpeggioDirection }) => {
-    const chordNotes = getChordNotes({ rootNote, chordType });
+  const getArpeggioNotes = ({ rootNote, chordType, arpeggioPattern, arpeggioDirection, inversionState: chordInversionState }) => {
+    const chordNotes = getChordNotes({ rootNote, chordType, inversionState: chordInversionState });
     if (chordNotes.length === 0) return [];
 
     const patternArray = arpeggioPattern.split(',').filter(x => x !== '').map(Number);
@@ -346,6 +361,8 @@ function App() {
             setMode={setMode}
             customChords={customChords}
             setCustomChords={setCustomChords}
+            inversionState={inversionState}
+            setInversionState={setInversionState}
           />
           <ArpeggiatorControls
             arpeggiator1On={arpeggiator1On}
@@ -385,7 +402,6 @@ function App() {
             >
               {isButtonStop ? '■' : '▶'}
             </button>            
-
             <span className="help-chordProgression">?</span>
             <div className="repeat-control">
               <label>Repeat<br /> Count:</label>
@@ -408,9 +424,11 @@ function App() {
                 onChange={(e) => setProgressionVolume(parseFloat(e.target.value))}
               />
             </div>
-
           </div>
-<Keyboard
+          {rangeError && (
+            <span className="range-error">{rangeError}</span>
+          )}
+          <Keyboard
             mode={mode}
             playNote={playNote}
             playChord={playChord}
@@ -431,9 +449,10 @@ function App() {
             BlockChord2={BlockChord2}
             isRecording={isRecording}
             setChordProgression={setChordProgression}
-            audioContext={audioContextRef.current}
             lowestKey={lowestKey}
             highestKey={highestKey}
+            setRangeError={setRangeError}
+            inversionState={inversionState}
           />
           <KeyboardToggle
             keyboardMode={keyboardMode}
