@@ -124,7 +124,7 @@ font-size: 12px;
 }
 
 .direction-button.down {
-  background-color: #cfdae2;
+  background-color: #cedfdf;
 }
 
 .keyboard-toggle-container {
@@ -262,7 +262,7 @@ font-size: 12px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
-  padding: 5px;
+  padding: 5px 15px 5px 5px;
   background-color: rgba(241, 236, 234, 0.9);
   border: 1px solid #ccc;
   border-radius: 3px;
