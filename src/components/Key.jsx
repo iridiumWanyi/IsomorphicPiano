@@ -6,7 +6,7 @@ function Key({ note, onNotePress, onNoteRelease, isActive, highlightColor, keySh
   const noteBase = note.match(/^[A-G]#?/)?.[0] || '';
   const isHighlighted = highlightNotes.includes(noteBase);
   
-  const colorClass = keyColorScheme === 'uniformWhite' ? 'uniformWhite' :
+  const colorClass = keyColorScheme === 'uniform' ? 'uniform' :
                     keyColorScheme === 'customhighlight' ? (isHighlighted ? 'customhighlight' : 'white') :
                     isBlack ? 'Black' : 'white';
 

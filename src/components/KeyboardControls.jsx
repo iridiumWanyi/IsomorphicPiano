@@ -9,8 +9,8 @@ export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKey
   };
 
   const toggleColorScheme = () => {
-    if (keyColorScheme === 'blackWhite') setKeyColorScheme('uniformWhite');
-    else if (keyColorScheme === 'uniformWhite') setKeyColorScheme('customhighlight');
+    if (keyColorScheme === 'blackWhite') setKeyColorScheme('uniform');
+    else if (keyColorScheme === 'uniform') setKeyColorScheme('customhighlight');
     else setKeyColorScheme('blackWhite');
   };
 
@@ -44,7 +44,7 @@ export const KeyboardToggle = ({ keyboardMode, setKeyboardMode, keyShape, setKey
           className="key-color-toggle"
         >
           {keyColorScheme === 'blackWhite' ? 'Black/White Coloring' :
-           keyColorScheme === 'uniformWhite' ? 'Uniform Coloring' :
+           keyColorScheme === 'uniform' ? 'Uniform Coloring' :
            'Custom Black Keys'}
         </button>
       </div>

@@ -39,7 +39,9 @@ function App() {
   const [chordProgression, setChordProgression] = useState([]);
   const [progressionVolume, setProgressionVolume] = useState(.6);
   const [isButtonStop, setIsButtonStop] = useState(false);
-  const [repeatCount, setRepeatCount] = useState(4); // New state for repeat count
+  const [repeatCount, setRepeatCount] = useState(4); // Chord progression repetition count
+  const [lowestKey, setLowestKey] = useState('C3');
+  const [highestKey, setHighestKey] = useState('C5');
 
   const audioCacheRef = useRef({});
   const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)());
@@ -254,10 +256,26 @@ function App() {
     } else {
       setIsPlaying(true);
       setIsButtonStop(true);
-      // Play 4 countdown notes (C4) before starting progression
+      // Determine countdown note based on first chord
+      let countdownNote = 'E4'; // Fallback
+      if (chordProgression.length > 0) {
+        const firstChord = chordProgression[0];
+        let baseNote;
+        if (firstChord.arpeggioPattern && !firstChord.BlockChord) {
+          const arpeggioNotes = getArpeggioNotes(firstChord);
+          baseNote = arpeggioNotes[0] || firstChord.rootNote;
+        } else {
+          baseNote = firstChord.rootNote;
+        }
+        const baseIndex = chromaticScale.indexOf(baseNote);
+        if (baseIndex !== -1 && baseIndex + 12 < chromaticScale.length) {
+          countdownNote = chromaticScale[baseIndex + 12];
+        }
+      }
+      // Play 4 countdown notes with the determined note
       for (let i = 0; i < 4; i++) {
         const timeoutId = setTimeout(() => {
-          playNote('E4', progressionVolume);
+          playNote(countdownNote, progressionVolume);
         }, i * countdownInterval);
         timeoutIds.current.push(timeoutId);
       }
@@ -392,7 +410,7 @@ function App() {
             </div>
 
           </div>
-          <Keyboard
+<Keyboard
             mode={mode}
             playNote={playNote}
             playChord={playChord}
@@ -414,6 +432,8 @@ function App() {
             isRecording={isRecording}
             setChordProgression={setChordProgression}
             audioContext={audioContextRef.current}
+            lowestKey={lowestKey}
+            highestKey={highestKey}
           />
           <KeyboardToggle
             keyboardMode={keyboardMode}
@@ -424,7 +444,10 @@ function App() {
             setKeyColorScheme={setKeyColorScheme}
             highlightNotes={highlightNotes}
             setHighlightNotes={setHighlightNotes}
+            setLowestKey={setLowestKey}
+            setHighestKey={setHighestKey}
           />
+          
         </>
       )}
     </div>

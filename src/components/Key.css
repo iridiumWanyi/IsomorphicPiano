@@ -28,8 +28,8 @@
   transform: scale(0.95); 
 }
 
-.key.uniformWhite {
-  background-color: #fff !important; /* Override .Black */
+.key.uniform {
+  background-color: #f1efed !important; /* Override .Black */
   border: 1px solid #ccc;
   color: #585655 !important; 
 }

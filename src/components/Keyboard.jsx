@@ -164,4 +164,11 @@ function Keyboard({
   );
 }
 
+const generatePartialLayout = (lowestKey, highestKey) => {
+  const lowIndex = chromaticScale.indexOf(lowestKey);
+  const highIndex = chromaticScale.indexOf(highestKey);
+  const range = chromaticScale.slice(lowIndex, highIndex + 1);
+  // Generate layout similar to partialKeyboardLayout
+};
+
 export default Keyboard;

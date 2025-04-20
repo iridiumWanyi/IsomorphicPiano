@@ -208,7 +208,7 @@ font-size: 12px;
 
 .help-infty:hover::after,
 .help-infty:focus::after {
-  content: "Create transposed block-chords according to the notes specified in the arpeggiator.";
+  content: "Create inverted block-chords according to the notes specified in the arpeggiator.";
   position: absolute;
 }
 
@@ -318,4 +318,31 @@ font-size: 12px;
 .note-button.active {
   background-color: #dab3b3; /* Matches .key.customhighlight */
   color: #fff;
+}
+
+.key-range-selector {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.key-input {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.key-input label {
+  font-size: 12px;
+  color: #333;
+}
+
+.key-input input {
+  width: 60px;
+  height: 28px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 0 5px;
 }
