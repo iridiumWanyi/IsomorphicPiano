@@ -29,7 +29,7 @@
 }
 
 .key.uniform {
-  background-color: #f1efed !important; /* Override .Black */
+  background-color: #eeeae6 !important; /* Override .Black */
   border: 1px solid #ccc;
   color: #585655 !important; 
 }

@@ -45,7 +45,7 @@ export const wholeKeyboardLayout = [
 
 export const modeColors = {
   "single": "#eeeae6",
-  "octave": "#ebe3cd",
+  "octave": "#efe7c7",
   "major": "#ebd3d3",
   "minor": "#d4e2b8",
   "diminished": "#cedfdf",

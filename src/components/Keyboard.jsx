@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Key from './Key';
-import { partialKeyboardLayout, wholeKeyboardLayout, chromaticScale, modeColors, chordIntervals } from '../constants';
+import { wholeKeyboardLayout, chromaticScale, modeColors, chordIntervals } from '../constants';
 import './Keyboard.css';
 
 function Keyboard({ 
@@ -9,10 +9,77 @@ function Keyboard({
   arpeggiator2On, arpeggiator2Pattern, arpeggiator2Bpm, arpeggiator2Direction,
   customChords, keyboardMode, keyShape, keyColorScheme, highlightNotes,
   BlockChord1, BlockChord2,
-  isRecording, setChordProgression
+  isRecording, setChordProgression,
+  lowestKey, highestKey
 }) {
   const [activeNotes, setActiveNotes] = useState([]);
-  const layout = keyboardMode === 'partial' ? partialKeyboardLayout : wholeKeyboardLayout;
+
+  const generatePartialLayout = (lowestKey, highestKey) => {
+    let lowIndex = chromaticScale.indexOf(lowestKey);
+    let highIndex = chromaticScale.indexOf(highestKey);
+
+    // Validation: Handle invalid inputs or low > high
+    if (lowIndex === -1 || highIndex === -1 || lowIndex > highIndex) {
+      // Fallback to C3-C#5 with two-step spacing
+      return [
+        ["C#3", "E3", "G3", "A3", "C#4", "F4", "A4"],
+        ["C3", "D3", "F#3", "G#3", "C4", "E4", "G4", "C5"],
+        ["C#3", "E3", "G3", "A3", "C#4", "F4", "A4"],
+        ["C3", "D3", "F#3", "G#3", "C4", "E4", "G4", "C5"]
+      ];
+    }
+
+    // Swap if lowIndex > highIndex
+    if (lowIndex > highIndex) {
+      [lowIndex, highIndex] = [highIndex, lowIndex];
+      [lowestKey, highestKey] = [highestKey, lowestKey];
+    }
+
+    const distance = highIndex - lowIndex;
+    const isEven = distance % 2 === 0;
+    let row1and3 = [];
+    let row2and4 = [];
+
+    // Helper to generate row with two-step spacing
+    const generateRow = (startIndex, endIndex) => {
+      const row = [];
+      for (let i = startIndex; i <= endIndex; i += 2) {
+        if (i < chromaticScale.length) {
+          row.push(chromaticScale[i]);
+        }
+      }
+      return row;
+    };
+
+    if (isEven) {
+      // Rows 2/4: lowestKey to highestKey, every second note
+      row2and4 = generateRow(lowIndex, highIndex);
+      // Rows 1/3: lowestKey+1 to highestKey+1, every second note
+      row1and3 = generateRow(lowIndex + 1, highIndex + 1);
+    } else {
+      // Rows 1/3: lowestKey+1 to highestKey, every second note
+      row1and3 = generateRow(lowIndex + 1, highIndex);
+      // Rows 2/4: lowestKey to highestKey-1, every second note
+      row2and4 = generateRow(lowIndex, highIndex - 1);
+    }
+
+    // Handle very small ranges
+    if (row2and4.length === 0) {
+      row2and4 = [lowestKey];
+    }
+    if (row1and3.length === 0) {
+      row1and3 = highIndex + 1 < chromaticScale.length ? [chromaticScale[lowIndex + 1]] : [lowestKey];
+    }
+
+    // Cap rows at 20 keys to prevent overflow
+    const maxKeysPerRow = 20;
+    row1and3 = row1and3.slice(0, maxKeysPerRow);
+    row2and4 = row2and4.slice(0, maxKeysPerRow);
+
+    return [row1and3, row2and4, row1and3, row2and4];
+  };
+
+  const layout = keyboardMode === 'partial' ? generatePartialLayout(lowestKey, highestKey) : wholeKeyboardLayout;
 
   const getChordNotes = (baseNote) => {
     const baseIndex = chromaticScale.indexOf(baseNote);
@@ -46,11 +113,9 @@ function Keyboard({
       const notePosition = (absIndex - 1) % chordLength;
       const octaveShift = Math.floor((absIndex - 1) / chordLength);
       
-      // Select the note from the chord
       const chordNoteIndex = isNegative ? (chordLength - 1 - notePosition) : notePosition;
       const baseNoteIndex = chromaticScale.indexOf(baseChordNotes[chordNoteIndex]);
       
-      // Apply octave shift: negative indices shift down one octave plus additional shifts
       const targetIndex = baseNoteIndex + (isNegative ? -(octaveShift + 1) * 12 : octaveShift * 12);
       
       return targetIndex >= 0 && targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
@@ -163,12 +228,5 @@ function Keyboard({
     </div>
   );
 }
-
-const generatePartialLayout = (lowestKey, highestKey) => {
-  const lowIndex = chromaticScale.indexOf(lowestKey);
-  const highIndex = chromaticScale.indexOf(highestKey);
-  const range = chromaticScale.slice(lowIndex, highIndex + 1);
-  // Generate layout similar to partialKeyboardLayout
-};
 
 export default Keyboard;

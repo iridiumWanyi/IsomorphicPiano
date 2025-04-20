@@ -3,7 +3,7 @@ import Keyboard from './components/Keyboard';
 import { ChordControls } from './components/ChordControls';
 import { KeyboardToggle } from './components/KeyboardControls';
 import { ArpeggiatorControls } from './components/ArpeggiatorControls';
-import ChordProgression from './components/ChordProgression';
+import  ChordProgression from './components/ChordProgression';
 import { chromaticScale, noteToFileNumber, chordIntervals } from './constants';
 import './App.css';
 
@@ -331,7 +331,7 @@ function App() {
       <h1>Isomorphic Piano Simulator</h1>
       {!isPriorityAudioLoaded && (
         <div className="loading-container">
-          <p>Loading priority audio (F2-F5)...</p>
+          <p>Loading priority audio files...</p>
         </div>
       )}
       {isPriorityAudioLoaded && !isAudioLoaded && (
@@ -438,16 +438,15 @@ function App() {
           <KeyboardToggle
             keyboardMode={keyboardMode}
             setKeyboardMode={setKeyboardMode}
+            setLowestKey={setLowestKey}
+            setHighestKey={setHighestKey}
             keyShape={keyShape}
             setKeyShape={setKeyShape}
             keyColorScheme={keyColorScheme}
             setKeyColorScheme={setKeyColorScheme}
             highlightNotes={highlightNotes}
             setHighlightNotes={setHighlightNotes}
-            setLowestKey={setLowestKey}
-            setHighestKey={setHighestKey}
           />
-          
         </>
       )}
     </div>
