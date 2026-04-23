@@ -13,6 +13,7 @@ chromaticScale.forEach((note, index) => {
 });
 
 function App() {
+  console.log('IsomorphicPiano v0215132 loaded — custom domain path fix active');
   const [mode, setMode] = useState('single');
   const [arpeggiator1On, setArpeggiator1On] = useState(false);
   const [arpeggiator1Pattern, setArpeggiator1Pattern] = useState('1,3,4,5');
