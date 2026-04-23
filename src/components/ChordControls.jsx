@@ -1,6 +1,5 @@
 import React from 'react';
-import { modeColors } from '../constants';
-import { chordNotes } from '../constants';
+import { modeColors, chordIntervals } from '../constants';
 import './Controls.css';
 
 const row0Modes = [
@@ -120,7 +119,7 @@ export const ChordControls = ({
             </button>
             <div className="floating-keyboard">
               <MiniKeyboard
-                chord={chordNotes[m.id] || []}
+                chord={chordIntervals[m.id] || []}
                 onNoteToggle={() => {}}
                 highlightColor={modeColors[m.id]}
                 miniExtend={m.id.includes('Nine')}
@@ -152,7 +151,7 @@ export const ChordControls = ({
             </button>
             <div className="floating-keyboard">
               <MiniKeyboard
-                chord={chordNotes[m.id] || []}
+                chord={chordIntervals[m.id] || []}
                 onNoteToggle={() => {}}
                 highlightColor={modeColors[m.id]}
                 miniExtend={m.id.includes('Nine')}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Key from './Key';
-import { wholeKeyboardLayout, chromaticScale, modeColors, chordIntervals } from '../constants';
+import { wholeKeyboardLayout, chromaticScale, modeColors, computeChordNotes } from '../constants';
 import './Keyboard.css';
 
 function Keyboard({ 
@@ -29,12 +29,6 @@ function Keyboard({
         ["C#3", "E3", "G3", "A3", "C#4", "F4", "A4"],
         ["C3", "D3", "F#3", "G#3", "C4", "E4", "G4", "C5"]
       ];
-    }
-
-    // Swap if lowIndex > highIndex
-    if (lowIndex > highIndex) {
-      [lowIndex, highIndex] = [highIndex, lowIndex];
-      [lowestKey, highestKey] = [highestKey, lowestKey];
     }
 
     const distance = highIndex - lowIndex;
@@ -85,37 +79,8 @@ function Keyboard({
 
   const layout = keyboardMode === 'partial' ? generatePartialLayout(lowestKey, highestKey) : wholeKeyboardLayout;
 
-  const getChordNotes = (baseNote) => {
-    const baseIndex = chromaticScale.indexOf(baseNote);
-    if (baseIndex === -1) return [baseNote];
-
-    let intervals;
-    if (mode.startsWith('custom') && customChords[mode]) {
-      intervals = customChords[mode];
-    } else {
-      intervals = chordIntervals[mode] || [0];
-    }
-
-    // Apply inversion if inversionState > 1
-    if (inversionState > 1 && intervals.length > 1) {
-      const chordLength = intervals.length;
-      const inversionIndex = (inversionState - 1) % chordLength; // 0-based index of new root
-      const rootInterval = intervals[inversionIndex];
-      intervals = intervals.map(interval => {
-        let newInterval = interval - rootInterval;
-        if (newInterval < 0) newInterval += 12;
-        return newInterval;
-      }).sort((a, b) => a - b); // Sort for consistency
-    }
-
-    return intervals.map(interval => {
-      const targetIndex = baseIndex + interval;
-      return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
-    }).filter(n => n);
-  };
-
   const getArpeggioNotes = (baseNote, pattern, direction) => {
-    const baseChordNotes = getChordNotes(baseNote);
+    const baseChordNotes = computeChordNotes(baseNote, mode, customChords, inversionState);
     if (baseChordNotes.length === 0) return [];
 
     const patternArray = pattern.split(',').filter(x => x !== '').map(Number);
@@ -169,7 +134,7 @@ function Keyboard({
   const handleNotePress = (note) => {
     if (!activeNotes.includes(note)) {
       console.log(`handleNotePress called for ${note} at ${Date.now()}`);
-      const chordNotes = getChordNotes(note);
+      const chordNotes = computeChordNotes(note, mode, customChords, inversionState);
       const arpeggiator1OnRef = { current: arpeggiator1On && !BlockChord1 };
       const arpeggiator2OnRef = { current: arpeggiator2On && !BlockChord2 };
 

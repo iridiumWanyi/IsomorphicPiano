@@ -69,23 +69,6 @@ export const modeColors = {
   "custom4": "#eeeae6"
 };
 
-export const chordNotes = {
-  'single': [0],
-  'octave': [0, 12],
-  'major': [0, 4, 7],
-  'minor': [0, 3, 7],
-  'diminished': [0, 3, 6],
-  'augmented': [0, 4, 8],
-  'domSeven': [0, 4, 7, 10],
-  'majSeven': [0, 4, 7, 11],
-  'minSeven': [0, 3, 7, 10],
-  'susFour': [0, 5, 7],
-  'domNine': [0, 4, 7, 10, 14],
-  'majNine': [0, 4, 7, 11, 14],
-  'minNine': [0, 3, 7, 10, 14],
-  'susNine': [0, 5, 7, 14],
-};
-
 export const chordIntervals = {
   'single': [0],
   'octave': [0, 12],
@@ -104,4 +87,30 @@ export const chordIntervals = {
   'custom1': [0, 4, 7],
   'custom2': [0, 3, 7],
   'custom3': [0, 3, 6, 9],
+};
+
+export const computeChordNotes = (rootNote, chordType, customChords = {}, inversionState = 1) => {
+  const baseIndex = chromaticScale.indexOf(rootNote);
+  if (baseIndex === -1) return [rootNote];
+
+  let intervals = chordIntervals[chordType] || [0];
+  if (chordType && chordType.startsWith('custom') && customChords[chordType]) {
+    intervals = customChords[chordType];
+  }
+
+  const effectiveInversion = inversionState || 1;
+  if (effectiveInversion > 1 && intervals.length > 1) {
+    const inversionIndex = (effectiveInversion - 1) % intervals.length;
+    const rootInterval = intervals[inversionIndex];
+    intervals = intervals.map(interval => {
+      let newInterval = interval - rootInterval;
+      if (newInterval < 0) newInterval += 12;
+      return newInterval;
+    }).sort((a, b) => a - b);
+  }
+
+  return intervals.map(interval => {
+    const targetIndex = baseIndex + interval;
+    return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
+  }).filter(n => n);
 };

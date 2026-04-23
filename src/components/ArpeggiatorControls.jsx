@@ -119,7 +119,7 @@ export const ArpeggiatorControls = ({
           <span>{arpeggiator1Bpm}</span>
         </label>
         <button
-          className={`BlockChord1 ? 'active' : ''`}
+          className={BlockChord1 ? 'active' : ''}
           onClick={handleClickToggle(setBlockChord1, BlockChord1)}
           onTouchStart={handleTouchToggle(setBlockChord1, BlockChord1)}
           style={{ backgroundColor: BlockChord1 ? modeColors['buttonToggleOn'] : modeColors['buttonToggleOff']}}

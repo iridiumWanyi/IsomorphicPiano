@@ -227,7 +227,7 @@ font-size: 12px;
 }
 
 .mini-keyboard .mini-row.bottom-row {
-  margin-left: 10;
+  margin-left: 10px;
 }
 
 .mini-row {
@@ -308,7 +308,7 @@ font-size: 12px;
   font-size: 10px;
   width: 10px !important ;
   height: 18px;
-  border-radius: 1;
+  border-radius: 1px;
   background-color: #fff;
 }
 

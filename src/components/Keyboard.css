@@ -26,7 +26,7 @@
 .keyboard .row.hexagon-row:nth-child(2),
 .keyboard .row.hexagon-row:nth-child(4) {
   margin-left: -50px; /* Adjusted offset for hexagons */
-  top: 20
+  top: 20px;
 }
 
 .key-placeholder {
@@ -64,11 +64,11 @@
 
 /* Hexagon key styling */
 .key.hexagon {
-  width: 50;
-  height: 50;
+  width: 50px;
+  height: 50px;
   border: none;
   clip-path: polygon(50% 4%, 100% 28%, 100% 72%, 50% 96%, 0% 72%, 0% 28%);
-  margin: 2;
+  margin: 2px;
 }
 
 /* Adjust placeholder for hexagon */

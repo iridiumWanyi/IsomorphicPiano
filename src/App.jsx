@@ -4,7 +4,7 @@ import { ChordControls } from './components/ChordControls';
 import { KeyboardToggle } from './components/KeyboardControls';
 import { ArpeggiatorControls } from './components/ArpeggiatorControls';
 import ChordProgression from './components/ChordProgression';
-import { chromaticScale, noteToFileNumber, chordIntervals } from './constants';
+import { chromaticScale, noteToFileNumber, computeChordNotes } from './constants';
 import './App.css';
 
 const noteToChromaticIndex = {};
@@ -46,7 +46,14 @@ function App() {
   const [inversionState, setInversionState] = useState(1);
 
   const audioCacheRef = useRef({});
-  const audioContextRef = useRef(new (window.AudioContext || window.webkitAudioContext)());
+  const audioContextRef = useRef(null);
+
+  const getAudioContext = () => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioContextRef.current;
+  };
 
   useEffect(() => {
     preloadAudioFiles();
@@ -96,9 +103,6 @@ function App() {
         const audio = new Audio(audioUrlObj);
         cache[note] = { audio, blob: audioBlob };
         console.log(`Successfully cached ${note}`);
-        const allLoaded = allNotes.every(note => cache[note] !== null && cache[note] !== undefined);
-        setIsAudioLoaded(allLoaded);
-        console.log('All notes completed, total cached:', Object.keys(cache).length, 'all loaded:', allLoaded);
       } catch (error) {
         console.error(`Error caching ${note}:`, error.message);
         cache[note] = null;
@@ -116,50 +120,41 @@ function App() {
       return;
     }
 
-    console.log(`Attempting to play note: ${note} (index: ${noteToChromaticIndex[note]}, file: ${noteToFileNumber[note]})`);
-
-    const audioContext = audioContextRef.current;
+    const audioContext = getAudioContext();
     const gainNode = audioContext.createGain();
     gainNode.gain.value = Math.max(0, Math.min(1, volume));
     gainNode.connect(audioContext.destination);
 
     const cached = audioCacheRef.current[note];
-    if (cached && cached.blob) {
-      console.log(`Audio cached for ${note}, proceeding to decode`);
+    if (!cached) {
+      console.warn(`No audio cached for ${note}`);
+      return;
+    }
+
+    const play = (buffer) => {
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(gainNode);
+      const startTime = audioContext.currentTime;
+      gainNode.gain.setValueAtTime(volume, startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + (isSustainPedalOn ? 5.0 : 3.0));
+      source.start(startTime);
+      source.onended = () => {
+        source.disconnect();
+        gainNode.disconnect();
+      };
+    };
+
+    if (cached.buffer) {
+      play(cached.buffer);
+    } else if (cached.blob) {
       cached.blob.arrayBuffer()
-        .then((arrayBuffer) => {
-          audioContext.decodeAudioData(arrayBuffer, (buffer) => {
-            const source = audioContext.createBufferSource();
-            source.buffer = buffer;
-            source.connect(gainNode);
-
-            const startTime = audioContext.currentTime;
-
-            if (isSustainPedalOn) {
-              gainNode.gain.setValueAtTime(volume, startTime);
-              gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 5.0);
-            } else {
-              gainNode.gain.setValueAtTime(volume, startTime);
-              gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 3.0);
-            }
-
-            source.start(startTime);
-            console.log(`Playing ${note} at ${startTime}`);
-
-            source.onended = () => {
-              source.disconnect();
-              gainNode.disconnect();
-              console.log(`Playback ended for ${note}`);
-            };
-          }).catch(err => {
-            console.error(`Error decoding audio for ${note}:`, err);
-          });
+        .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+        .then(buffer => {
+          cached.buffer = buffer;
+          play(buffer);
         })
-        .catch(err => {
-          console.error(`Error converting blob to arrayBuffer for ${note}:`, err);
-        });
-    } else {
-      console.warn(`No audio cached for ${note} (index: ${noteToChromaticIndex[note]})`);
+        .catch(err => console.error(`Error playing ${note}:`, err));
     }
   };
 
@@ -169,23 +164,33 @@ function App() {
       return;
     }
 
-    const gainNode = audioContextRef.current.createGain();
+    const audioContext = getAudioContext();
+    const gainNode = audioContext.createGain();
     gainNode.gain.value = Math.max(0, Math.min(1, volume));
-    gainNode.connect(audioContextRef.current.destination);
+    gainNode.connect(audioContext.destination);
 
     chordNotes.forEach((note) => {
       const cached = audioCacheRef.current[note];
-      if (cached && cached.blob) {
-        cached.blob.arrayBuffer().then((arrayBuffer) => {
-          audioContextRef.current.decodeAudioData(arrayBuffer, (buffer) => {
-            const source = audioContextRef.current.createBufferSource();
-            source.buffer = buffer;
-            source.connect(gainNode);
-            source.start(audioContextRef.current.currentTime);
-          }).catch(err => console.error(`Error decoding ${note}:`, err));
-        }).catch(err => console.error(`Error converting blob for ${note}:`, err));
-      } else {
+      if (!cached) {
         console.warn(`Audio not cached for ${note}`);
+        return;
+      }
+      const play = (buffer) => {
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(gainNode);
+        source.start(audioContext.currentTime);
+      };
+      if (cached.buffer) {
+        play(cached.buffer);
+      } else if (cached.blob) {
+        cached.blob.arrayBuffer()
+          .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+          .then(buffer => {
+            cached.buffer = buffer;
+            play(buffer);
+          })
+          .catch(err => console.error(`Error playing ${note}:`, err));
       }
     });
   };
@@ -240,7 +245,7 @@ function App() {
         }, arpeggioNotes.length * noteDuration);
         timeoutIds.current.push(timeoutId);
       } else {
-        const chordNotes = getChordNotes(chord);
+        const chordNotes = computeChordNotes(chord.rootNote, chord.chordType, customChords, chord.inversionState);
         playChord(chordNotes, progressionVolume);
         const timeoutId = setTimeout(() => {
           index++;
@@ -290,40 +295,11 @@ function App() {
   };
 
   const handlePlayButtonClick = () => {
-    setIsButtonStop(!isButtonStop);
     playProgression();
   };
 
-  const getChordNotes = ({ rootNote, chordType, inversionState: chordInversionState }) => {
-    const baseIndex = chromaticScale.indexOf(rootNote);
-    if (baseIndex === -1) return [rootNote];
-
-    let intervals = chordIntervals[chordType] || [0];
-    if (chordType.startsWith('custom') && customChords[chordType]) {
-      intervals = customChords[chordType];
-    }
-
-    // Apply inversion if chordInversionState > 1 (use recorded state, default to 1)
-    const effectiveInversionState = chordInversionState || 1;
-    if (effectiveInversionState > 1 && intervals.length > 1) {
-      const chordLength = intervals.length;
-      const inversionIndex = (effectiveInversionState - 1) % chordLength;
-      const rootInterval = intervals[inversionIndex];
-      intervals = intervals.map(interval => {
-        let newInterval = interval - rootInterval;
-        if (newInterval < 0) newInterval += 12;
-        return newInterval;
-      }).sort((a, b) => a - b);
-    }
-
-    return intervals.map(interval => {
-      const targetIndex = baseIndex + interval;
-      return targetIndex < chromaticScale.length ? chromaticScale[targetIndex] : null;
-    }).filter(n => n);
-  };
-
   const getArpeggioNotes = ({ rootNote, chordType, arpeggioPattern, arpeggioDirection, inversionState: chordInversionState }) => {
-    const chordNotes = getChordNotes({ rootNote, chordType, inversionState: chordInversionState });
+    const chordNotes = computeChordNotes(rootNote, chordType, customChords, chordInversionState);
     if (chordNotes.length === 0) return [];
 
     const patternArray = arpeggioPattern.split(',').filter(x => x !== '').map(Number);
@@ -354,7 +330,7 @@ function App() {
           <p>Loading remaining audio files...</p>
         </div>
       )}
-      {isPriorityAudioLoaded && isAudioLoaded && (
+      {isPriorityAudioLoaded && (
         <>
           <ChordControls
             mode={mode}
