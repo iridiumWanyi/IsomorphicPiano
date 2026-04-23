@@ -65,7 +65,7 @@ function App() {
 
     const priorityPromises = priorityNotes.map(async (note) => {
       const fileNumber = noteToFileNumber[note];
-      const audioUrl = `/audio/${fileNumber}.mp3`;
+      const audioUrl = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
       try {
         const response = await fetch(audioUrl);
         if (!response.ok) throw new Error(`Failed to fetch ${audioUrl}: ${response.status}`);
@@ -87,7 +87,7 @@ function App() {
 
     const remainingPromises = otherNotes.map(async (note) => {
       const fileNumber = noteToFileNumber[note];
-      const audioUrl = `/audio/${fileNumber}.mp3`;
+      const audioUrl = `${process.env.PUBLIC_URL}/audio/${fileNumber}.mp3`;
       try {
         const response = await fetch(audioUrl);
         if (!response.ok) throw new Error(`Failed to fetch ${audioUrl}: ${response.status}`);
