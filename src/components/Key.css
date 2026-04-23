@@ -1,16 +1,19 @@
 .key {
-  width: 48px;
-  height: 64px;
+  width: var(--key-width, 48px);
+  height: calc(var(--key-width, 48px) * 4 / 3);
   border-radius: 5px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
+  padding-bottom: 2px;
   cursor: pointer;
   transition: background-color 0.2s;
-  user-select: none; /* Prevent text selection on click */
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE/Edge */
-  touch-action: manipulation; /* Improve touch responsiveness */
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  touch-action: manipulation;
+  font-size: clamp(0px, calc(var(--key-width, 48px) - 32px), 11px);
+  overflow: hidden;
 }
 
 .key.white {

@@ -1,8 +1,9 @@
 .keyboard {
   display: flex;
   flex-direction: column;
-  gap: 0px; /* Default gap for rectangle keys */
-  margin-top: 10px; 
+  gap: 0px;
+  margin-top: 10px;
+  touch-action: none;
 }
 
 .row {
@@ -15,7 +16,7 @@
 /* Shift second and fourth rows for the Janko layout */
 .row:nth-child(2),
 .row:nth-child(4) {
-  margin-left: -50px; 
+  margin-left: calc(-1.042 * var(--key-width, 48px));
 }
 /* Reset top for the first hexagon row */
 .keyboard .row.hexagon-row:first-child {
@@ -25,13 +26,13 @@
 /* Adjust Janko offsets for hexagon rows */
 .keyboard .row.hexagon-row:nth-child(2),
 .keyboard .row.hexagon-row:nth-child(4) {
-  margin-left: -50px; /* Adjusted offset for hexagons */
+  margin-left: calc(-1.042 * var(--key-width, 48px));
   top: 20px;
 }
 
 .key-placeholder {
-  width: 48px;
-  height: 64px;
+  width: var(--key-width, 48px);
+  height: calc(var(--key-width, 48px) * 4 / 3);
   visibility: hidden;
 }
 
@@ -39,10 +40,8 @@
   margin-bottom: 10px; 
 }
 
-/* Default key styling (rectangle) */
+/* Default key styling (rectangle) — dimensions come from Key.css via --key-width */
 .key {
-  width: 48px;
-  height: 64px;
   border: 1px solid #75716f;
   display: flex;
   align-items: center;
@@ -64,8 +63,8 @@
 
 /* Hexagon key styling */
 .key.hexagon {
-  width: 50px;
-  height: 50px;
+  width: var(--key-width, 48px);
+  height: var(--key-width, 48px);
   border: none;
   clip-path: polygon(50% 4%, 100% 28%, 100% 72%, 50% 96%, 0% 72%, 0% 28%);
   margin: 2px;
@@ -82,35 +81,35 @@
   top: 0;
 }
 
-/* Adjust Janko offsets for circle rows */
+/* Adjust Janko offsets for hexagon rows */
 .keyboard .row.hexagon-row:nth-child(2){
-  margin-left: -50px; /* Same offset as hexagons for consistency */
-  top: -19.5px; /* Align with other circle rows */
+  margin-left: calc(-1.042 * var(--key-width, 48px));
+  top: calc(-0.39 * var(--key-width, 48px));
 }
 
 .keyboard .row.hexagon-row:nth-child(3){
-  top: -39px; /* Align with other circle rows */
+  top: calc(-0.78 * var(--key-width, 48px));
 }
 
 .keyboard .row.hexagon-row:nth-child(4){
-  margin-left: -50px; /* Same offset as hexagons for consistency */
-  top: -59px; /* Align with other circle rows */
-  margin-bottom: -50px
+  margin-left: calc(-1.042 * var(--key-width, 48px));
+  top: calc(-1.18 * var(--key-width, 48px));
+  margin-bottom: calc(-1 * var(--key-width, 48px));
 }
 
 
 .keyboard .key-placeholder + .key.hexagon {
-  width: 50px;
-  height: 50px;
+  width: var(--key-width, 48px);
+  height: var(--key-width, 48px);
 }
 
 /* Add circle key styling */
 .key.circle {
-  width: 50px;
-  height: 50px; 
+  width: var(--key-width, 48px);
+  height: var(--key-width, 48px);
   border: 1px solid #75716f;
   border-radius: 50%;
-  margin: -2px; 
+  margin: -2px;
 }
 
 .keyboard .row.circle-row {
@@ -125,23 +124,23 @@
 
 /* Adjust Janko offsets for circle rows */
 .keyboard .row.circle-row:nth-child(2){
-  margin-left: -52px; /* Same offset as hexagons for consistency */
-  top: -4px; /* Align with other circle rows */
+  margin-left: calc(-1.042 * var(--key-width, 48px));
+  top: -4px;
 }
 
 .keyboard .row.circle-row:nth-child(3){
-  top: -8px; /* Align with other circle rows */
+  top: -8px;
 }
 
 .keyboard .row.circle-row:nth-child(4){
-  margin-left: -52px; /* Same offset as hexagons for consistency */
-  top: -12px; /* Align with other circle rows */
+  margin-left: calc(-1.042 * var(--key-width, 48px));
+  top: -12px;
 }
 
 /* Adjust placeholder for circle */
 .keyboard .key.circle + .key-placeholder,
 .keyboard .key-placeholder + .key.circle {
-  width: 50px;
-  height: 50px;
+  width: var(--key-width, 48px);
+  height: var(--key-width, 48px);
 }
 

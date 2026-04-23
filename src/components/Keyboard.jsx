@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Key from './Key';
 import { wholeKeyboardLayout, chromaticScale, modeColors, computeChordNotes } from '../constants';
 import './Keyboard.css';
@@ -78,6 +78,20 @@ function Keyboard({
   };
 
   const layout = keyboardMode === 'partial' ? generatePartialLayout(lowestKey, highestKey) : wholeKeyboardLayout;
+
+  const maxKeysPerRow = Math.max(...layout.map(row => row.length));
+  const [keyWidth, setKeyWidth] = useState(48);
+
+  useEffect(() => {
+    const compute = () => {
+      const available = window.innerWidth - 16;
+      const ideal = Math.floor(available / maxKeysPerRow);
+      setKeyWidth(Math.min(48, Math.max(20, ideal)));
+    };
+    compute();
+    window.addEventListener('resize', compute);
+    return () => window.removeEventListener('resize', compute);
+  }, [maxKeysPerRow]);
 
   const getArpeggioNotes = (baseNote, pattern, direction) => {
     const baseChordNotes = computeChordNotes(baseNote, mode, customChords, inversionState);
@@ -182,7 +196,7 @@ function Keyboard({
   };
 
   return (
-    <div className={`keyboard ${keyboardMode}`}>
+    <div className={`keyboard ${keyboardMode}`} style={{ '--key-width': `${keyWidth}px` }}>
       {layout.map((row, rowIndex) => (
         <div
           key={rowIndex}
