@@ -13,6 +13,12 @@ h1 {
   margin-bottom: 20px;
 }
 
+.iv-logo { display: inline-flex; align-items: center; gap: 4px; text-decoration: none; line-height: 1; color: #6b6560; margin-bottom: 12px; }
+.iv-logo .b { font: 300 1em ui-monospace, monospace; }
+.iv-logo .iv { font: italic 0.7em 'DM Serif Display', serif; }
+.iv-logo .c { width: 0.14em; height: 0.6em; background: oklch(52% 0.18 288); margin-left: 3px; animation: ivblink 1s steps(2) infinite; flex-shrink: 0; }
+@keyframes ivblink { 50% { opacity: 0; } }
+
 body {
   color: rgb(14, 13, 13);
 }

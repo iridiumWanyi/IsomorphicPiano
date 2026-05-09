@@ -320,6 +320,12 @@ function App() {
 
   return (
     <div className="app">
+      <a href="https://ivanium.com" className="iv-logo" style={{ fontSize: '18px' }} aria-label="Ivanium's Lab">
+        <span className="b">{'{'}</span>
+        <span className="iv">iv</span>
+        <span className="b">{'}'}</span>
+        <span className="c"></span>
+      </a>
       <h1>Isomorphic Piano Simulator</h1>
       {!isPriorityAudioLoaded && (
         <div className="loading-container">
